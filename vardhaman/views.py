@@ -53,7 +53,6 @@ def getUsersData(user):
 def userRegister(request):
     try:
         data = json.loads(request.body.decode('utf-8'))
-        role = data.get('role')
         name = data.get('name')
         email = data.get('email')
         contact_no = data.get('contact_no')
@@ -66,7 +65,7 @@ def userRegister(request):
         if len(emailValidate) > 0 or len(contactValidate) > 0:
             return Response({'message':"User Already Exists."},status=400)
         User.objects.create(
-            role = role,
+            role = '0',
             name = name,
             email = email,
             contact_no = contact_no,
@@ -86,15 +85,14 @@ def userRegister(request):
 def userLogin(request):
     try:
         data = json.loads(request.body.decode('utf-8'))
-        role = data.get('role')
         username = data.get('username')
         password = data.get('password')
         
         if not data:
             return Response({'message':"Please provide valid username and password."},status=400)
         
-        emailValidate = User.objects.filter(email=username,role=role)
-        contactValidate = User.objects.filter(contact_no=username,role=role)
+        emailValidate = User.objects.filter(email=username)
+        contactValidate = User.objects.filter(contact_no=username)
         
         if len(emailValidate) > 0:
             if check_password(password,emailValidate[0].password):
@@ -135,9 +133,9 @@ def getUserDataList(request,userId):
             return Response({'message':"Please appropiat User id or all"},status=400)
         
         if userId == "all":
-            userData = User.objects.all()
+            userData = User.objects.filter(role=0)
         else:
-            userData = User.objects.filter(id=userId).first()
+            userData = User.objects.filter(id=userId,role=0).first()
             return Response({'message':"User Data fecthed",'data': getUsersData(userData)},status=200)
         
         userList = []
