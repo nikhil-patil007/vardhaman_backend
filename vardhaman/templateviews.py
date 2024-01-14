@@ -50,6 +50,16 @@ def productsPage(request):
         return render(request, "allProducts.html",data)
     return redirect("login")    
 
+# Add Product Page Path 
+def addProductPage(request):
+    if 'userId' in request.session:
+        data = {
+            'currentPage':'product',
+        }
+        return render(request, "productPage.html",data)
+    return redirect("login")    
+    
+    
 # Login Path
 def loginFunction(request):
     try:

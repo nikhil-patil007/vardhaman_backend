@@ -10,7 +10,8 @@ class User(models.Model):
     contact_no = models.CharField(max_length=255,null=True)
     password = models.CharField(max_length=255)
     is_approved = models.CharField(max_length=10,default='0',choices=[("0","Pending"),("1","Approved"),("2","Rejected")])
-    address = models.CharField(max_length=255,null=True)
+    address = models.CharField(max_length=255,blank=True,null=True)
+    firebase_token = models.CharField(max_length=255,blank=True,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

@@ -41,6 +41,7 @@ def getUsersData(user):
         "email" : user.email,
         "contact_no" : user.contact_no,
         "is_approved" : user.is_approved,
+        "firebase_token":firebase_token,
         "address" : user.address,
         "created_at" : user.created_at,
         "updated_at" : user.updated_at
@@ -56,6 +57,8 @@ def userRegister(request):
         email = data.get('email')
         contact_no = data.get('contact_no')
         password = data.get('password')
+        address = data.get('address')
+        firebase_token = data.get('firebase_token')
         if not data:
             return Response({'message':"Please provide valid name, email, contact_no, and password."},status=400)
         
@@ -68,7 +71,9 @@ def userRegister(request):
             name = name,
             email = email,
             contact_no = contact_no,
-            password = make_password(password)
+            password = make_password(password),
+            address = address,
+            firebase_token = firebase_token,
         )
         return Response({'message':"User register successfully."},status=200)
     except json.JSONDecodeError:
@@ -86,6 +91,7 @@ def userLogin(request):
         data = json.loads(request.body.decode('utf-8'))
         username = data.get('username')
         password = data.get('password')
+        firebase_token = data.get('firebase_token')
         
         if not data:
             return Response({'message':"Please provide valid username and password."},status=400)
@@ -101,12 +107,14 @@ def userLogin(request):
             userData = ''
         if userData:    
             if check_password(password,userData.password):
+                userData.firebase_token = firebase_token
+                userData.save()
                 refresh = RefreshToken.for_user(userData)
                 token = {
                     'refresh': str(refresh),
                     'access': str(refresh.access_token),
                 }
-                return Response({'message':"User Login successfully",'token': token},status=200)
+                return Response({'message':"User Login successfully",'token': token,"userData":getUsersData(userData)},status=200)
             else:
                 message = "Username or Password is not valid"
         return Response({'message':message},status=400)    

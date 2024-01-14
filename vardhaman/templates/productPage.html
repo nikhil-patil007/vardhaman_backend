@@ -20,7 +20,6 @@
     <!-- Custom Css -->
     <link rel="stylesheet" href="{% static 'assets\css\main.css' %}">
     <link rel="stylesheet" href="{% static 'assets\css\color_skins.css' %}">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
 </head>
 <style>
     .imageData {
@@ -44,74 +43,23 @@
     {% include 'base.html' %} 
     {% include 'left.html' %}
    <section class="content home">
-    <div class="block-header">
-        <div class="col-lg-3 col-md-3 col-sm-12">
-            <h2>
-                <img class="navbar-brand" src="{% static 'assets\images\Index-Icons\pro.png' %}" width="50" style="border-radius: 100px;"/>
-                Products Data
-                <small class="text-muted">Welcome to Vardhaman Gruh Udhyog</small>
-            </h2>
+        <div class="block-header">
+            <div class="col-lg-3 col-md-3 col-sm-12">
+                <h2><img class="navbar-brand" src="{% static 'assets\images\Index-Icons\pro.png' %}" width="50" style="border-radius: 100px;"/>Products Add Data<small class="text-muted">Welcome to Vardhaman Gruh Udhyog</small></h2>
+            </div>
         </div>
-        <div class="col-lg-9 col-md-9 col-sm-12 text-right">
-            <a  href="{% url 'addProductPage' %}" class="btn btn-primary">Add Product</a>
-        </div>
-    </div>
         <br>
         <div class="body container-fluid">
             <!-- Nav tabs -->
             <!-- Tab panes -->
             <div class="tab-content m-t-10">
                 <div class="tab-pane table-responsive active" id="All">
-                    <table class="table m-b-0 table-hover" id="productsData" class="display">
-                        <thead>
-                            <tr align="center">
-                                <th>ID</th>
-                                <th>Product Name</th>
-                                <th>Image</th>
-                                <th>QTY</th>
-                                <th>Price.</th>
-                                <th>HSN code</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        {% for i in products %}
-                        <tbody>
-                            <tr align="center">
-                                <td><span class="list-name">#{{i.id}}</span></td>
-                                <td>
-                                    <pre>
-                                        {{i.product_name_eng}}
-                                        {{i.product_name_guj}}
-                                        {{i.product_name_hin}}
-                                    </pre>
-                                </td>
-                                <td>
-                                    <div class="imageData">
-                                        <img src="{{MEDIA_URL}}{{i.product_image.url}}"  width="100%">
-                                    </div>
-                                </td>
-                                <td>{{i.product_qty}}</td>
-                                <td>{{i.product_price}}</td>
-                                <td>{{i.product_hsn_code}}</td>
-                                <td>
-                                    <a href="#" class="btn btn-success btn-round">
-                                        <i class="zmdi zmdi-edit"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-danger btn-round">
-                                        <i class="zmdi zmdi-delete"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                        {% endfor %}
-                    </table>
+                    
                 </div>
             </div>
         </div>
     </section>
     <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="{% static 'assets\bundles\libscripts.bundle.js' %}"></script>
     <script src="{% static 'assets\bundles\vendorscripts.bundle.js' %}"></script>
 
@@ -122,9 +70,6 @@
     <script src="{% static 'assets\js\pages\index.js' %}"></script>
     <!--Start of Tawk.to Script-->
     <script type="text/javascript">
-        $( document ).ready(function() {
-            new DataTable('#productsData');
-        });
         var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
         (function () {
             var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];

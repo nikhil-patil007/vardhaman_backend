@@ -19,4 +19,5 @@ urlpatterns = [
     path('adminlogin',templateviews.loginFunction,name='loginadmin'),
     path('users/all',templateviews.userPage,name='userPage'),
     path('products/all',templateviews.productsPage,name='productPage'),
+    path('products/add',templateviews.addProductPage,name='addProductPage'),
 ]
