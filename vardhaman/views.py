@@ -41,7 +41,7 @@ def getUsersData(user):
         "email" : user.email,
         "contact_no" : user.contact_no,
         "is_approved" : user.is_approved,
-        "firebase_token":firebase_token,
+        "firebase_token" : user.firebase_token,
         "address" : user.address,
         "created_at" : user.created_at,
         "updated_at" : user.updated_at
