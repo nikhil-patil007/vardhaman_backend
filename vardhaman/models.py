@@ -18,7 +18,7 @@ class User(models.Model):
         db_table = "users"
     
     def __str__(self):
-        return self.name
+        return self.name if self.name else self.email
     
 class Products(models.Model):
     product_name_eng = models.CharField(max_length=255,null=True)
@@ -33,9 +33,3 @@ class Products(models.Model):
     
     class Meta:
         db_table = "Products"
-    
-    # def __str__(self):
-    #     # self.product_image = self.product_image_url
-    #     # self.save()
-    #     return self.product_name_eng
-    

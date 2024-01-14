@@ -1,384 +1,102 @@
+﻿{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Current File Path</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="csrf-token" content="iL8hUXsdXy71MbOZjq4fWUv4KGPZnJ7k17P7RClL">
+    <link rel="icon" href="https://thememakker.com/templates/oreo/hospital/laravel/public/favicon.ico" type="image/x-icon"> 
+    <!-- Favicon-->
+    <link rel="icon" href="{% static 'images/vardhaman.png' %}" type="image/png" />
+    <title>Vardhaman Gruh Udhyog </title>
+    <meta name="description" content="Oero Laravel">
+    <meta name="author" content="Oero Laravel">
+
+    <link rel="stylesheet" href="{% static 'assets\plugins\bootstrap\css\bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets\plugins\jvectormap\jquery-jvectormap-2.0.3.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets\plugins\morrisjs\morris.min.css' %}">
+    <!-- Custom Css -->
+    <link rel="stylesheet" href="{% static 'assets\css\main.css' %}">
+    <link rel="stylesheet" href="{% static 'assets\css\color_skins.css' %}">
 </head>
-<style>
-    *{
-        margin:auto;
-    }
-    body{
-        background:#c0c0ca;
-        font-family: Helvetica,Arial,sans-serif;
-    }
-    .main{
-        background:white;
-        max-width: 840px;
-        margin-top: 40px;
-        margin-bottom: 30px;
-        border-radius: 5px;
-        box-shadow: 0px 1px 4px 0px #ab2b2b;
-    }
-    .main .top{
-        padding: 15px 25px;
-        padding-bottom: 23px;
-        font-weight: 300;
-        text-align: center;
-        text-shadow: 0 1px rgba(255,255,255,0.75);
-        background: #f7f7f7;
-        border-radius: 5px 5px 0 0;
-    }
-    .main .top h2{
-        color: #999;
-        font-family: sans-serif;
-        font-size: 28px;
-        font-weight: 300;
-        line-height: normal;
-    }
-    .main .top span{
-        font-weight: 700;
-        color: #399;
-        font-size: 33px;
-        text-transform: uppercase;	
-    }
-    .main .cont{
-        padding: 30px;
-        padding-bottom: 0;
-    }
-    .main .cont .first{
-        display: inline-block;
-    }
-    .main .cont .first .p_g{
-        width: 100%;
-      float: left;
-    }
-    .main .cont .first .p_g p{
-        line-height: 24px;
-        font-size: 15px;
-        color: #555;
-        padding-top: 15px;
-    }
-    .main .cont .first .p_g .buy_button{
-        padding: 20px 0px;
-    }
-    .main .cont .first .p_g .buy_button a{
-        text-decoration: none;
-        display: inline-block;
-        padding: 0.8em 2em;
-        background: #e84c3d;
-        color: #fff;
-        font-size: 28px;
-        box-shadow: inset 0 -0.2em 0 rgba(0,0,0,0.2);
-        border-radius: .15em;
-        transition: all .8s cubic-bezier(0.47, 0, 0.75, 0.72);
-    }
-    .main .cont .first .p_g .buy_button a:hover{
-        background:#2dcc70;
-    }
-    
-    .second .d_header{
-        margin-bottom: 16px;
-        text-align: center;
-        position: relative;
-        font-size: 32px;
-        font-weight: 300;
-        color: #0c9;
-    }
-    .d_header::before{
-        content: "";
-        z-index: 10;
-        position: absolute;
-        height: 0;
-        border-bottom: 1px solid #fff;
-        border-top: 1px solid #d3d3d3;
-        width: 30%;
-        left: 0;
-        top: 20px;
-    }
-    .d_header::after{
-        content: "";
-        position: absolute;
-        z-index: 10;
-        height: 0;
-        border-bottom: 1px solid #fff;
-        border-top: 1px solid #d3d3d3;
-        width: 30%;
-        right: 0;
-        top: 20px;
-    }
-    .row{
-        display: inline-block;
-    }
-    .row::before{
-        content: '';
-        display: table;	
-    }
-    .row .one{
-        float:left;
-        position: relative;
-        width:50%;
-    }
-    .one article{
-        margin-bottom: 1.3em;
-        font-size: .9rem;
-    }
-    .one article i{
-        float: left;
-        vertical-align: middle !important;
-        font-size: 2.6em;
-        color: #0c9;
-    }
-    .one h3,p{
-        margin-left: 40px;
-        vertical-align: middle;	
-    }
-    .one h3{
-        font-weight: 300;
-        font-size: 24px;
-        line-height: 22px;
-        margin-bottom: 15px;
-        color: #999 !important;
-        position: relative;
-        top: 8px;
-    }
-    .one p{
-        line-height: 24px;
-        font-size: 15px;
-        color: #555;
-        padding-top: 15px;
-    }	
-    .row .two{
-        float:right;
-        position: relative;
-        width:50%;
-    }
-    .two article{
-        margin-bottom: 1.3em;
-        font-size: .9rem;
-    }
-    .two article i{
-        float: left;
-        vertical-align: middle !important;
-        font-size: 2.6em;
-        color: #0c9;
-    }
-    .two h3,p{
-        margin-left: 40px;
-        vertical-align: middle;	
-    }
-    .two h3{
-        font-weight: 300;
-        font-size: 24px;
-        line-height: 22px;
-        margin-bottom: 15px;
-        color: #999 !important;
-        position: relative;
-        top: 8px;
-    }
-    .two p{
-        line-height: 24px;
-        font-size: 15px;
-        color: #555;
-        padding-top: 15px;
-    }
-    @media screen and (max-width:800px) {
-       .main{
-        width:94%; 
-      }
-    }@media screen and (max-width:420px) {
-       .main{
-        width:100%; 
-      }
-      .main .cont .first .p_g{
-        width: 100%;
-      }
-      .main .cont .first .i_g{
-        width: 100%;
-      }
-      .d_header::before{
-        content: "";
-        width: 10%;
-      }
-      .d_header::after{
-        content: "";
-        width: 10%;
-      }
-      .row .one{
-        width:100%;
-      }
-      .row .two{
-        width:100%;
-      }
-    }
-</style>
-<body>
-    <div class="main">
-        <!-- main heading -->
-        <div class="top">
-        <h2><span>Preview</span>-Responsive CSS3 Form Framework</h2>
+
+<body class="theme-purple">
+    <!-- Page Loader -->
+    <div class="page-loader-wrapper">
+        <div class="loader">
+
+            <div class="m-t-30"><img class="zmdi-hc-spin" src="{% static 'assets\images\logo.svg' %}" width="48"
+                    height="48" alt="Civil Hospital"></div>
+            <p>Please wait...</p>
         </div>
-        <!-- content explanation -->
-        <div class="cont">
-            <div class="first">
-            
-                <div class="p_g">
-                <p>Golden Forms is a simple & professional Form Framework that strikes a balance between simplicity and elegance. The framework is built with modern standards using Purely CSS3 + HTML5 (no images or js), features a clean consistent Form UI, and can be used to create any type of forms quickly whether simple or complex, without special coding knowledge.</p><br>
-                <p>The Forms are built on a 12 column flexible and fluid responsive grid, cross device and browser compartible, easy to customize, edit and integrate in any website or application</p>
-                <br>
-                <!-- intro -->
-                    <div class="buy_button">
-                    <a href="#">Buy Now for $5</a>
-                    </div>
-                    <!-- #buy button -->
-                </div>
-                
-            </div>
-            <div class="second">
-                <!-- first heading -->
-                <div>
-                    <h3 class="d_header"><span>Form Features</span></h3>
-                </div>
-                <!-- first row -->
-                <section>
-                    <div class="row">
-                        <div class="one">
-                            <article> 
-                                <i class="fa fa-flask"></i>
-                                <h3>Clean Form UI</h3>
-                                <p>Great design is more than just good looks – it's about creating an experience that feels natural to the user, the very foundation for the form UI.</p>
-                            </article>
-                        </div>
-                        <div class="two"> 
-                            <article> 
-                                <i class="fa fa-html5"></i>
-                                <h3>Modern Platform</h3>
-                                <p>Handcrafted with CSS3 + HTML5, the framework makes styling Web Forms 2.0 elements a breeze, from custom inputs, buttons, toggles, just name it.</p>
-                            </article>
-                        </div>
-                    </div>
-                </section>
-                <!-- second row -->
-                <section>
-                    <div class="row">
-                        <div class="one">
-                            <article> 
-                                <i class="fa fa-tablet"></i>
-                                <h3>Responsive Approach</h3>
-                                <p>A fluid and responsive design that works perfectly well across all modern devices such as desktops, tablets and smartphones.</p>
-                            </article>
-                        </div>
-                        <div class="two"> 
-                            <article> 
-                                <i class="fa fa-columns"></i>
-                                <h3>12 Column Grid</h3>
-                                <p>The forms are built on a fluid 12 column grid to accomodate any size of forms, from simple to complex ones with support for multi-level nesting.</p>
-                            </article>
-                        </div>
-                    </div>
-                </section>
-                <!-- third row -->
-                <section>
-                    <div class="row">
-                        <div class="one">
-                            <article> 
-                                <i class="fa fa-globe"></i>
-                                <h3>Cross Browser</h3>
-                                <p>Designed to work well across all modern browsers and platforms, with fallbacks for legacy ones. Tested on IE8+, Firefox, Chrome and Safari (Android + IOS)</p>
-                            </article>
-                        </div>
-                        <div class="two"> 
-                            <article> 
-                                <i class="fa fa-eye"></i>
-                                <h3>Retina Ready</h3>
-                                <p>Built with CSS3 and High Resolution Devices in mind, Golden Forms will shine and sparkle on your retina device with no extra effort, just check them out.</p>
-                            </article>
-                        </div>
-                    </div>
-                </section>
-                <!-- fourth row -->
-                <section>
-                    <div class="row">
-                        <div class="one">
-                            <article> 
-                                <i class="fa fa-comments"></i>
-                                <h3>Input + Info Tooltips</h3>
-                                <p>The forms are packed with support for animated multi directional tooltips as well as fully accessible info tooltips with (tab) keyboard access.</p>
-                            </article>
-                        </div>
-                        <div class="two"> 
-                            <article> 
-                                <i class="fa fa-check-square"></i>
-                                <h3>MoFont Awesome Icons</h3>
-                                <p>Comes with a complete set the Mighty Font Awesome vector icons - BUT are just optional which means all form elements will function without any icons.</p>
-                            </article>
-                        </div>
-                    </div>
-                </section>
-                <!-- fifth row -->
-                <section>
-                    <div class="row">
-                        <div class="one">
-                            <article> 
-                                <i class="fa fa-code"></i>
-                                <h3>Well Coded</h3>
-                                <p>No worries about codes and stuff you don't understand, the forms are well coded and commented to ease the work of both CSS3 geeks and learners!</p>
-                            </article>
-                        </div>
-                        <div class="two"> 
-                            <article> 
-                                <i class="fa fa-trophy"></i>
-                                <h3>18+ Starter Forms</h3>
-                                <p>18+ easy to modify, starter templates, like contact, quotation, prouct + service order, login, registration, comment, checkout among others.</p>
-                            </article>
-                        </div>
-                    </div>
-                </section>
-                
-                <!-- second heading -->
-                <div>
-                    <h3 class="d_header"><span>Help + Support</span></h3>
-                </div>
-                
-                
-                <!-- fifth row -->
-                <section>
-                    <div class="row">
-                        <div class="one">
-                            <article> 
-                                <i class="fa fa-book"></i>
-                                <h3>Quick Help</h3>
-                                <p>For some quick help, the forms come with a starter guide with detailed explanations on how to setup, modify or even build forms from scratch.</p>
-                            </article>
-                        </div>
-                        <div class="two"> 
-                            <article> 
-                                <i class="fa fa-bug"></i>
-                                <h3>Bugs + Extended Support</h3>
-                                <p>In case you have any questions that are beyond the scope of the included help file, please feel free to email me via my profile page </p>
-                            </article>
-                        </div>
-                    </div>
-                </section>
-                <!-- sections end -->
-                
-            </div>
-        
-        
-        </div>
-        
-        
     </div>
+    <!-- Overlay For Sidebars -->
+    <div class="overlay"></div>
+    {% include 'base.html' %} 
+    {% include 'left.html' %}
+   <section class="content home">
+        <div class="block-header">
+            <div class="row">
+                <div class="col-lg-5 col-md-5 col-sm-12">
+                    <h2>Dashboard <small class="text-muted">Welcome to Vardhaman Gruh Udhyog</small></h2>
+                </div>
+                <div class="col-lg-7 col-md-7 col-sm-12 text-right">
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="container-fluid">
+            <div class="row clearfix">
+                <div class="col-lg-4 col-md-6">
+                    <div class="card">
+                        <div class="body" align="center"><a href="{% url 'userPage' %}">
+                            <img  src="{% static 'assets\images\Index-Icons\user.png' %}" height="100" width="100"/>
+                            <hr><h5 style="color: black;">Total Users - {{users}}</h5></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card">
+                        <div class="body" align="center"><a href="{% url 'productPage' %}">
+                            <img src="{% static 'assets\images\Index-Icons\pro.png' %}" height="100" width="100"/>
+                            <hr><h5 style="color: black;">Total Products - {{prodcuts}}</h5></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-12">
+                    <div class="card">
+                        <div class="body" align="center"><a href="">
+                            <img  src="{% static 'assets\images\Index-Icons\order.jpg' %}" height="100" width="100"/>
+                            <hr><h5 style="color: black;">Total Orders - {{orders}} </h5></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Scripts -->
+    <script src="{% static 'assets\bundles\libscripts.bundle.js' %}"></script>
+    <script src="{% static 'assets\bundles\vendorscripts.bundle.js' %}"></script>
 
-    <script>
-        // Node.js environment
-        const path = require('path');
-
-        const currentFilePath = __filename;
-        const absolutePath = path.resolve(currentFilePath);
-
-        console.log('Current file path:', absolutePath);
+    <script src="{% static 'assets\bundles\mainscripts.bundle.js' %}"></script>
+    <script src="{% static 'assets\bundles\morrisscripts.bundle.js' %}"></script>
+    <script src="{% static 'assets\bundles\jvectormap.bundle.js' %}"></script>
+    <script src="{% static 'assets\bundles\knob.bundle.js' %}"></script>
+    <script src="{% static 'assets\js\pages\index.js' %}"></script>
+    <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+        var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+        (function () {
+            var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+            s1.async = true;
+            s1.src = 'https://embed.tawk.to/59f5afbbbb0c3f433d4c5c4c/default';
+            s1.charset = 'UTF-8';
+            s1.setAttribute('crossorigin', '*');
+            s0.parentNode.insertBefore(s1, s0);
+        })();
     </script>
+    <!--End of Tawk.to Script-->
 </body>
 </html>

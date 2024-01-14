@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.contrib.auth.hashers  import make_password,check_password
@@ -17,8 +16,6 @@ from django.shortcuts import get_object_or_404
 logger = logging.getLogger(__name__)
 
 # Create your views here.
-def index(request):
-    return render(request, 'index.html')
 
 # funtion return the Product Data 
 def getProductData(product):
@@ -95,29 +92,24 @@ def userLogin(request):
         
         emailValidate = User.objects.filter(email=username)
         contactValidate = User.objects.filter(contact_no=username)
-        
         if len(emailValidate) > 0:
-            if check_password(password,emailValidate[0].password):
-                refresh = RefreshToken.for_user(emailValidate[0])
-                token = {
-                    'refresh': str(refresh),
-                    'access': str(refresh.access_token),
-                }
-                return Response({'message':"User Login successfully",'token': token},status=200)
-            else:
-                return Response({'message':"Username or Password is not valid"},status=400)
+            userData = emailValidate[0]
         elif len(contactValidate) > 0:
-            if check_password(password,contactValidate[0].password):
-                refresh = RefreshToken.for_user(contactValidate[0])
+            userData = contactValidate[0]
+        else:
+            message = "User not register"
+            userData = ''
+        if userData:    
+            if check_password(password,userData.password):
+                refresh = RefreshToken.for_user(userData)
                 token = {
                     'refresh': str(refresh),
                     'access': str(refresh.access_token),
                 }
                 return Response({'message':"User Login successfully",'token': token},status=200)
             else:
-                return Response({'message':"Username or Password is not valid"},status=400)
-        else:
-            return Response({'message':"User not register."},status=400)    
+                message = "Username or Password is not valid"
+        return Response({'message':message},status=400)    
     except json.JSONDecodeError:
         return Response({'message': "Invalid JSON data in the request body."}, status=400)
     except User.DoesNotExist:
