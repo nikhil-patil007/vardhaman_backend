@@ -42,7 +42,7 @@ def userPage(request):
 # ALL Product Page Path
 def productsPage(request):
     if 'userId' in request.session:
-        products = Products.objects.all()
+        products = Products.objects.all().order_by('-id')
         data = {
             'products':products,
             'currentPage':'product',
@@ -59,7 +59,30 @@ def addProductPage(request):
         return render(request, "productPage.html",data)
     return redirect("login")    
     
+# Add Product funtionality Path
+def productAddFunctionality(request):
+    if 'userId' in request.session:
+        productNameEng = request.POST['productNameEng']
+        productNameGuj = request.POST['productNameGuj']
+        productNameHin = request.POST['productNameHin']
+        productQty = request.POST['productQty']
+        productPrice = request.POST['productPrice']
+        productHSN = request.POST['productHSN']
+        productImage = request.FILES['productImage']
+        
+        productdata = Products.objects.create(
+            product_name_eng = productNameEng,
+            product_name_guj = productNameGuj,
+            product_name_hin = productNameHin,
+            product_image = productImage,
+            product_qty = productQty,
+            product_price = productPrice,
+            product_hsn_code = productHSN,
+        )
+        return redirect("productPage")    
+    return redirect("login")    
     
+
 # Login Path
 def loginFunction(request):
     try:

@@ -105,7 +105,11 @@ def userLogin(request):
         else:
             message = "User not register"
             userData = ''
-        if userData:    
+        if userData:
+            if userData.is_approved == '0':
+                return Response({'message': "Please Wait for while Admin will accept Your request, You can Login."}, status=400)
+            if userData.is_approved == '2':
+                return Response({'message': "Please Contact Admin for your Approval."}, status=400)
             if check_password(password,userData.password):
                 userData.firebase_token = firebase_token
                 userData.save()

@@ -54,7 +54,71 @@
             <!-- Tab panes -->
             <div class="tab-content m-t-10">
                 <div class="tab-pane table-responsive active" id="All">
-                    
+                    <div class="container">
+                        <div class="form-container">
+                            <form id="productForm" autocomplete='off' class="needs-validation" novalidate enctype="multipart/form-data" action="{% url 'productAddFunctionality' %}" method="POST"> {% csrf_token %}
+                                <div class="form-row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="productName">Product Name (English):</label>
+                                        <input type="text" class="form-control" id="productNameEng" Placeholder='Please Enter Product Name In English' name="productNameEng" required>
+                                        <div class="invalid-feedback">
+                                            Please enter a product name in English.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="productDescription">Product Name (Gujrati):</label>
+                                        <input type="text" class="form-control" id="productNameGuj" Placeholder='Please Enter Product Name In Gujrati' name="productNameGuj" required>
+                                        <div class="invalid-feedback">
+                                            Please enter a product name in Gujrati.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="productDescription">Product Name (Hindi):</label>
+                                        <input type="text" class="form-control" id="productNameHin" Placeholder='Please Enter Product Name In Hindi' name="productNameHin" required>
+                                        <div class="invalid-feedback">
+                                            Please enter a product name in Hindi.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="productQty">Quantity:</label>
+                                        <input type="text" class="form-control" id="productQty" name="productQty" required>
+                                        <div class="invalid-feedback">
+                                            Please enter a valid quantity.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="productPrice">Product Price:</label>
+                                        <input type="number" class="form-control" id="productPrice" name="productPrice" required>
+                                        <div class="invalid-feedback">
+                                            Please enter a valid product price.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="productHSN">HSN Code:</label>
+                                        <input type="text" class="form-control" id="productHSN" name="productHSN" required>
+                                        <div class="invalid-feedback">
+                                            Please enter a valid HSN code.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-6">
+                                        <label for="productImage">Product Image:</label>
+                                        <input type="file" class="form-control" id="productImage" name="productImage" accept="image/*" required>
+                                    </div>
+                                </div>
+                                <div style="margin: 1rem;"></div>
+                                <div class="form-row">
+                                    <div class="col-md-12 text-right">
+                                        <a href="{% url 'productPage' %}" class="btn btn-danger">Cancel</a>
+                                        <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -62,7 +126,20 @@
     <!-- Scripts -->
     <script src="{% static 'assets\bundles\libscripts.bundle.js' %}"></script>
     <script src="{% static 'assets\bundles\vendorscripts.bundle.js' %}"></script>
-
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var form = document.getElementById('productForm');
+    
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+    
+                form.classList.add('was-validated');
+            });
+        });
+    </script>
     <script src="{% static 'assets\bundles\mainscripts.bundle.js' %}"></script>
     <script src="{% static 'assets\bundles\morrisscripts.bundle.js' %}"></script>
     <script src="{% static 'assets\bundles\jvectormap.bundle.js' %}"></script>
