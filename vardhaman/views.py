@@ -43,6 +43,7 @@ def getUsersData(user):
         "is_approved" : user.is_approved,
         "firebase_token" : user.firebase_token,
         "address" : user.address,
+        "role" : user.role,
         "created_at" : user.created_at,
         "updated_at" : user.updated_at
     }
@@ -113,10 +114,7 @@ def userLogin(request):
                 userData.firebase_token = firebase_token
                 userData.save()
                 refresh = RefreshToken.for_user(userData)
-                token = {
-                    'refresh': str(refresh),
-                    'access': str(refresh.access_token),
-                }
+                token = str(refresh.access_token)
                 return Response({'message':"User Login successfully",'token': token,"userData":getUsersData(userData)},status=200)
             else:
                 message = "Username or Password is not valid"
@@ -154,6 +152,7 @@ def getUserDataList(request,userId):
     
 # User Approval API
 @api_view(['POST'])
+@isJWTAuthanticated
 def userApproval(request):
     try:
         data = json.loads(request.body.decode('utf-8'))
