@@ -45,15 +45,17 @@
     {% include 'left.html' %}
    <section class="content home">
     <div class="block-header">
-        <div class="col-lg-3 col-md-3 col-sm-12">
-            <h2>
-                <img class="navbar-brand" src="{% static 'assets\images\Index-Icons\pro.png' %}" width="50" style="border-radius: 100px;"/>
-                Products Data
-                <small class="text-muted">Welcome to Vardhaman Gruh Udhyog</small>
-            </h2>
-        </div>
-        <div class="col-lg-9 col-md-9 col-sm-12 text-right">
-            <a  href="{% url 'addProductPage' %}" class="btn btn-primary">Add Product</a>
+        <div class="form-row">
+            <div class="col-md-6 mb-3">
+                <h2>
+                    <img class="navbar-brand" src="{% static 'assets\images\Index-Icons\pro.png' %}" width="50" style="border-radius: 100px;"/>
+                    Products Data
+                    <small class="text-muted">Welcome to Vardhaman Gruh Udhyog</small>
+                </h2>
+            </div>
+            <div class="col-md-6 mb-3 text-right">
+                <a  href="{% url 'addProductPage' %}"  class="btn btn-primary" style="background:#243ec6;">Add Product</a>
+            </div>
         </div>
     </div>
         <br>

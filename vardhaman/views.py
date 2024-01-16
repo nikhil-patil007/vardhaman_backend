@@ -75,7 +75,7 @@ def userRegister(request):
             address = address,
             firebase_token = firebase_token,
         )
-        return Response({'message':"User register successfully."},status=200)
+        return Response({'message':"User register successfully.Wait for Approvel."},status=200)
     except json.JSONDecodeError:
         return Response({'message': "Invalid JSON data in the request body."}, status=400)
     except User.DoesNotExist:
@@ -106,10 +106,9 @@ def userLogin(request):
             message = "User not register"
             userData = ''
         if userData:
-            if userData.is_approved == '0':
-                return Response({'message': "Please Wait for while Admin will accept Your request, You can Login."}, status=400)
-            if userData.is_approved == '2':
-                return Response({'message': "Please Contact Admin for your Approval."}, status=400)
+            if userData.is_approved == '0' or userData.is_approved == '2':
+                return Response({'message': "Access Denied."}, status=403)
+            
             if check_password(password,userData.password):
                 userData.firebase_token = firebase_token
                 userData.save()
