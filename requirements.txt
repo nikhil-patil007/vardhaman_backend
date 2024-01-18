@@ -5,9 +5,9 @@ Django==4.2.5
 django-cors-headers==4.3.1
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.3.1
-mysqlclient==2.2.1
 pillow==10.2.0
 protobuf==4.21.12
+psycopg2-binary==2.9.9
 pycparser==2.21
 PyJWT==2.8.0
 python-decouple==3.8
