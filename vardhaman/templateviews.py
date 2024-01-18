@@ -57,37 +57,72 @@ def addProductPage(request):
             'currentPage':'product',
         }
         return render(request, "productPage.html",data)
+    return redirect("login") 
+
+# Edit Product Page Path   
+def editProductPage(request,productId):
+    if 'userId' in request.session:
+        product = Products.objects.get(id=productId)
+        data = {
+            'currentPage':'product',
+            'productData':product,
+        }
+        return render(request, "productPage.html",data)
     return redirect("login")    
     
 # Add Product funtionality Path
-def productAddFunctionality(request):
+def productAddUpdateFunctionality(request):
     if 'userId' in request.session:
-        productNameEng = request.POST['productNameEng']
-        productNameGuj = request.POST['productNameGuj']
-        productNameHin = request.POST['productNameHin']
-        productQty = request.POST['productQty']
-        productPrice = request.POST['productPrice']
-        productHSN = request.POST['productHSN']
-        productImage = request.FILES['productImage']
-        
-        productdata = Products.objects.create(
-            product_name_eng = productNameEng,
-            product_name_guj = productNameGuj,
-            product_name_hin = productNameHin,
-            product_image = productImage,
-            product_qty = productQty,
-            product_price = productPrice,
-            product_hsn_code = productHSN,
-        )
-        return redirect("productPage")    
+        productid = request.POST.get('productid')
+        productNameEng = request.POST.get('productNameEng', '')
+        productNameGuj = request.POST.get('productNameGuj', '')
+        productNameHin = request.POST.get('productNameHin', '')
+        productQty = request.POST.get('productQty', '')
+        productPrice = request.POST.get('productPrice', '')
+        productHSN = request.POST.get('productHSN', '')
+        productImage = request.FILES.get('productImage')
+
+        if not productid:
+            productdata = Products.objects.create(
+                product_name_eng=productNameEng,
+                product_name_guj=productNameGuj,
+                product_name_hin=productNameHin,
+                product_image=productImage,
+                product_qty=productQty,
+                product_price=productPrice,
+                product_hsn_code=productHSN,
+            )
+        else:
+            product = Products.objects.get(id=productid)
+            product.product_name_eng = productNameEng or product.product_name_eng
+            product.product_name_guj = productNameGuj or product.product_name_guj
+            product.product_name_hin = productNameHin or product.product_name_hin
+
+            if productImage:
+                product.product_image = productImage
+
+            product.product_qty = productQty or product.product_qty
+            product.product_price = productPrice or product.product_price
+            product.product_hsn_code = productHSN or product.product_hsn_code
+            product.save()
+
+        return redirect("productPage")
     return redirect("login")    
     
-
+# Delete Product Path 
+def productDeleteFunctionality(request,productId):
+    if 'userId' in request.session:
+        product = Products.objects.get(id=productId)
+        product.delete()
+        return redirect("productPage")
+    return redirect("login")    
+    
+    
 # Login Path
 def loginFunction(request):
     try:
-        username = request.POST['username']
-        password = request.POST['password']
+        username = request.POST.get('username','')
+        password = request.POST.get('password','')
 
         emailValidation = User.objects.filter(email=username,role='1')
         numberValidataion = User.objects.filter(contact_no=username,role='1')

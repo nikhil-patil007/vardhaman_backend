@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'vardhaman',
+    'demo',
     'corsheaders',
     'rest_framework_simplejwt',
 ]
@@ -124,6 +125,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 MB
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/

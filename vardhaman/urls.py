@@ -20,5 +20,7 @@ urlpatterns = [
     path('users/all',templateviews.userPage,name='userPage'),
     path('products/all',templateviews.productsPage,name='productPage'),
     path('products/addPage',templateviews.addProductPage,name='addProductPage'),
-    path('products/add',templateviews.productAddFunctionality,name='productAddFunctionality'),
+    path('products/processing',templateviews.productAddUpdateFunctionality,name='productAddUpdateFunctionality'),
+    path('products/<str:productId>/edit',templateviews.editProductPage,name='editProductPage'),
+    path('products/<str:productId>/delete',templateviews.productDeleteFunctionality,name='deleteProductPage'),
 ]

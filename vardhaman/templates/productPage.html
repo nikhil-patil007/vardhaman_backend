@@ -45,7 +45,7 @@
    <section class="content home">
         <div class="block-header">
             <div class="col-lg-3 col-md-3 col-sm-12">
-                <h2><img class="navbar-brand" src="{% static 'assets\images\Index-Icons\pro.png' %}" width="50" style="border-radius: 100px;"/>Products Add Data<small class="text-muted">Welcome to Vardhaman Gruh Udhyog</small></h2>
+                <h2><img class="navbar-brand" src="{% static 'assets\images\Index-Icons\pro.png' %}" width="50" style="border-radius: 100px;"/>Products {% if productData.id %}Edit{% else%}Add{% endif %} Data<small class="text-muted">Welcome to Vardhaman Gruh Udhyog</small></h2>
             </div>
         </div>
         <br>
@@ -56,25 +56,26 @@
                 <div class="tab-pane table-responsive active" id="All">
                     <div class="container">
                         <div class="form-container">
-                            <form id="productForm" autocomplete='off' class="needs-validation" novalidate enctype="multipart/form-data" action="{% url 'productAddFunctionality' %}" method="POST"> {% csrf_token %}
+                            <form id="productForm" autocomplete='off' class="needs-validation" novalidate enctype="multipart/form-data" action="{% url 'productAddUpdateFunctionality' %}" method="POST"> {% csrf_token %}
+                                <input type="hidden" class="form-control" id="productid" name="productid" value='{{productData.id}}' required>
                                 <div class="form-row">
                                     <div class="col-md-4 mb-3">
                                         <label for="productName">Product Name (English):</label>
-                                        <input type="text" class="form-control" id="productNameEng" Placeholder='Please Enter Product Name In English' name="productNameEng" required>
+                                        <input type="text" class="form-control" id="productNameEng" Placeholder='Please Enter Product Name In English' name="productNameEng" value='{{productData.product_name_eng}}' required>
                                         <div class="invalid-feedback">
                                             Please enter a product name in English.
                                         </div>
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label for="productDescription">Product Name (Gujrati):</label>
-                                        <input type="text" class="form-control" id="productNameGuj" Placeholder='Please Enter Product Name In Gujrati' name="productNameGuj" required>
+                                        <input type="text" class="form-control" id="productNameGuj" Placeholder='Please Enter Product Name In Gujrati' name="productNameGuj" value='{{productData.product_name_guj}}' required>
                                         <div class="invalid-feedback">
                                             Please enter a product name in Gujrati.
                                         </div>
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label for="productDescription">Product Name (Hindi):</label>
-                                        <input type="text" class="form-control" id="productNameHin" Placeholder='Please Enter Product Name In Hindi' name="productNameHin" required>
+                                        <input type="text" class="form-control" id="productNameHin" Placeholder='Please Enter Product Name In Hindi' name="productNameHin" value='{{productData.product_name_hin}}' required>
                                         <div class="invalid-feedback">
                                             Please enter a product name in Hindi.
                                         </div>
@@ -83,21 +84,21 @@
                                 <div class="form-row">
                                     <div class="col-md-4 mb-3">
                                         <label for="productQty">Quantity:</label>
-                                        <input type="text" class="form-control" id="productQty" name="productQty" required>
+                                        <input type="text" class="form-control" id="productQty" name="productQty" value='{{productData.product_qty}}' required>
                                         <div class="invalid-feedback">
                                             Please enter a valid quantity.
                                         </div>
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label for="productPrice">Product Price:</label>
-                                        <input type="number" class="form-control" id="productPrice" name="productPrice" required>
+                                        <input type="number" class="form-control" id="productPrice" name="productPrice" value='{{productData.product_price}}' required>
                                         <div class="invalid-feedback">
                                             Please enter a valid product price.
                                         </div>
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label for="productHSN">HSN Code:</label>
-                                        <input type="text" class="form-control" id="productHSN" name="productHSN" required>
+                                        <input type="text" class="form-control" id="productHSN" name="productHSN" value='{{productData.product_hsn_code}}' required>
                                         <div class="invalid-feedback">
                                             Please enter a valid HSN code.
                                         </div>
@@ -106,14 +107,14 @@
                                 <div class="form-row">
                                     <div class="col-md-12 mb-6">
                                         <label for="productImage">Product Image:</label>
-                                        <input type="file" class="form-control" id="productImage" name="productImage" accept="image/*" required>
+                                        <input type="file" class="form-control" id="productImage" name="productImage" accept="image/*" {% if not productData.id %} required {% endif %}>
                                     </div>
                                 </div>
                                 <div style="margin: 1rem;"></div>
                                 <div class="form-row">
                                     <div class="col-md-12 text-right">
                                         <a href="{% url 'productPage' %}" class="btn btn-danger">Cancel</a>
-                                        <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                                        <button type="submit" class="btn btn-success mr-2">{% if productData.id %}Update{% else%}Submit{% endif %}</button>
                                     </div>
                                 </div>
                             </form>
