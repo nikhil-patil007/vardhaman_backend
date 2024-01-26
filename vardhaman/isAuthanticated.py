@@ -1,9 +1,9 @@
 from functools import wraps
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework_simplejwt.tokens import AccessToken, TokenError
 
-def isJWTAuthanticated(view_func):
+def tokenVerified(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
         # Check if the Authorization header is present
@@ -17,7 +17,6 @@ def isJWTAuthanticated(view_func):
         try:
             # Try to decode the token
             decoded_token = AccessToken(token)
-
             # Additional checks can be added here if needed
 
         except TokenError as e:

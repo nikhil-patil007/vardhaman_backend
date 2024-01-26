@@ -10,6 +10,7 @@ urlpatterns = [
     path('api/user_approval_by_admin',views.userApproval),
     path('api/get_all_product_list',views.getAllProductsList),
     path('api/search_product_list',views.searchProducts),
+    path('api/update_user_profile',views.userUpdate),
     
     
     # Templates Path

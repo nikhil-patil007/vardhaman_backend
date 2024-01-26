@@ -60,33 +60,33 @@
                                 <th>Status</th>
                             </tr>
                         </thead>
-                        {% for i in users %}
                         <tbody>
-                            <tr align="center">
-                                <td><span class="list-name">#{{i.id}}</span></td>
-                                <td>{{i.name}}</td>
-                                <td>{{i.email}}</td>
-                                <td>{{i.contact_no}}</td>
-                                <td>{% if i.address %} <pre> {{i.address}} </pre> {% endif %}</td>
-                                <td>
-                                    {% if i.is_approved == '0' %}
-                                        <button href="" class="btn btn-success btn-round">✓</button>
-                                        <button href="" class="btn btn-danger btn-round">✘</button>
-                                    {% else %}
-                                        {% if i.is_approved == '1' %}
-                                            <button class="btn btn-success btn-round">
-                                                Approved
-                                            </button>
+                            {% for i in users %}
+                                <tr align="center">
+                                    <td><span class="list-name">#{{i.id}}</span></td>
+                                    <td>{{i.name}}</td>
+                                    <td>{{i.email}}</td>
+                                    <td>{{i.contact_no}}</td>
+                                    <td>{% if i.address %} <pre> {{i.address}} </pre> {% endif %}</td>
+                                    <td>
+                                        {% if i.is_approved == '0' %}
+                                            <button href="" class="btn btn-success btn-round">✓</button>
+                                            <button href="" class="btn btn-danger btn-round">✘</button>
                                         {% else %}
-                                            <button class="btn btn-danger btn-round">
-                                                Rejected
-                                            </button>
+                                            {% if i.is_approved == '1' %}
+                                                <button class="btn btn-success btn-round">
+                                                    Approved
+                                                </button>
+                                            {% else %}
+                                                <button class="btn btn-danger btn-round">
+                                                    Rejected
+                                                </button>
+                                            {% endif %}
                                         {% endif %}
-                                    {% endif %}
-                                </td>
-                            </tr>
+                                    </td>
+                                </tr>
+                            {% endfor %}
                         </tbody>
-                        {% endfor %}
                     </table>
                 </div>
             </div>

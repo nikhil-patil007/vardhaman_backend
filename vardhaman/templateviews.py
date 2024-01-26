@@ -1,31 +1,37 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers  import make_password,check_password
 from .models import *
-
+import logging
+logger = logging.getLogger(__name__)
 
 # Home Page Path
 def index(request):
-    try:
-        if 'userId' in request.session:
-            users = User.objects.filter(role='0').count()
-            prodcuts = Products.objects.all().count()
-            orders = '0'
+    if 'userId' in request.session:
+        try:
+            user_count = User.objects.filter(role='0').count()
+            product_count = Products.objects.all().count()
+            order_count = 0  # Change '0' to 0 if orders is meant to be a numeric count
+
             data = {
-                'users':users,
-                'prodcuts':prodcuts,
-                'orders':orders,
-                'currentPage':'home',
+                'users': user_count,
+                'products': product_count,
+                'orders': order_count,
+                'currentPage': 'home',
             }
-            return render(request, 'index.html',data)
-        return redirect("login")
-    except:
-        return redirect("login")
+
+            return render(request, 'index.html', data)
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return redirect('login')
+    return redirect('login')
     
 #  Login Page Path
 def login(request):
     if 'userId' in request.session:
-        return redirect("indexpage")
-    return render(request, "Login.html")
+        return redirect('indexpage')
+
+    return render(request, 'Login.html')
 
 # ALL User Page Path
 def userPage(request):
@@ -37,6 +43,7 @@ def userPage(request):
             'currentPage':'user',
         }
         return render(request, "allUsers.html",data)
+    
     return redirect("login")
     
 # ALL Product Page Path
@@ -44,19 +51,21 @@ def productsPage(request):
     if 'userId' in request.session:
         products = Products.objects.all().order_by('-id')
         data = {
-            'products':products,
-            'currentPage':'product',
+            'products': products,
+            'currentPage': 'product',
         }
-        return render(request, "allProducts.html",data)
-    return redirect("login")    
+        return render(request, 'allProducts.html', data)
+
+    return redirect('login')    
 
 # Add Product Page Path 
 def addProductPage(request):
     if 'userId' in request.session:
         data = {
-            'currentPage':'product',
+            'currentPage' : 'product',
         }
         return render(request, "productPage.html",data)
+
     return redirect("login") 
 
 # Edit Product Page Path   
@@ -64,10 +73,11 @@ def editProductPage(request,productId):
     if 'userId' in request.session:
         product = Products.objects.get(id=productId)
         data = {
-            'currentPage':'product',
-            'productData':product,
+            'currentPage' : 'product',
+            'productData' : product,
         }
         return render(request, "productPage.html",data)
+    
     return redirect("login")    
     
 # Add Product funtionality Path
@@ -115,36 +125,37 @@ def productDeleteFunctionality(request,productId):
         product = Products.objects.get(id=productId)
         product.delete()
         return redirect("productPage")
+    
     return redirect("login")    
     
     
 # Login Path
 def loginFunction(request):
     try:
-        username = request.POST.get('username','')
-        password = request.POST.get('password','')
+        username = request.POST.get('username', '')
+        password = request.POST.get('password', '')
 
-        emailValidation = User.objects.filter(email=username,role='1')
-        numberValidataion = User.objects.filter(contact_no=username,role='1')
-        if len(emailValidation) > 0:
-            userData = emailValidation[0]
-        elif len(numberValidataion) > 0:
-            userData = numberValidataion[0]
+        email_validation = User.objects.filter(email=username, role='1')
+        number_validation = User.objects.filter(contact_no=username, role='1')
+
+        if email_validation.exists():
+            user_data = email_validation.first()
+        elif number_validation.exists():
+            user_data = number_validation.first()
         else:
-            msg = "User Doesn't Found"
-            userData = ''
-        if userData:
-            if check_password(password,userData.password):
-                request.session['userId']= userData.id
-                request.session['userName']= userData.name
-                return redirect("indexpage")
-            else:
-                msg = "Password Incorrect.!"
-        return render(request, "Login.html",{'err':msg})
-        
-    except:
-        return redirect("login")
+            return render(request, 'Login.html', {'err': "User not found."})
 
+        if check_password(password, user_data.password):
+            request.session['userId'] = user_data.id
+            request.session['userName'] = user_data.name
+            return redirect('indexpage')
+        else:
+            return render(request, 'Login.html', {'err': "Incorrect password."})
+
+    except Exception as e:
+        # Log the exception or handle it appropriately
+        print(f"An error occurred: {e}")
+        return redirect('login')
 # Logout path
 def logout(request):
     try:

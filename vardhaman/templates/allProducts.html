@@ -28,6 +28,9 @@
         height: 5rem;
         width: 6rem;
     }
+    pre{
+        
+    }
 </style>
 
 <body class="theme-purple">
@@ -65,7 +68,7 @@
             <!-- Tab panes -->
             <div class="tab-content m-t-10">
                 <div class="tab-pane table-responsive active" id="All">
-                    <table class="table m-b-0 table-hover" id="productsData" class="display">
+                    <table id="productsData">
                         <thead>
                             <tr align="center">
                                 <th>ID</th>
@@ -78,12 +81,12 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        {% for i in products %}
                         <tbody>
+                        {% for i in products %}
                             <tr align="center">
                                 <td><span class="list-name">#{{i.id}}</span></td>
                                 <td>
-                                    <pre>
+                                    <pre style="text-align:start">
                                         {{i.product_name_eng}}
                                         {{i.product_name_guj}}
                                         {{i.product_name_hin}}
@@ -95,7 +98,7 @@
                                     </div>
                                 </td>
                                 <td>{{i.product_qty}}</td>
-                                <td>{{i.product_price}}</td>
+                                <td>₹ {{i.product_price}}</td>
                                 <td>{{i.product_hsn_code}}</td>
                                 <td>{{i.created_at}}<br>{{i.updated_at}}</td>
                                 <td>
@@ -107,8 +110,8 @@
                                     </button>
                                 </td>
                             </tr>
+                            {% endfor %}
                         </tbody>
-                        {% endfor %}
                     </table>
                 </div>
             </div>

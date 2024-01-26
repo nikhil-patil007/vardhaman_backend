@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view
 from django.contrib.auth.hashers  import make_password,check_password
 
 from rest_framework_simplejwt.tokens import RefreshToken  # use to generate Token
-from .isAuthanticated import isJWTAuthanticated # Custome Class to check Token
+from .isAuthanticated import tokenVerified # Custome Class to check Token
 
 import json
 import logging
@@ -21,12 +21,12 @@ logger = logging.getLogger(__name__)
 def getProductData(product):
     productObject = {
         "id": product.id,
-        "product_image": product.product_image.url if product.product_image else '',
-        "product_name_eng": product.product_name_eng ,
-        "product_name_guj": product.product_name_guj,
-        "product_name_hin": product.product_name_hin,
-        "product_qty": product.product_qty,
-        "product_price": str(product.product_price),
+        "product_image": product.product_image.url if product.product_image else "",
+        "product_name_eng": product.product_name_eng if product_name_eng else "" ,
+        "product_name_guj": product.product_name_guj if product_name_guj else "",
+        "product_name_hin": product.product_name_hin if product_name_hin else "",
+        "product_qty": product.product_qty if product.product_qty else "",
+        "product_price": product.product_price if f"₹ {product.product_price}" else "₹ 0.00",
         "product_hsn_code": product.product_hsn_code,
         "created_at": product.created_at,
         "updated_at": product.updated_at,
@@ -37,13 +37,14 @@ def getProductData(product):
 def getUsersData(user):
     userObject = {
         'id' : user.id,
-        "name" : user.name,
-        "email" : user.email,
-        "contact_no" : user.contact_no,
-        "is_approved" : user.is_approved,
-        "firebase_token" : user.firebase_token,
-        "address" : user.address,
-        "role" : user.role,
+        "name" : user.name if user.name else "",
+        "email" : user.email if user.email else "",
+        "contact_no" : user.contact_no if user.contact_no else "",
+        "is_approved" : user.is_approved if user.is_approved else "",
+        "firebase_token" : user.firebase_token if user.firebase_token else "",
+        "address" : user.address if user.address else "",
+        "role" : user.role if user.role else "",
+        'gst_no': user.gst_no if user.gst_no else "",
         "created_at" : user.created_at,
         "updated_at" : user.updated_at
     }
@@ -76,7 +77,7 @@ def userRegister(request):
             address = address,
             firebase_token = firebase_token,
         )
-        return Response({'message':"User register successfully.Wait for Approvel."},status=200)
+        return Response({'message':"User register successfully.Wait for Approval."},status=200)
     except json.JSONDecodeError:
         return Response({'message': "Invalid JSON data in the request body."}, status=400)
     except User.DoesNotExist:
@@ -93,43 +94,43 @@ def userLogin(request):
         username = data.get('username')
         password = data.get('password')
         firebase_token = data.get('firebase_token')
-        
-        if not data:
-            return Response({'message':"Please provide valid username and password."},status=400)
-        
-        emailValidate = User.objects.filter(email=username)
-        contactValidate = User.objects.filter(contact_no=username)
-        if len(emailValidate) > 0:
-            userData = emailValidate[0]
-        elif len(contactValidate) > 0:
-            userData = contactValidate[0]
+
+        if not (username and password):
+            return Response({'message': "Please provide a valid username and password."}, status=400)
+
+        email_validate = User.objects.filter(email=username)
+        contact_validate = User.objects.filter(contact_no=username)
+
+        if email_validate.exists():
+            user_data = email_validate[0]
+        elif contact_validate.exists():
+            user_data = contact_validate[0]
         else:
-            message = "User not register"
-            userData = ''
-        if userData:
-            if userData.is_approved == '0' or userData.is_approved == '2':
-                return Response({'message': "Access Denied."}, status=403)
-            
-            if check_password(password,userData.password):
-                userData.firebase_token = firebase_token
-                userData.save()
-                refresh = RefreshToken.for_user(userData)
-                token = str(refresh.access_token)
-                return Response({'message':"User Login successfully",'token': token,"userData":getUsersData(userData)},status=200)
-            else:
-                message = "Username or Password is not valid"
-        return Response({'message':message},status=400)    
+            return Response({'message': "User not registered."}, status=404)
+
+        if user_data.is_approved in ('0', '2'):
+            return Response({'message': "Access Denied."}, status=403)
+
+        if check_password(password, user_data.password):
+            user_data.firebase_token = firebase_token
+            user_data.save()
+            refresh = RefreshToken.for_user(user_data)
+            token = str(refresh.access_token)
+            return Response({'message': "User logged in successfully", 'token': token, "userData": getUsersData(user_data)}, status=200)
+        else:
+            return Response({'message': "Invalid username or password."}, status=400)
+
     except json.JSONDecodeError:
         return Response({'message': "Invalid JSON data in the request body."}, status=400)
     except User.DoesNotExist:
         return Response({'message': "User not found."}, status=404)
     except Exception as e:
-        logger.error(f"User Register Exception : {str(e)}")
-        return Response({'message': str(e)}, status=500)
+        logger.error(f"User Login Exception: {str(e)}")
+        return Response({'message': "Internal server error."}, status=500)
 
 # All Users API
 @api_view(['GET'])
-@isJWTAuthanticated
+@tokenVerified
 def getUserDataList(request,userId):
     try:
         if not userId:
@@ -149,10 +150,42 @@ def getUserDataList(request,userId):
     except Exception as e:
         logger.error(f"User Register Exception : {str(e)}")
         return Response({'message': str(e)}, status=500)
-    
+
+# Update User API 
+@api_view(['POST'])
+@tokenVerified
+def userUpdate(request):
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+        userId = data.get('userId')
+        name = data.get('name')
+        email = data.get('email')
+        contact_no = data.get('contact_no')
+        address = data.get('address')
+        gst_no = data.get('gst_no')
+        
+        userdata = get_object_or_404(User, id=userId)
+        userdata.name = name if name else userdata.name
+        userdata.email = email if email else userdata.email
+        userdata.contact_no = contact_no if contact_no else userdata.contact_no
+        userdata.address = address if address else userdata.address
+        userdata.gst_no = gst_no if gst_no else userdata.gst_no
+        userdata.save() 
+        
+        return Response({'message': f"Profile Updated successfully"}, status=200)
+    except json.JSONDecodeError:
+        return Response({'message': "Invalid JSON data in the request body."}, status=400)
+    except User.DoesNotExist:
+        return Response({'message': "User not found."}, status=404)
+    except Exception as e:
+        logger.error(f"User Register Exception : {str(e)}")
+        return Response({'message': str(e)}, status=500)
+        
+
+
 # User Approval API
 @api_view(['POST'])
-@isJWTAuthanticated
+@tokenVerified
 def userApproval(request):
     try:
         data = json.loads(request.body.decode('utf-8'))
@@ -181,7 +214,7 @@ def userApproval(request):
 
 # All Product API
 @api_view(['GET'])
-@isJWTAuthanticated
+@tokenVerified
 def getAllProductsList(request):
     try:
         productData = Products.objects.all()
@@ -196,7 +229,7 @@ def getAllProductsList(request):
     
 # Product Search API
 @api_view(['POST'])
-@isJWTAuthanticated
+@tokenVerified
 def searchProducts(request):
     try:
         data = json.loads(request.body.decode('utf-8'))

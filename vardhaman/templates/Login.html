@@ -45,7 +45,7 @@
         <div class="container">
             <div class="col-md-12 content-center">
                 <div class="card-plain">
-                    <form action="{% url 'loginadmin' %}" class="form" method="POST">{% csrf_token %}
+                    <form action="{% url 'loginadmin' %}" id="loginForm" autocomplete='off' class="form needs-validation" novalidate method="POST">{% csrf_token %}
                         <div class="header">
                             <div class="logo-container">
                                  <img src="{% static 'images\favicon.svg' %}" height='120px' width='100%' style="margin-top: 10px; margin-bottom: 10px;" alt="">
@@ -56,16 +56,22 @@
                         {% endif %}
                         <div class="content">
                             <div class="input-group input-lg">
-                                <input type="text" class="form-control" placeholder="Enter Username"  name="username">
+                                <input type="text" class="form-control" id='username' placeholder="Enter Username"  name="username" required>
                                 <span class="input-group-addon">
                                     <i class="zmdi zmdi-email"></i>
                                 </span>
+                                <div class="invalid-feedback">
+                                    Please enter a Username.
+                                </div>
                             </div>
                             <div class="input-group input-lg">
-                                <input type="password" placeholder="Enter Password" name="password" class="form-control">
+                                <input type="password" placeholder="Enter Password" id='password' name="password" class="form-control" required>
                                 <span class="input-group-addon">
                                     <i class="zmdi zmdi-lock"></i>
                                 </span>
+                                <div class="invalid-feedback">
+                                    Please enter a Password.
+                                </div>
                             </div>
                         </div>
                         <div class="footer text-center">
@@ -91,7 +97,20 @@
 
 
     </div>
-
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var form = document.getElementById('loginForm');
+    
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+    
+                form.classList.add('was-validated');
+            });
+        });
+    </script>
     <!-- Scripts -->
     <script src="{% static '\assets\bundles\libscripts.bundle.js' %}"></script>
     <script src="{% static '\assets\bundles\vendorscripts.bundle.js' %}"></script>

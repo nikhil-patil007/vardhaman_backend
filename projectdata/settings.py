@@ -67,7 +67,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware', # cord middleware
+    'corsheaders.middleware.CorsMiddleware', # cors middleware
 ]
 
 ROOT_URLCONF = 'projectdata.urls'
@@ -127,28 +127,24 @@ AUTH_PASSWORD_VALIDATORS = [
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 MB
 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+LOGOUT_REDIRECT_URL = "login"
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = config('TIME_ZONE', default=False, cast=bool)
+TIME_ZONE='Asia/Kolkata'
 
 USE_I18N = True
 
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
-
 # Image Or Path Url
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')
-# if DEBUG:
-#     STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static_files')]
-# else:
-#     STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "static_media")
@@ -159,11 +155,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "static_media")
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Specify authentication classes
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ], 
-}
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': [
+#         'rest_framework_simplejwt.authentication.JWTAuthentication',
+#     ], 
+# }
 
 # Allow Origin to Use API
 CORS_ORIGIN_ALLOW_ALL = True
