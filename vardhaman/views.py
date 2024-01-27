@@ -22,9 +22,9 @@ def getProductData(product):
     productObject = {
         "id": product.id,
         "product_image": product.product_image.url if product.product_image else "",
-        "product_name_eng": product.product_name_eng if product_name_eng else "" ,
-        "product_name_guj": product.product_name_guj if product_name_guj else "",
-        "product_name_hin": product.product_name_hin if product_name_hin else "",
+        "product_name_eng": product.product_name_eng if product.product_name_eng else "" ,
+        "product_name_guj": product.product_name_guj if product.product_name_guj else "",
+        "product_name_hin": product.product_name_hin if product.product_name_hin else "",
         "product_qty": product.product_qty if product.product_qty else "",
         "product_price": product.product_price if f"₹ {product.product_price}" else "₹ 0.00",
         "product_hsn_code": product.product_hsn_code,
