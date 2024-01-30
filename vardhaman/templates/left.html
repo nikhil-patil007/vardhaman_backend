@@ -31,16 +31,16 @@
                             <i class="zmdi zmdi-collection-plus"></i><span>All Products</span>
                         </a>
                     </li>
+                    {% comment %} <li class="{% if currentPage == 'orders' %}active open{% endif %}">
+                        <a href="{% url 'ordersPage' %}">
+                            <i class="zmdi zmdi-hourglass-alt"></i><span>Orders</span>
+                        </a>
+                    </li> {% endcomment %}
                     <li class="">
                         <a href="">
                             <i class="zmdi zmdi-hourglass-alt"></i><span>Orders</span>
                         </a>
                     </li>
-                    {% comment %} <li class=""><a href=""><i class="zmdi zmdi-labels"></i><span>Categories</span></a>
-                    </li>
-                    <li class="">
-                        <a href=""><i class="zmdi zmdi-star"></i><span>Rating</span></a>
-                    </li> {% endcomment %}
                 </ul>
             </div>
         </div>

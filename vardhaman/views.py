@@ -1,6 +1,11 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.contrib.auth.hashers  import make_password,check_password
+from django.utils import timezone
+from datetime import timedelta
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from xhtml2pdf import pisa
 
 from rest_framework_simplejwt.tokens import RefreshToken  # use to generate Token
 from .isAuthanticated import tokenVerified # Custome Class to check Token
@@ -9,7 +14,7 @@ import json
 import logging
 
 # Models Data here 
-from .models import User, Products
+from .models import *
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
@@ -252,3 +257,134 @@ def searchProducts(request):
     except Exception as e:
         logger.error(f"User Register Exception : {str(e)}")
         return Response({'message': str(e)}, status=500)
+
+# Generate Order API
+@api_view(["POST"])
+@tokenVerified
+def createOrderAPI(request):
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+        userId = data.get('userId')
+        productList = data.get('productList')
+        if not userId or not productList:
+            return Response({"message": "Please provide userId or productList.",},status=400)
+        
+        try:
+            userdata = get_object_or_404(User, id=userId)
+        except:
+            return Response({"message": "Please provide valid userId.",},status=400)
+        
+        if userdata.is_approved in ('0', '2'):
+            return Response({'message': "Access Denied."}, status=403)
+
+        newOrder = Order.objects.create(
+            customer_id = userdata,
+            total_amount=0.00
+        )
+        
+        price = 0.00
+        
+        for i in productList:
+            try:
+                productdata = get_object_or_404(Products, id=i['product'])
+                
+                price = float(price) + (float(productdata.product_price) * int(i['qty']))
+                
+                listing_order = Order_data.objects.create(
+                    order_id = newOrder,
+                    product_id = productdata,
+                    amount = float(productdata.product_price) * int(i['qty']),
+                    qty = i['qty'],
+                )
+            except:
+                pass
+        newOrder.total_amount = price
+        newOrder.save() 
+        return Response({'message':"Order Created"},status=200)
+    except json.JSONDecodeError:
+        return Response({'message': "Invalid JSON data in the request body."}, status=400)
+    except Exception as e:
+        logger.error(f"User Register Exception : {str(e)}")
+        return Response({'message': str(e)}, status=500)
+
+# Get Order's List by using UserId.
+@api_view(['GET'])
+@tokenVerified
+def getOrdersList(request,userId):
+    try:
+        if not userId:
+            return Response({'message':"Please appropiat User id"},status=400)
+        
+        dateRange = timezone.now() - timedelta(days=7)
+        
+        try:
+            getUser = get_object_or_404(User,id=userId)
+        except:
+            return Response({'message':"Please appropiat User id"},status=400)
+            
+        if getUser.role == '1':
+            orderData = Order.objects.filter(created_at__range=[dateRange, timezone.now()]).exclude(customer_id=userId).order_by('-created_at')
+        else:
+            orderData = Order.objects.filter(customer_id=userId,created_at__range=[dateRange, timezone.now()]).order_by('-created_at')
+        
+        orderId = [order.id for order in orderData]
+        
+        order_data_list = Order_data.objects.filter(order_id__in=orderId)
+        
+        ordersList = []
+        for item in orderData:
+            newData = {}
+            listOfOrder = []
+            for ls in order_data_list:
+                itemObj = {}
+                if (ls.order_id.id) == (item.id):
+                    itemObj['id'] = ls.id
+                    
+                    itemObj['product_id'] = ls.product_id.id
+                    itemObj['product'] = f"{ls.product_id.product_name_eng} ({ls.product_id.product_qty})"
+                    try: 
+                        itemObj['product_image'] = ls.product_id.product_image.url if ls.product_id.product_image else ""
+                    except:
+                        itemObj['product_image'] = ''
+                        
+                    itemObj['product_price'] = ls.product_id.product_price
+                    itemObj['qty'] = ls.qty
+                    itemObj['amount'] = ls.amount
+                    itemObj['status'] = ls.status
+                    listOfOrder.append(itemObj)
+            newData['id'] = item.id
+            newData['customer_name'] = item.customer_id.name
+            newData['total_amount'] = item.total_amount
+            newData['created_at'] = item.created_at
+            newData['orderList'] = listOfOrder 
+            ordersList.append(newData)
+        return Response({'message':"Success","data":ordersList},status=200)
+    
+    except Exception as e:
+        logger.error(f"User Register Exception : {str(e)}")
+        return Response({'message': str(e)}, status=500)
+
+# Download file API
+@api_view(['GET'])
+# @tokenVerified
+def downloadPdf(request,orderId):
+    # Your dynamic data
+    context = {
+        'title': 'Dynamic PDF Title',
+        'content': 'This is the content of the dynamic PDF.',
+    }
+
+    # Render the template to a string
+    html_content = render_to_string('pdf_template.html', context)
+
+    # Create a PDF file
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="dynamic_pdf.pdf"'
+
+    # Generate PDF using xhtml2pdf
+    pisa_status = pisa.CreatePDF(html_content, dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Error generating PDF')
+
+    return Response({'message':"Success","pdf":response},status=200)

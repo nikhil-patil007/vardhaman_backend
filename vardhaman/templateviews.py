@@ -10,7 +10,7 @@ def index(request):
         try:
             user_count = User.objects.filter(role='0').count()
             product_count = Products.objects.all().count()
-            order_count = 0  # Change '0' to 0 if orders is meant to be a numeric count
+            order_count = Order.objects.all().count()
 
             data = {
                 'users': user_count,
@@ -58,6 +58,34 @@ def productsPage(request):
 
     return redirect('login')    
 
+def ordersPage(request):
+    if 'userId' in request.session:
+        orders = Order.objects.all().order_by('-id')
+        data = {
+            'orders': orders,
+            'currentPage': 'orders',
+        }
+        return render(request, 'allOrders.html', data)
+    return redirect('login')
+
+
+def invoicePage(request):
+    if 'userId' in request.session:
+        try:
+            orderId = request.POST.get('orderId','')
+            orders = Order.objects.get(id=orderId)
+            ordersList = Order_data.objects.filter(order_id=orderId)
+            data = {
+                'currentPage': 'orders',
+                'order': orders,
+                'orderList': ordersList,
+            }
+            return render(request, 'invoice.html', data)
+        except:
+            return redirect('ordersPage')
+            
+    return redirect('login')
+    
 # Add Product Page Path 
 def addProductPage(request):
     if 'userId' in request.session:
@@ -83,7 +111,7 @@ def editProductPage(request,productId):
 # Add Product funtionality Path
 def productAddUpdateFunctionality(request):
     if 'userId' in request.session:
-        productid = request.POST.get('productid')
+        productid = request.POST.get('productid','')
         productNameEng = request.POST.get('productNameEng', '')
         productNameGuj = request.POST.get('productNameGuj', '')
         productNameHin = request.POST.get('productNameHin', '')
@@ -156,6 +184,7 @@ def loginFunction(request):
         # Log the exception or handle it appropriately
         print(f"An error occurred: {e}")
         return redirect('login')
+
 # Logout path
 def logout(request):
     try:

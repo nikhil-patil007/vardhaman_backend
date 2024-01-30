@@ -67,9 +67,13 @@
                 </div>
                 <div class="col-lg-4 col-md-12">
                     <div class="card">
-                        <div class="body" align="center"><a href="">
+                        {% comment %} <div class="body" align="center"><a href="{% url 'ordersPage' %}">
                             <img  src="{% static 'assets\images\Index-Icons\order.jpg' %}" height="100" width="100"/>
                             <hr><h5 style="color: black;">Total Orders - {{orders}} </h5></a>
+                        </div> {% endcomment %}
+                        <div class="body" align="center"><a href="">
+                            <img  src="{% static 'assets\images\Index-Icons\order.jpg' %}" height="100" width="100"/>
+                            <hr><h5 style="color: black;">Total Orders - 0 </h5></a>
                         </div>
                     </div>
                 </div>

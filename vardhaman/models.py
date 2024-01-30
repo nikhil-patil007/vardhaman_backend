@@ -35,3 +35,22 @@ class Products(models.Model):
     
     class Meta:
         db_table = "Products"
+        
+class Order(models.Model):
+    customer_id = models.ForeignKey(User,blank=True,null=True,on_delete=models.CASCADE)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        db_table = "Orders"
+
+class Order_data(models.Model):
+    order_id = models.ForeignKey(Order,blank=True,null=True,on_delete=models.CASCADE)
+    product_id = models.ForeignKey(Products,blank=True,null=True,on_delete=models.CASCADE)
+    qty = models.CharField(max_length=255,blank=True,null=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=10,default='0',choices=[("0","Pending"),("1","Approved")])
+    created_at = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        db_table = "Orders_list"
+    
