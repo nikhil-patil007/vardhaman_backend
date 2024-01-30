@@ -378,13 +378,13 @@ def downloadPdf(request,orderId):
     html_content = render_to_string('pdf_template.html', context)
 
     # Create a PDF file
-    response = HttpResponse(content_type='application/pdf')
+    # response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="dynamic_pdf.pdf"'
 
     # Generate PDF using xhtml2pdf
     pisa_status = pisa.CreatePDF(html_content, dest=response)
 
     if pisa_status.err:
-        return HttpResponse('Error generating PDF')
+        return Response({'message':"Error generating PDF"},status=400)
 
     return Response({'message':"Success","pdf":response},status=200)

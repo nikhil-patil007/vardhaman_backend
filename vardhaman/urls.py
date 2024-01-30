@@ -13,7 +13,7 @@ urlpatterns = [
     path('api/update_user_profile', views.userUpdate),
     path('api/generate_orders', views.createOrderAPI),
     path('api/get_list_of_orders/<str:userId>', views.getOrdersList),
-    path('api/get_order_invoice/<str:orderId>', views.downloadPdf),
+    # path('api/get_order_invoice/<str:orderId>', views.downloadPdf),
     
     
     # Templates Path
