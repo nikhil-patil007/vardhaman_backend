@@ -404,7 +404,11 @@ def updateOrders(request,orderId):
 def downloadPdf(request,orderId):
     try:
         # Your dynamic data
-        orders = Order.objects.get(id=orderId)
+        try:
+            orders = Order.objects.get(id=orderId)
+        except:
+            return Response({"message": "Order matching query does not exist."},status=400)
+            
         ordersList = Order_data.objects.filter(order_id=orderId)
         context = {
             'order': orders,
