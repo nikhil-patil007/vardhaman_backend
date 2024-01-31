@@ -402,24 +402,28 @@ def updateOrders(request,orderId):
 @api_view(['GET'])
 @tokenVerified
 def downloadPdf(request,orderId):
-    # Your dynamic data
-    orders = Order.objects.get(id=orderId)
-    ordersList = Order_data.objects.filter(order_id=orderId)
-    context = {
-        'order': orders,
-        'orderList': ordersList,
-    }
-    
-    # Render the template to a string
-    html_content = render_to_string('pdf_template.html', context)
+    try:
+        # Your dynamic data
+        orders = Order.objects.get(id=orderId)
+        ordersList = Order_data.objects.filter(order_id=orderId)
+        context = {
+            'order': orders,
+            'orderList': ordersList,
+        }
+        
+        # Render the template to a string
+        html_content = render_to_string('pdf_template.html', context)
 
-    # Create a PDF file
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename=f"invoice#{Order.id}.pdf"'
+        # Create a PDF file
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename=f"invoice#{Order.id}.pdf"'
 
-    # Generate PDF using xhtml2pdf
-    pisa_status = pisa.CreatePDF(html_content, dest=response)
+        # Generate PDF using xhtml2pdf
+        pisa_status = pisa.CreatePDF(html_content, dest=response)
 
-    if pisa_status.err:
-        return Response({'message':"Error generating PDF"},status=400)
-    return response
+        if pisa_status.err:
+            return Response({'message':"Error generating PDF"},status=400)
+        return response
+    except Exception as e:
+        logger.error(f"User Register Exception : {str(e)}")
+        return Response({'message': str(e)}, status=500)
