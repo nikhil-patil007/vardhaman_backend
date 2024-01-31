@@ -11,9 +11,10 @@ urlpatterns = [
     path('api/get_all_product_list', views.getAllProductsList),
     path('api/search_product_list', views.searchProducts),
     path('api/update_user_profile', views.userUpdate),
-    path('api/generate_orders', views.createOrderAPI),
-    path('api/get_list_of_orders/<str:userId>', views.getOrdersList),
-    # path('api/get_order_invoice/<str:orderId>', views.downloadPdf),
+    path('api/generate_orders', views.generateOrder),
+    path('api/update_orders/<str:orderId>', views.updateOrders),
+    path('api/get_list_of_orders/<str:userId>', views.listOfOrders),
+    path('api/get_order_invoice/<str:orderId>', views.downloadPdf),
     
     
     # Templates Path

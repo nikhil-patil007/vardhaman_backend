@@ -26,14 +26,14 @@ def index(request):
             return redirect('login')
     return redirect('login')
     
-#  Login Page Path
+# Login Page Path
 def login(request):
     if 'userId' in request.session:
         return redirect('indexpage')
 
     return render(request, 'Login.html')
 
-# ALL User Page Path
+# All User Page Path
 def userPage(request):
     if 'userId' in request.session:
         users = User.objects.filter(role='0')
@@ -46,7 +46,7 @@ def userPage(request):
     
     return redirect("login")
     
-# ALL Product Page Path
+# All Product Page Path
 def productsPage(request):
     if 'userId' in request.session:
         products = Products.objects.all().order_by('-id')
@@ -58,6 +58,7 @@ def productsPage(request):
 
     return redirect('login')    
 
+# All Order Page Path
 def ordersPage(request):
     if 'userId' in request.session:
         orders = Order.objects.all().order_by('-id')
@@ -68,7 +69,7 @@ def ordersPage(request):
         return render(request, 'allOrders.html', data)
     return redirect('login')
 
-
+# Invoice Page Path
 def invoicePage(request):
     if 'userId' in request.session:
         try:
@@ -155,8 +156,7 @@ def productDeleteFunctionality(request,productId):
         return redirect("productPage")
     
     return redirect("login")    
-    
-    
+  
 # Login Path
 def loginFunction(request):
     try:

@@ -3,8 +3,8 @@ from rest_framework.decorators import api_view
 from django.contrib.auth.hashers  import make_password,check_password
 from django.utils import timezone
 from datetime import timedelta
-from django.http import HttpResponse
 from django.template.loader import render_to_string
+from django.http import HttpResponse
 from xhtml2pdf import pisa
 
 from rest_framework_simplejwt.tokens import RefreshToken  # use to generate Token
@@ -139,7 +139,7 @@ def userLogin(request):
 def getUserDataList(request,userId):
     try:
         if not userId:
-            return Response({'message':"Please appropiat User id or all"},status=400)
+            return Response({'message':"Please provide appropiat User id or all"},status=400)
         
         if userId == "all":
             userData = User.objects.filter(role=0)
@@ -261,7 +261,7 @@ def searchProducts(request):
 # Generate Order API
 @api_view(["POST"])
 @tokenVerified
-def createOrderAPI(request):
+def generateOrder(request):
     try:
         data = json.loads(request.body.decode('utf-8'))
         userId = data.get('userId')
@@ -310,17 +310,17 @@ def createOrderAPI(request):
 # Get Order's List by using UserId.
 @api_view(['GET'])
 @tokenVerified
-def getOrdersList(request,userId):
+def listOfOrders(request,userId):
     try:
         if not userId:
-            return Response({'message':"Please appropiat User id"},status=400)
+            return Response({'message':"Please provide appropiat User id"},status=400)
         
         dateRange = timezone.now() - timedelta(days=7)
         
         try:
             getUser = get_object_or_404(User,id=userId)
         except:
-            return Response({'message':"Please appropiat User id"},status=400)
+            return Response({'message':"Please provide appropiat User id"},status=400)
             
         if getUser.role == '1':
             orderData = Order.objects.filter(created_at__range=[dateRange, timezone.now()]).exclude(customer_id=userId).order_by('-created_at')
@@ -364,27 +364,62 @@ def getOrdersList(request,userId):
         logger.error(f"User Register Exception : {str(e)}")
         return Response({'message': str(e)}, status=500)
 
+# Orders Approvel API
+@api_view(['POST'])
+@tokenVerified
+def updateOrders(request,orderId):
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+        orderList = data.get('orderList')
+        
+        if not orderList:
+            return Response({'message':"Please provide appropiat orderList"},status=400)
+        
+        try:
+            orderVal = get_object_or_404(Order,id=orderId)
+        except:
+            return Response({'message':"Please select appropiat Order Id"},status=400)
+        
+        listOrders = [i for i in orderList]
+        order_data_list = Order_data.objects.filter(id__in=listOrders)
+        
+        sum = 0
+        for lis in order_data_list:
+            sum = sum + lis.amount
+            lis.status = '1'
+            lis.save()
+        
+        orderVal.total_amount = sum
+        orderVal.save()
+        return Response({'message':"Order Updated"},status=200)
+    except json.JSONDecodeError:
+        return Response({'message': "Invalid JSON data in the request body."}, status=400)
+    except Exception as e:
+        logger.error(f"User Register Exception : {str(e)}")
+        return Response({'message': str(e)}, status=500)
+
 # Download file API
 @api_view(['GET'])
-# @tokenVerified
+@tokenVerified
 def downloadPdf(request,orderId):
     # Your dynamic data
+    orders = Order.objects.get(id=orderId)
+    ordersList = Order_data.objects.filter(order_id=orderId)
     context = {
-        'title': 'Dynamic PDF Title',
-        'content': 'This is the content of the dynamic PDF.',
+        'order': orders,
+        'orderList': ordersList,
     }
-
+    
     # Render the template to a string
     html_content = render_to_string('pdf_template.html', context)
 
     # Create a PDF file
-    # response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="dynamic_pdf.pdf"'
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename=f"invoice#{Order.id}.pdf"'
 
     # Generate PDF using xhtml2pdf
     pisa_status = pisa.CreatePDF(html_content, dest=response)
 
     if pisa_status.err:
         return Response({'message':"Error generating PDF"},status=400)
-
-    return Response({'message':"Success","pdf":response},status=200)
+    return response
