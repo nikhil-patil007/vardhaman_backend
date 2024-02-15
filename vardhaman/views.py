@@ -398,6 +398,7 @@ def updateOrders(request,orderId):
             lis.save()
         
         orderVal.total_amount = sum
+        orderVal.status = '1'
         orderVal.save()
         return Response({'message':"Order Updated"},status=200)
     except json.JSONDecodeError:
