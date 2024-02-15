@@ -10,7 +10,7 @@ def index(request):
         try:
             user_count = User.objects.filter(role='0').count()
             product_count = Products.objects.all().count()
-            order_count = Order.objects.all().count()
+            order_count = Order.objects.filter(status='1').count()
 
             data = {
                 'users': user_count,
@@ -61,7 +61,7 @@ def productsPage(request):
 # All Order Page Path
 def ordersPage(request):
     if 'userId' in request.session:
-        orders = Order.objects.all().order_by('-id')
+        orders = Order.objects.filter(status='1').order_by('-id')
         data = {
             'orders': orders,
             'currentPage': 'orders',

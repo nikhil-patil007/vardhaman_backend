@@ -1,302 +1,331 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta name="csrf-token" content="iL8hUXsdXy71MbOZjq4fWUv4KGPZnJ7k17P7RClL">
-    <link rel="icon" href="https://thememakker.com/templates/oreo/hospital/laravel/public/favicon.ico" type="image/x-icon"> 
-    <!-- Favicon-->
-    <link rel="icon" href="{% static 'images/vardhaman.png' %}" type="image/png" />
-    <title>Vardhaman Gruh Udhyog</title>
-    <meta name="description" content="Oero Laravel">
-    <meta name="author" content="Oero Laravel">
-
-    <link rel="stylesheet" href="{% static 'assets\plugins\bootstrap\css\bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'assets\plugins\jvectormap\jquery-jvectormap-2.0.3.min.css' %}">
-    <link rel="stylesheet" href="{% static 'assets\plugins\morrisjs\morris.min.css' %}">
-    <!-- Custom Css -->
-    <link rel="stylesheet" href="{% static 'assets\css\main.css' %}">
-    <link rel="stylesheet" href="{% static 'assets\css\color_skins.css' %}">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
-</head>
-<style type="text/css">
-    @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
-    body { margin: 0; padding: 0; background: #e1e1e1; }
-    div, p, a, li, td { -webkit-text-size-adjust: none; }
-    .ReadMsgBody { width: 100%; background-color: #ffffff; }
-    .ExternalClass { width: 100%; background-color: #ffffff; }
-    body { width: 100%; height: 100%; background-color: #e1e1e1; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
-    html { width: 100%; }
-    p { padding: 0 !important; margin-top: 0 !important; margin-right: 0 !important; margin-bottom: 0 !important; margin-left: 0 !important; }
-    .visibleMobile { display: none; }
-    .hiddenMobile { display: block; }
-    @media only screen and (max-width: 600px) {
-    body { width: auto !important; }
-    table[class=fullTable] { width: 96% !important; clear: both; }
-    table[class=fullPadding] { width: 85% !important; clear: both; }
-    table[class=col] { width: 45% !important; }
-    .erase { display: none; }
-    }
-    @media only screen and (max-width: 420px) {
-    table[class=fullTable] { width: 100% !important; clear: both; }
-    table[class=fullPadding] { width: 85% !important; clear: both; }
-    table[class=col] { width: 100% !important; clear: both; }
-    table[class=col] td { text-align: left !important; }
-    .erase { display: none; font-size: 0; max-height: 0; line-height: 0; padding: 0; }
-    .visibleMobile { display: block !important; }
-    .hiddenMobile { display: none !important; }
-    }
- </style>
-
-<body class="theme-purple">
-    <!-- Page Loader -->
-    <div class="page-loader-wrapper">
-        <div class="loader">
-
+   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+      <meta name="csrf-token" content="iL8hUXsdXy71MbOZjq4fWUv4KGPZnJ7k17P7RClL">
+      <link rel="icon" href="https://thememakker.com/templates/oreo/hospital/laravel/public/favicon.ico" type="image/x-icon">
+      <!-- Favicon-->
+      <link rel="icon" href="{% static 'images/vardhaman.png' %}" type="image/png" />
+      <title>Vardhaman Gruh Udhyog</title>
+      <meta name="description" content="Oero Laravel">
+      <meta name="author" content="Oero Laravel">
+      <link rel="stylesheet" href="{% static 'assets\plugins\bootstrap\css\bootstrap.min.css' %}">
+      <link rel="stylesheet" href="{% static 'assets\plugins\jvectormap\jquery-jvectormap-2.0.3.min.css' %}">
+      <link rel="stylesheet" href="{% static 'assets\plugins\morrisjs\morris.min.css' %}">
+      <!-- Custom Css -->
+      <link rel="stylesheet" href="{% static 'assets\css\main.css' %}">
+      <link rel="stylesheet" href="{% static 'assets\css\color_skins.css' %}">
+      <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
+   </head>
+   <style type="text/css">
+      @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
+      body { margin: 0; padding: 0; background: #e1e1e1; }
+      div, p, a, li, td { -webkit-text-size-adjust: none; }
+      .ReadMsgBody { width: 100%; background-color: #ffffff; }
+      .ExternalClass { width: 100%; background-color: #ffffff; }
+      body { width: 100%; height: 100%; background-color: #e1e1e1; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+      html { width: 100%; }
+      p { padding: 0 !important; margin-top: 0 !important; margin-right: 0 !important; margin-bottom: 0 !important; margin-left: 0 !important; }
+      .visibleMobile { display: none; }
+      .hiddenMobile { display: block; }
+      @media only screen and (max-width: 600px) {
+      body { width: auto !important; }
+      table[class=fullTable] { width: 96% !important; clear: both; }
+      table[class=fullPadding] { width: 85% !important; clear: both; }
+      table[class=col] { width: 45% !important; }
+      .erase { display: none; }
+      }
+      @media only screen and (max-width: 420px) {
+      table[class=fullTable] { width: 100% !important; clear: both; }
+      table[class=fullPadding] { width: 85% !important; clear: both; }
+      table[class=col] { width: 100% !important; clear: both; }
+      table[class=col] td { text-align: left !important; }
+      .erase { display: none; font-size: 0; max-height: 0; line-height: 0; padding: 0; }
+      .visibleMobile { display: block !important; }
+      .hiddenMobile { display: none !important; }
+      }
+   </style>
+   <body class="theme-purple">
+      <!-- Page Loader -->
+      <div class="page-loader-wrapper">
+         <div class="loader">
             <div class="m-t-30"><img class="zmdi-hc-spin" src="{% static 'assets\images\logo.svg' %}" width="48"
-                    height="48" alt="Civil Hospital"></div>
+               height="48" alt="Civil Hospital"></div>
             <p>Please wait...</p>
-        </div>
-    </div>
-    <!-- Overlay For Sidebars -->
-    <div class="overlay"></div>
-    {% include 'base.html' %} 
-    {% include 'left.html' %}
-   <section class="content home">
-        <br>
-        <div class="body container-fluid">
-            <div class="tab-content m-t-10">
-                <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#e1e1e1">
-                    <tr>
-                       <td height="20"></td>
-                    </tr>
-                    <tr>
-                       <td>
-                          <table width="600" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#ffffff" style="border-radius: 10px 10px 0 0;">
-                             <tr class="hiddenMobile">
-                                <td height="40"></td>
-                             </tr>
-                             <tr class="visibleMobile">
-                                <td height="30"></td>
-                             </tr>
-                             <tr>
-                                <td>
-                                   <table width="480" border="0" cellpadding="0" cellspacing="0" align="center" class="fullPadding">
-                                      <tbody>
-                                         <tr>
-                                            <td>
-                                               <table width="220" border="0" cellpadding="0" cellspacing="0" align="right" class="col">
-                                                  <tbody>
-                                                     <tr class="visibleMobile">
-                                                        <td height="20"></td>
-                                                     </tr>
-                                                     <tr>
-                                                        <td height="5"></td>
-                                                     </tr>
-                                                     <tr>
-                                                        <td style="font-size: 21px; color: #ff0000; letter-spacing: -1px; font-family: 'Open Sans', sans-serif; line-height: 1; vertical-align: top; text-align: right;">
-                                                           Invoice
-                                                        </td>
-                                                     </tr>
-                                                     <tr>
-                                                     <tr class="hiddenMobile">
-                                                        <td height="50"></td>
-                                                     </tr>
-                                                     <tr class="visibleMobile">
-                                                        <td height="20"></td>
-                                                     </tr>
-                                                     <tr>
-                                                        <td style="font-size: 12px; color: #5b5b5b; font-family: 'Open Sans', sans-serif; line-height: 18px; vertical-align: top; text-align: right;">
-                                                           <small>ORDER</small> #{{order.id}}<br />
-                                                           <small>{{order.created_at|date:"d-m-Y"}}</small>
-                                                        </td>
-                                                     </tr>
-                                                  </tbody>
-                                               </table>
-                                            </td>
-                                         </tr>
-                                      </tbody>
-                                   </table>
-                                </td>
-                             </tr>
-                          </table>
-                       </td>
-                    </tr>
-                 </table>
-                 <!-- /Header -->
-                 <!-- Order Details -->
-                 <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#e1e1e1">
-                    <tbody>
-                       <tr>
-                          <td>
-                             <table width="600" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#ffffff">
-                                <tbody>
-                                   <tr>
-                                   <tr class="hiddenMobile">
-                                      <td height="60"></td>
-                                   </tr>
-                                   <tr class="visibleMobile">
-                                      <td height="40"></td>
-                                   </tr>
-                                   <tr>
-                                      <td>
-                                         <table width="480" border="0" cellpadding="0" cellspacing="0" align="center" class="fullPadding">
-                                            <tbody>
-                                               <tr>
-                                                  <th style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; font-weight: normal; line-height: 1; vertical-align: top; padding: 0 10px 7px 0;" width="52%" align="left">
-                                                     Product Name
-                                                  </th>
-                                                  <th style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; font-weight: normal; line-height: 1; vertical-align: top; padding: 0 0 7px;" align="left">
-                                                     <small>HSN</small>
-                                                  </th>
-                                                  <th style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; font-weight: normal; line-height: 1; vertical-align: top; padding: 0 0 7px;" align="center">
-                                                     Price
-                                                  </th>
-                                                  <th style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; font-weight: normal; line-height: 1; vertical-align: top; padding: 0 0 7px;" align="center">
-                                                     Quantity
-                                                  </th>
-                                                  <th style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #1e2b33; font-weight: normal; line-height: 1; vertical-align: top; padding: 0 0 7px;" align="right">
-                                                     Subtotal
-                                                  </th>
-                                               </tr>
-                                               <tr>
-                                                  <td height="5" style="background: #bebebe;" colspan="5"></td>
-                                               </tr>
-                                               {% for ord in orderList%}
-                                                <tr>
-                                                    <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #ff0000;  line-height: 18px;  vertical-align: top; padding:10px 0;" class="article">
-                                                        {{ord.product_id.product_name_eng}} ({{ord.product_id.product_qty}})
-                                                    </td>
-                                                    <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e;  line-height: 18px;  vertical-align: top; padding:10px 0;"><small>{{ord.product_id.product_hsn_code}}</small></td>
-                                                    <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e;  line-height: 18px;  vertical-align: top; padding:10px 0;" align="center">{{ord.product_id.product_price}}</td>
-                                                    <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #1e2b33;  line-height: 18px;  vertical-align: top; padding:10px 0;" align="right">{{ord.qty}}</td>
-                                                    <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #1e2b33;  line-height: 18px;  vertical-align: top; padding:10px 0;" align="right">₹ {{ord.amount}}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td height="1" colspan="5" style="border-bottom:1px solid #e4e4e4"></td>
-                                                </tr>
-                                               {% endfor %}
-                                            </tbody>
-                                         </table>
-                                      </td>
-                                   </tr>
-                                   <tr>
-                                      <td height="20"></td>
-                                   </tr>
-                                </tbody>
-                             </table>
-                          </td>
-                       </tr>
-                    </tbody>
-                 </table>
-                 <!-- /Order Details -->
-                 <!-- Total -->
-                 <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#e1e1e1">
-                    <tbody>
-                       <tr>
-                          <td>
-                             <table width="600" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#ffffff">
-                                <tbody>
-                                   <tr>
-                                      <td>
-                                         <!-- Table Total -->
-                                         <table width="480" border="0" cellpadding="0" cellspacing="0" align="center" class="fullPadding">
-                                            <tbody>
-                                               <tr>
-                                                  <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e; line-height: 22px; vertical-align: top; text-align:right; ">
-                                                     Subtotal
-                                                  </td>
-                                                  <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e; line-height: 22px; vertical-align: top; text-align:right; white-space:nowrap;" width="80">
-                                                     ₹ {{order.total_amount}}
-                                                  </td>
-                                               </tr>
-                                               <tr>
-                                                  <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #000; line-height: 22px; vertical-align: top; text-align:right; ">
-                                                     <strong>Grand Total (Incl.Tax)</strong>
-                                                  </td>
-                                                  <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #000; line-height: 22px; vertical-align: top; text-align:right; ">
-                                                     <strong>₹ {{order.total_amount}}</strong>
-                                                  </td>
-                                               </tr>
-                                               <tr>
-                                                  <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #b0b0b0; line-height: 22px; vertical-align: top; text-align:right; "><small>TAX</small></td>
-                                                  <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #b0b0b0; line-height: 22px; vertical-align: top; text-align:right; ">
-                                                     <small>₹72.40</small>
-                                                  </td>
-                                               </tr>
-                                            </tbody>
-                                         </table>
-                                         <!-- /Table Total -->
-                                      </td>
-                                   </tr>
-                                </tbody>
-                             </table>
-                          </td>
-                       </tr>
-                    </tbody>
-                 </table>
-                 <!-- /Total -->
-                 <!-- Information -->
-                 <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#e1e1e1">
-                    <tbody>
-                       <tr>
-                          <td>
-                             <table width="600" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#ffffff">
-                                <tbody>
-                                   <tr>
-                                   <tr class="hiddenMobile">
-                                      <td height="60"></td>
-                                   </tr>
-                                   <tr class="visibleMobile">
-                                      <td height="40"></td>
-                                   </tr>
-                                   <tr class="hiddenMobile">
-                                      <td height="60"></td>
-                                   </tr>
-                                   <tr class="visibleMobile">
-                                      <td height="30"></td>
-                                   </tr>
-                                </tbody>
-                             </table>
-                          </td>
-                       </tr>
-                    </tbody>
-                 </table>
+         </div>
+      </div>
+      <!-- Overlay For Sidebars -->
+      <div class="overlay"></div>
+      {% include 'base.html' %} 
+      {% include 'left.html' %}
+      <section class="content home">
+         <div class="block-header">
+            <div class="form-row">
+               <div class="col-md-6 mb-3">
+               </div>
+               <div class="col-md-6 mb-3 text-right">
+                  <button class="btn btn-primary" onclick="printDiv('printableArea')" style="background:#243ec6;">Print</button>
+               </div>
             </div>
-        </div>
-    </section>
-    <script>
-        function showSweetAlert(editUrl) {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: 'You won\'t be able to revert this!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // If the user clicks "Yes", proceed with the navigation to the edit page
-                    window.location.href = editUrl;
-                }
-            });
-        }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script src="{% static 'assets\bundles\libscripts.bundle.js' %}"></script>
-    <script src="{% static 'assets\bundles\vendorscripts.bundle.js' %}"></script>
-
-    <script src="{% static 'assets\bundles\mainscripts.bundle.js' %}"></script>
-    <script src="{% static 'assets\bundles\morrisscripts.bundle.js' %}"></script>
-    <script src="{% static 'assets\bundles\jvectormap.bundle.js' %}"></script>
-    <script src="{% static 'assets\bundles\knob.bundle.js' %}"></script>
-    <script src="{% static 'assets\js\pages\index.js' %}"></script>
-</body>
+         </div>
+         <br>
+         <div class="body container-fluid">
+            <div class="tab-content m-t-10" id="printableArea">
+               <html>
+                  <head>
+                  </head>
+                  <style type="text/css" media="print">
+                     @page 
+                        {
+                           size:  100%;   /* auto is the initial value */
+                           margin: 0mm;  /* this affects the margin in the printer settings */
+                        }
+                  </style>
+                  <body>
+                     <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#e1e1e1">
+                        <tr>
+                           <td height="20"></td>
+                        </tr>
+                        <tr>
+                           <td>
+                              <table width="600" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#ffffff" style="border-radius: 10px 10px 0 0;">
+                                 <tr class="hiddenMobile">
+                                    <td height="40"></td>
+                                 </tr>
+                                 <tr class="visibleMobile">
+                                    <td height="30"></td>
+                                 </tr>
+                                 <tr>
+                                    <td>
+                                       <table width="480" border="0" cellpadding="0" cellspacing="0" align="center" class="fullPadding">
+                                          <tbody>
+                                             <tr>
+                                                <td>
+                                                   <table width="220" border="0" cellpadding="0" cellspacing="0" align="right" class="col">
+                                                      <tbody>
+                                                         <tr class="visibleMobile">
+                                                            <td height="20"></td>
+                                                         </tr>
+                                                         <tr>
+                                                            <td height="5"></td>
+                                                         </tr>
+                                                         <tr>
+                                                            <td style="font-size: 21px; color: #ff0000; letter-spacing: -1px; font-family: 'Open Sans', sans-serif; line-height: 1; vertical-align: top; text-align: right;">
+                                                               Invoice
+                                                            </td>
+                                                         </tr>
+                                                         <tr>
+                                                         <tr class="hiddenMobile">
+                                                            <td height="50"></td>
+                                                         </tr>
+                                                         <tr class="visibleMobile">
+                                                            <td height="20"></td>
+                                                         </tr>
+                                                         <tr>
+                                                            <td style="font-size: 12px; color: #5b5b5b; font-family: 'Open Sans', sans-serif; line-height: 18px; vertical-align: top; text-align: right;">
+                                                               <small>ORDER</small> #{{order.id}}<br />
+                                                               <small>{{order.created_at|date:"d-m-Y"}}</small>
+                                                            </td>
+                                                         </tr>
+                                                      </tbody>
+                                                   </table>
+                                                </td>
+                                             </tr>
+                                          </tbody>
+                                       </table>
+                                    </td>
+                                 </tr>
+                              </table>
+                           </td>
+                        </tr>
+                     </table>
+                     <!-- /Header -->
+                     <!-- Order Details -->
+                     <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#e1e1e1">
+                        <tbody>
+                           <tr>
+                              <td>
+                                 <table width="600" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#ffffff">
+                                    <tbody>
+                                       <tr>
+                                       <tr class="hiddenMobile">
+                                          <td height="60"></td>
+                                       </tr>
+                                       <tr class="visibleMobile">
+                                          <td height="40"></td>
+                                       </tr>
+                                       <tr>
+                                          <td>
+                                             <table width="480" border="0" cellpadding="0" cellspacing="0" align="center" class="fullPadding">
+                                                <tbody>
+                                                   <tr>
+                                                      <th style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; font-weight: normal; line-height: 1; vertical-align: top; padding: 0 10px 7px 0;" width="52%" align="left">
+                                                         Product Name
+                                                      </th>
+                                                      <th style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; font-weight: normal; line-height: 1; vertical-align: top; padding: 0 0 7px;" align="left">
+                                                         <small>HSN</small>
+                                                      </th>
+                                                      <th style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; font-weight: normal; line-height: 1; vertical-align: top; padding: 0 0 7px;" align="center">
+                                                         Price
+                                                      </th>
+                                                      <th style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; font-weight: normal; line-height: 1; vertical-align: top; padding: 0 0 7px;" align="center">
+                                                         Quantity
+                                                      </th>
+                                                      <th style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #1e2b33; font-weight: normal; line-height: 1; vertical-align: top; padding: 0 0 7px;" align="right">
+                                                         Subtotal
+                                                      </th>
+                                                   </tr>
+                                                   <tr>
+                                                      <td height="5" style="background: #bebebe;" colspan="5"></td>
+                                                   </tr>
+                                                   {% for ord in orderList%}
+                                                   <tr>
+                                                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #ff0000;  line-height: 18px;  vertical-align: top; padding:10px 0;" class="article">
+                                                         {{ord.product_id.product_name_eng}} ({{ord.product_id.product_qty}})
+                                                      </td>
+                                                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e;  line-height: 18px;  vertical-align: top; padding:10px 0;"><small>{{ord.product_id.product_hsn_code}}</small></td>
+                                                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e;  line-height: 18px;  vertical-align: top; padding:10px 0;" align="center">{{ord.product_id.product_price}}</td>
+                                                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #1e2b33;  line-height: 18px;  vertical-align: top; padding:10px 0;" align="right">{{ord.qty}}</td>
+                                                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #1e2b33;  line-height: 18px;  vertical-align: top; padding:10px 0;" align="right">₹ {{ord.amount}}</td>
+                                                   </tr>
+                                                   <tr>
+                                                      <td height="1" colspan="5" style="border-bottom:1px solid #e4e4e4"></td>
+                                                   </tr>
+                                                   {% endfor %}
+                                                </tbody>
+                                             </table>
+                                          </td>
+                                       </tr>
+                                       <tr>
+                                          <td height="20"></td>
+                                       </tr>
+                                    </tbody>
+                                 </table>
+                              </td>
+                           </tr>
+                        </tbody>
+                     </table>
+                     <!-- /Order Details -->
+                     <!-- Total -->
+                     <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#e1e1e1">
+                        <tbody>
+                           <tr>
+                              <td>
+                                 <table width="600" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#ffffff">
+                                    <tbody>
+                                       <tr>
+                                          <td>
+                                             <!-- Table Total -->
+                                             <table width="480" border="0" cellpadding="0" cellspacing="0" align="center" class="fullPadding">
+                                                <tbody>
+                                                   <tr>
+                                                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e; line-height: 22px; vertical-align: top; text-align:right; ">
+                                                         Subtotal
+                                                      </td>
+                                                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e; line-height: 22px; vertical-align: top; text-align:right; white-space:nowrap;" width="80">
+                                                         ₹ {{order.total_amount}}
+                                                      </td>
+                                                   </tr>
+                                                   <tr>
+                                                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #000; line-height: 22px; vertical-align: top; text-align:right; ">
+                                                         <strong>Grand Total (Incl.Tax)</strong>
+                                                      </td>
+                                                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #000; line-height: 22px; vertical-align: top; text-align:right; ">
+                                                         <strong>₹ {{order.total_amount}}</strong>
+                                                      </td>
+                                                   </tr>
+                                                   <tr>
+                                                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #b0b0b0; line-height: 22px; vertical-align: top; text-align:right; "><small>TAX</small></td>
+                                                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #b0b0b0; line-height: 22px; vertical-align: top; text-align:right; ">
+                                                         <small>₹72.40</small>
+                                                      </td>
+                                                   </tr>
+                                                </tbody>
+                                             </table>
+                                             <!-- /Table Total -->
+                                          </td>
+                                       </tr>
+                                    </tbody>
+                                 </table>
+                              </td>
+                           </tr>
+                        </tbody>
+                     </table>
+                     <!-- /Total -->
+                     <!-- Information -->
+                     <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#e1e1e1">
+                        <tbody>
+                           <tr>
+                              <td>
+                                 <table width="600" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#ffffff">
+                                    <tbody>
+                                       <tr>
+                                       <tr class="hiddenMobile">
+                                          <td height="60"></td>
+                                       </tr>
+                                       <tr class="visibleMobile">
+                                          <td height="40"></td>
+                                       </tr>
+                                       <tr class="hiddenMobile">
+                                          <td height="60"></td>
+                                       </tr>
+                                       <tr class="visibleMobile">
+                                          <td height="30"></td>
+                                       </tr>
+                                    </tbody>
+                                 </table>
+                              </td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </body>
+               </html>
+            </div>
+         </div>
+      </section>
+      <script>
+         function showSweetAlert(editUrl) {
+             Swal.fire({
+                 title: 'Are you sure?',
+                 text: 'You won\'t be able to revert this!',
+                 icon: 'warning',
+                 showCancelButton: true,
+                 confirmButtonColor: '#3085d6',
+                 cancelButtonColor: '#d33',
+                 confirmButtonText: 'Yes, delete it!'
+             }).then((result) => {
+                 if (result.isConfirmed) {
+                     // If the user clicks "Yes", proceed with the navigation to the edit page
+                     window.location.href = editUrl;
+                 }
+             });
+         }
+      </script>
+      <script>
+         function printDiv(divName) {
+            var printContents = document.getElementById(divName).innerHTML;
+            var originalContents = document.body.innerHTML;
+         
+            document.body.innerHTML = printContents;
+         
+            window.print();
+         
+            document.body.innerHTML = originalContents;
+         }
+      </script>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+      <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+      <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+      <script src="{% static 'assets\bundles\libscripts.bundle.js' %}"></script>
+      <script src="{% static 'assets\bundles\vendorscripts.bundle.js' %}"></script>
+      <script src="{% static 'assets\bundles\mainscripts.bundle.js' %}"></script>
+      <script src="{% static 'assets\bundles\morrisscripts.bundle.js' %}"></script>
+      <script src="{% static 'assets\bundles\jvectormap.bundle.js' %}"></script>
+      <script src="{% static 'assets\bundles\knob.bundle.js' %}"></script>
+      <script src="{% static 'assets\js\pages\index.js' %}"></script>
+   </body>
 </html>

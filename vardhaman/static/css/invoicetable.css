@@ -1,5 +1,11 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
 
+@page 
+	{
+		size:  100%;   /* auto is the initial value */
+		margin: 0mm;  /* this affects the margin in the printer settings */
+	}
+
 body {
 	margin: 0;
 	padding: 0;

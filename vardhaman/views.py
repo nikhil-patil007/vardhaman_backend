@@ -22,6 +22,13 @@ logger = logging.getLogger(__name__)
 
 # Create your views here.
 
+# status codes values
+statusCode = {
+    "0" : 'Pending',
+    "1" : 'Approved',
+    "2" : 'Rejected'
+}
+
 # funtion return the Product Data 
 def getProductData(product):
     productObject = {
@@ -350,12 +357,13 @@ def listOfOrders(request,userId):
                     itemObj['product_price'] = ls.product_id.product_price
                     itemObj['qty'] = ls.qty
                     itemObj['amount'] = ls.amount
-                    itemObj['status'] = ls.status
+                    itemObj['status'] = statusCode[ls.status]
                     listOfOrder.append(itemObj)
             newData['id'] = item.id
             newData['customer_name'] = item.customer_id.name
             newData['total_amount'] = item.total_amount
             newData['created_at'] = item.created_at
+            newData['status'] = statusCode[item.status] 
             newData['orderList'] = listOfOrder 
             ordersList.append(newData)
         return Response({'message':"Success","data":ordersList},status=200)
