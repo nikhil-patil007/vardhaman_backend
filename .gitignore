@@ -161,3 +161,7 @@ cython_debug/
 
 static_logs/
 static_media/
+
+
+server.crt
+server.key
