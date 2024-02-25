@@ -1,8 +1,18 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers  import make_password,check_password
 from .models import *
+from num2words import num2words
 import logging
 logger = logging.getLogger(__name__)
+
+# this function is returns the amount based on the Number
+def getInwordsUsingNumber(amount):
+    integer_part = int(amount)
+    decimal_part = int((amount - integer_part) * 100)
+    integer_words = num2words(integer_part).casefold().replace("-", " ").replace("and", "")
+    decimal_words = num2words(decimal_part).casefold().replace("-", " ").replace("and", "")
+    return f"{integer_words} rupees and {decimal_words} paise"
+
 
 # Home Page Path
 def index(request):
@@ -72,18 +82,20 @@ def ordersPage(request):
 # Invoice Page Path
 def invoicePage(request):
     if 'userId' in request.session:
-        try:
-            orderId = request.POST.get('orderId','')
-            orders = Order.objects.get(id=orderId)
-            ordersList = Order_data.objects.filter(order_id=orderId)
-            data = {
-                'currentPage': 'orders',
-                'order': orders,
-                'orderList': ordersList,
-            }
-            return render(request, 'invoice.html', data)
-        except:
-            return redirect('ordersPage')
+        # try:
+        orderId = request.POST.get('orderId','')
+        orders = Order.objects.get(id=orderId)
+        ordersList = Order_data.objects.filter(order_id=orderId, status='1')
+              
+        data = {
+            'currentPage': 'orders',
+            'order': orders,
+            'orderList': ordersList,
+            'totalAmountWords': getInwordsUsingNumber(orders.total_amount),
+        }
+        return render(request, 'invoice.html', data)
+        # except:
+        #     return redirect('ordersPage')
             
     return redirect('login')
     
@@ -119,6 +131,7 @@ def productAddUpdateFunctionality(request):
         productQty = request.POST.get('productQty', '')
         productPrice = request.POST.get('productPrice', '')
         productHSN = request.POST.get('productHSN', '')
+        productUnit = request.POST.get('productUnit', '')
         productImage = request.FILES.get('productImage')
 
         if not productid:
@@ -128,6 +141,7 @@ def productAddUpdateFunctionality(request):
                 product_name_hin=productNameHin,
                 product_image=productImage,
                 product_qty=productQty,
+                product_unit=productUnit,
                 product_price=productPrice,
                 product_hsn_code=productHSN,
             )
@@ -143,6 +157,7 @@ def productAddUpdateFunctionality(request):
             product.product_qty = productQty or product.product_qty
             product.product_price = productPrice or product.product_price
             product.product_hsn_code = productHSN or product.product_hsn_code
+            product.product_unit = productUnit or product.product_unit
             product.save()
 
         return redirect("productPage")

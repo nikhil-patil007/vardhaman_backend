@@ -70,7 +70,8 @@
                             <tr align="center">
                                 <th>Order ID</th>
                                 <th>Customer Name</th>
-                                <th>Amonut</th>
+                                <th>Amonut withOut GST</th>
+                                <th>Amonut with GST</th>
                                 <th>Create</th>
                                 <th>Action</th>
                             </tr>
@@ -80,6 +81,7 @@
                             <tr>
                                 <td><span class="list-name">{{i.id}}</span></td>
                                 <td>{{i.customer_id.name}}</td>
+                                <td>₹ {{i.amount}}</td>
                                 <td>₹ {{i.total_amount}}</td>
                                 <td>{{i.created_at}}</td>
                                 <td>

@@ -28,6 +28,7 @@ class Products(models.Model):
     product_name_hin = models.CharField(max_length=255,null=True)
     product_image = models.FileField(upload_to="Product_images/%Y%m%d/%H%M%S/",blank=True,null=True)
     product_qty = models.CharField(max_length=255,null=True)
+    product_unit = models.CharField(max_length=255,null=True)
     product_price = models.DecimalField(max_digits=10, decimal_places=2)
     product_hsn_code = models.CharField(max_length=255,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -38,7 +39,10 @@ class Products(models.Model):
         
 class Order(models.Model):
     customer_id = models.ForeignKey(User,blank=True,null=True,on_delete=models.CASCADE)
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    cgst_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    sgst_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     status = models.CharField(max_length=10,default='0',choices=[("0","Pending"),("1","Approved")])
     created_at = models.DateTimeField(auto_now_add=True)
     

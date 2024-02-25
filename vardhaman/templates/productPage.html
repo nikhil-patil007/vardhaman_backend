@@ -82,21 +82,28 @@
                                     </div>
                                 </div>
                                 <div class="form-row">
-                                    <div class="col-md-4 mb-3">
-                                        <label for="productQty">Quantity:</label>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="productQty">Unit Type:</label>
+                                        <input type="text" class="form-control" id="productUnit" name="productUnit" value='{{productData.product_unit}}' required>
+                                        <div class="invalid-feedback">
+                                            Please enter a valid unit.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="productQty">Quantity Type:</label>
                                         <input type="text" class="form-control" id="productQty" name="productQty" value='{{productData.product_qty}}' required>
                                         <div class="invalid-feedback">
                                             Please enter a valid quantity.
                                         </div>
                                     </div>
-                                    <div class="col-md-4 mb-3">
+                                    <div class="col-md-3 mb-3">
                                         <label for="productPrice">Product Price:</label>
                                         <input type="number" class="form-control" id="productPrice" name="productPrice" value='{{productData.product_price}}' required>
                                         <div class="invalid-feedback">
                                             Please enter a valid product price.
                                         </div>
                                     </div>
-                                    <div class="col-md-4 mb-3">
+                                    <div class="col-md-3 mb-3">
                                         <label for="productHSN">HSN Code:</label>
                                         <input type="text" class="form-control" id="productHSN" name="productHSN" value='{{productData.product_hsn_code}}' required>
                                         <div class="invalid-feedback">

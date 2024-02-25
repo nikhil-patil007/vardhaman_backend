@@ -1,11 +1,10 @@
 from rest_framework.response import Response
+from django.shortcuts import render, redirect
 from rest_framework.decorators import api_view
 from django.contrib.auth.hashers  import make_password,check_password
 from django.utils import timezone
 from datetime import timedelta
-from django.template.loader import render_to_string
-from django.http import HttpResponse
-from xhtml2pdf import pisa
+from num2words import num2words
 
 from rest_framework_simplejwt.tokens import RefreshToken  # use to generate Token
 from .isAuthanticated import tokenVerified # Custome Class to check Token
@@ -29,6 +28,15 @@ statusCode = {
     "2" : 'Rejected'
 }
 
+# Values of CGST and SGST
+cgstPercent = 4
+sgstPercent = 4
+
+# GST counter Function
+def calculate_sgst(total_amount, sgst_rate):
+    sgst_amount = (total_amount * sgst_rate) / 100
+    return sgst_amount
+
 # funtion return the Product Data 
 def getProductData(product):
     productObject = {
@@ -38,6 +46,7 @@ def getProductData(product):
         "product_name_guj": product.product_name_guj if product.product_name_guj else "",
         "product_name_hin": product.product_name_hin if product.product_name_hin else "",
         "product_qty": product.product_qty if product.product_qty else "",
+        "product_unit": product.product_unit if product.product_unit else "",
         "product_price": product.product_price if f"₹ {product.product_price}" else "₹ 0.00",
         "product_hsn_code": product.product_hsn_code,
         "created_at": product.created_at,
@@ -61,6 +70,14 @@ def getUsersData(user):
         "updated_at" : user.updated_at
     }
     return userObject
+
+# this function is returns the amount based on the Number
+def getInwordsUsingNumber(amount):
+    integer_part = int(amount)
+    decimal_part = int((amount - integer_part) * 100)
+    integer_words = num2words(integer_part).casefold().replace("-", " ").replace("and", "")
+    decimal_words = num2words(decimal_part).casefold().replace("-", " ").replace("and", "")
+    return f"{integer_words} rupees and {decimal_words} paise"
 
 # User Register API
 @api_view(["POST"])
@@ -286,7 +303,10 @@ def generateOrder(request):
 
         newOrder = Order.objects.create(
             customer_id = userdata,
-            total_amount=0.00
+            amount=0.00,
+            cgst_amount=0.00,
+            sgst_amount=0.00,
+            total_amount=0.00,
         )
         
         price = 0.00
@@ -305,7 +325,7 @@ def generateOrder(request):
                 )
             except:
                 pass
-        newOrder.total_amount = price
+        newOrder.amount = price
         newOrder.save() 
         return Response({'message':"Order Created"},status=200)
     except json.JSONDecodeError:
@@ -361,6 +381,9 @@ def listOfOrders(request,userId):
                     listOfOrder.append(itemObj)
             newData['id'] = item.id
             newData['customer_name'] = item.customer_id.name
+            newData['amount'] = item.amount
+            newData['cgst_amount'] = item.cgst_amount
+            newData['sgst_amount'] = item.sgst_amount
             newData['total_amount'] = item.total_amount
             newData['created_at'] = item.created_at
             newData['status'] = statusCode[item.status] 
@@ -393,11 +416,17 @@ def updateOrders(request,orderId):
         
         sum = 0
         for lis in order_data_list:
-            sum = sum + lis.amount
-            lis.status = '1'
-            lis.save()
+            if(lis.order_id == orderVal):
+                sum = float(sum) + float(lis.amount)
+                lis.status = '1'
+                lis.save()
         
-        orderVal.total_amount = sum
+        cgstAmt = calculate_sgst(sum,cgstPercent)
+        sgstAmt = calculate_sgst(sum,sgstPercent)
+        orderVal.amount = sum
+        orderVal.cgst_amount = cgstAmt
+        orderVal.sgst_amount = sgstAmt
+        orderVal.total_amount = float(sum) + float(cgstAmt) + float(sgstAmt)
         orderVal.status = '1'
         orderVal.save()
         return Response({'message':"Order Updated"},status=200)
@@ -412,31 +441,21 @@ def updateOrders(request,orderId):
 @tokenVerified
 def downloadPdf(request,orderId):
     try:
-        # Your dynamic data
         try:
             orders = Order.objects.get(id=orderId)
         except:
             return Response({"message": "Order matching query does not exist."},status=400)
             
-        ordersList = Order_data.objects.filter(order_id=orderId)
+        ordersList = Order_data.objects.filter(order_id=orderId,status='1')
+        
+        totalAmountWithGST = float(orders.total_amount) + (calculate_sgst(float(orders.total_amount), 4) * 2)
+        
         context = {
             'order': orders,
+            'totalAmountWords': getInwordsUsingNumber(orders.total_amount),
             'orderList': ordersList,
         }
-        
-        # Render the template to a string
-        html_content = render_to_string('pdf_template.html', context)
-
-        # Create a PDF file
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename=f"invoice#{Order.id}.pdf"'
-
-        # Generate PDF using xhtml2pdf
-        pisa_status = pisa.CreatePDF(html_content, dest=response)
-
-        if pisa_status.err:
-            return Response({'message':"Error generating PDF"},status=400)
-        return response
+        return render(request,'pdf_template.html', context)
     except Exception as e:
         logger.error(f"User Register Exception : {str(e)}")
         return Response({'message': str(e)}, status=500)
