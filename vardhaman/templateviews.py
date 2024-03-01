@@ -133,7 +133,11 @@ def productAddUpdateFunctionality(request):
         productHSN = request.POST.get('productHSN', '')
         productUnit = request.POST.get('productUnit', '')
         productImage = request.FILES.get('productImage')
-
+        productUnit = request.POST.get('productUnit', '')
+        productGST = request.POST.get('productGST', '')
+        productDiscount = request.POST.get('productDiscount', '')
+        productTaxPrice = request.POST.get('productTaxPrice', '')
+        
         if not productid:
             productdata = Products.objects.create(
                 product_name_eng=productNameEng,
@@ -144,12 +148,18 @@ def productAddUpdateFunctionality(request):
                 product_unit=productUnit,
                 product_price=productPrice,
                 product_hsn_code=productHSN,
+                product_gst_rate=productGST,
+                product_discount_rate=productDiscount,
+                product_tax_price=productTaxPrice,
             )
         else:
             product = Products.objects.get(id=productid)
             product.product_name_eng = productNameEng or product.product_name_eng
             product.product_name_guj = productNameGuj or product.product_name_guj
             product.product_name_hin = productNameHin or product.product_name_hin
+            product.product_gst_rate = productGST or product.product_gst_rate
+            product.product_discount_rate = productDiscount or product.product_discount_rate
+            product.product_tax_price = productTaxPrice or product.product_tax_price
 
             if productImage:
                 product.product_image = productImage
@@ -177,6 +187,7 @@ def loginFunction(request):
     try:
         username = request.POST.get('username', '')
         password = request.POST.get('password', '')
+        username = username.casefold()
 
         email_validation = User.objects.filter(email=username, role='1')
         number_validation = User.objects.filter(contact_no=username, role='1')

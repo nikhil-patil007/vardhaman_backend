@@ -29,7 +29,10 @@ class Products(models.Model):
     product_image = models.FileField(upload_to="Product_images/%Y%m%d/%H%M%S/",blank=True,null=True)
     product_qty = models.CharField(max_length=255,null=True)
     product_unit = models.CharField(max_length=255,null=True)
+    product_gst_rate = models.IntegerField(default=0)
+    product_discount_rate = models.IntegerField(default=0)
     product_price = models.DecimalField(max_digits=10, decimal_places=2)
+    product_tax_price = models.DecimalField(max_digits=10, decimal_places=2)
     product_hsn_code = models.CharField(max_length=255,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -38,7 +41,11 @@ class Products(models.Model):
         db_table = "Products"
         
 class Order(models.Model):
-    customer_id = models.ForeignKey(User,blank=True,null=True,on_delete=models.CASCADE)
+    customer_id = models.ForeignKey(User,blank=True,null=True,on_delete=models.SET_NULL)
+    buyer_name = models.CharField(max_length=255,null=True,blank=True)
+    buyer_address = models.CharField(max_length=255,null=True,blank=True)
+    buyer_mobile = models.CharField(max_length=255,null=True,blank=True)
+    buyer_GST = models.CharField(max_length=255,null=True,blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     cgst_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     sgst_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)

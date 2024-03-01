@@ -24,12 +24,28 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
 </head>
 <style>
-    .imageData {
-        height: 5rem;
-        width: 6rem;
+    .image-container {
+        position: relative;
+        display: inline-block; /* Ensures the container wraps around the image */
     }
-    pre{
-        
+    .image {
+        width: 100px; /* Set the width of the image */
+        height: 100px; /* Automatically adjust the height to maintain aspect ratio */
+        border: 2px solid black; /* Add a border around the image */
+        border-radius: 8px; /* Add rounded corners to the border */
+        margin: 10px; /* Add margin around the image */
+        padding: 5px; /* Add padding inside the border */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a box shadow for a subtle effect */
+    }
+    .label {
+        position: absolute;
+        top: 10px; /* Adjust the top position as needed */
+        left: 10px; /* Adjust the left position as needed */
+        background-color: #dd1515e8; /* Semi-transparent background color */
+        color: white; /* Text color */
+        padding: 5px; /* Padding around the text */
+        font-size: 14px; /* Font size */
+        border-radius: 5px; /* Rounded corners */
     }
 </style>
 
@@ -76,6 +92,7 @@
                                 <th>Image</th>
                                 <th>QTY</th>
                                 <th>Price.</th>
+                                <th>Price (Incl Tax).</th>
                                 <th>Unit Type</th>
                                 <th>HSN code</th>
                                 <th>Create/Update</th>
@@ -84,25 +101,34 @@
                         </thead>
                         <tbody>
                         {% for i in products %}
-                            <tr>
+                            <tr style="font-size: 14px;font-family: monospace;">
                                 <td><span class="list-name">{{i.id}}</span></td>
                                 <td>
-                                    <pre style="text-align:start">
-                                        {{i.product_name_eng}}
-                                        {{i.product_name_guj}}
-                                        {{i.product_name_hin}}
-                                    </pre>
+                                    <div style="white-space: normal;">
+                                        <p style="margin:0px;">{{i.product_name_eng}}</p>
+                                        <p style="margin:0px;">{{i.product_name_hin}}</p>
+                                        <p style="margin:0px;">{{i.product_name_guj}}</p>
+                                    </div>
                                 </td>
                                 <td>
-                                    <div class="imageData">
-                                        <img src="{{MEDIA_URL}}{{i.product_image.url}}" height='100px'  width="100%">
+                                    <div class="image-container">
+                                        <img src="{{MEDIA_URL}}{{i.product_image.url}}" class="image" alt='product_{{i.id}}'>
+                                        {% if i.product_discount_rate %}<div class="label">{{i.product_discount_rate}}%</div> {% endif %}
                                     </div>
                                 </td>
                                 <td>{{i.product_qty}}</td>
-                                <td>₹ {{i.product_price}}</td>
-                                <td>{{i.product_unit}}</td>
+                                <td><p style="margin:0px">₹ {{i.product_price}}</p></td>
+                                <td><p style="margin:0px">₹ {{i.product_tax_price}}</p></td>
+                                <td>{% if i.product_unit %}
+                                        {{ i.product_unit }}
+                                    {% endif %}
+                                </td>
                                 <td>{{i.product_hsn_code}}</td>
-                                <td>{{i.created_at}}<br>{{i.updated_at}}</td>
+                                <td>
+                                    {{i.updated_at|date:"d M,Y"}}
+                                    <br>
+                                    {{i.updated_at|date:"h:i A"}}
+                                </td>
                                 <td>
                                     <a href="{% url 'editProductPage' productId=i.id %}" class="btn btn-success btn-round">
                                         <i class="zmdi zmdi-edit"></i>
