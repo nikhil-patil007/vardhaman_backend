@@ -90,10 +90,10 @@
                                 <th>ID</th>
                                 <th>Product Name</th>
                                 <th>Image</th>
-                                <th>QTY</th>
+                                <th>QTY/Unit Type</th>
+                                <th>GST Rate</th>
                                 <th>Price.</th>
                                 <th>Price (Incl Tax).</th>
-                                <th>Unit Type</th>
                                 <th>HSN code</th>
                                 <th>Create/Update</th>
                                 <th>Action</th>
@@ -116,13 +116,15 @@
                                         {% if i.product_discount_rate %}<div class="label">{{i.product_discount_rate}}%</div> {% endif %}
                                     </div>
                                 </td>
-                                <td>{{i.product_qty}}</td>
-                                <td><p style="margin:0px">₹ {{i.product_price}}</p></td>
-                                <td><p style="margin:0px">₹ {{i.product_tax_price}}</p></td>
-                                <td>{% if i.product_unit %}
-                                        {{ i.product_unit }}
+                                <td>{{i.product_qty}}
+                                    {% if i.product_unit %}
+                                        <br>({{i.product_unit }})
                                     {% endif %}
                                 </td>
+                                <td>{% if i.product_gst_rate %}{{i.product_gst_rate}}%{% endif %}</td>
+                                <td><p style="margin:0px">₹ {{i.product_price}}</p></td>
+                                <td><p style="margin:0px">₹ {{i.product_tax_price}}</p></td>
+                               
                                 <td>{{i.product_hsn_code}}</td>
                                 <td>
                                     {{i.updated_at|date:"d M,Y"}}
