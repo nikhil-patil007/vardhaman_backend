@@ -48,6 +48,9 @@ def getProductData(product):
         "product_qty": product.product_qty if product.product_qty else "",
         "product_unit": product.product_unit if product.product_unit else "",
         "product_price": product.product_price if f"₹ {product.product_price}" else "₹ 0.00",
+        "product_price_inc_tax": product.product_tax_price if f"₹ {product.product_tax_price}" else "₹ 0.00",
+        "product_gst_rate": product.product_gst_rate if f"{product.product_gst_rate}%" else "",
+        "product_discount_rate": product.product_discount_rate if f"{product.product_discount_rate}%" else "",
         "product_hsn_code": product.product_hsn_code,
         "created_at": product.created_at,
         "updated_at": product.updated_at,
@@ -303,6 +306,11 @@ def generateOrder(request):
 
         newOrder = Order.objects.create(
             customer_id = userdata,
+            buyer_name=userdata.name,
+            buyer_email=userdata.email,
+            buyer_mobile=userdata.contact_no,
+            buyer_GST=userdata.gst_no,
+            buyer_address=userdata.address,
             amount=0.00,
             cgst_amount=0.00,
             sgst_amount=0.00,

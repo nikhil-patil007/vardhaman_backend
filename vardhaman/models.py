@@ -43,9 +43,10 @@ class Products(models.Model):
 class Order(models.Model):
     customer_id = models.ForeignKey(User,blank=True,null=True,on_delete=models.SET_NULL)
     buyer_name = models.CharField(max_length=255,null=True,blank=True)
-    buyer_address = models.CharField(max_length=255,null=True,blank=True)
     buyer_mobile = models.CharField(max_length=255,null=True,blank=True)
+    buyer_email = models.CharField(max_length=255,null=True,blank=True)
     buyer_GST = models.CharField(max_length=255,null=True,blank=True)
+    buyer_address = models.CharField(max_length=255,null=True,blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     cgst_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     sgst_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
