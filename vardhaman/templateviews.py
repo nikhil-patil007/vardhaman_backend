@@ -19,7 +19,7 @@ def index(request):
     if 'userId' in request.session:
         try:
             user_count = User.objects.filter(role='0').count()
-            product_count = Products.objects.all().count()
+            product_count = Products.objects.filter(is_delete='0').count()
             order_count = Order.objects.filter(status='1').count()
 
             data = {
@@ -59,7 +59,7 @@ def userPage(request):
 # All Product Page Path
 def productsPage(request):
     if 'userId' in request.session:
-        products = Products.objects.all().order_by('-id')
+        products = Products.objects.filter(is_delete='0').order_by('-id')
         data = {
             'products': products,
             'currentPage': 'product',
@@ -86,12 +86,15 @@ def invoicePage(request):
         orderId = request.POST.get('orderId','')
         orders = Order.objects.get(id=orderId)
         ordersList = Order_data.objects.filter(order_id=orderId, status='1')
+        taxes_order = order_taxes.objects.filter(order_id=orderId)
               
         data = {
             'currentPage': 'orders',
             'order': orders,
             'orderList': ordersList,
             'totalAmountWords': getInwordsUsingNumber(orders.total_amount),
+            'seller': User.objects.filter(role='1').first(),
+            'taxes_order': taxes_order,
         }
         return render(request, 'invoice.html', data)
         # except:
@@ -177,7 +180,8 @@ def productAddUpdateFunctionality(request):
 def productDeleteFunctionality(request,productId):
     if 'userId' in request.session:
         product = Products.objects.get(id=productId)
-        product.delete()
+        product.is_delete = '1'
+        product.save()
         return redirect("productPage")
     
     return redirect("login")    

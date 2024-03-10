@@ -18,14 +18,14 @@
                      text-align: left;
                      font-size: 13px;"
                      >
-                     <p style="margin:1px; font-size:15px">
+                     <p style="margin:1px; font-size:18px">
                         <b> VARDHAMAN GRUH UDHYOG</b>
                      </p>
-                     <p style="white-space: pre-line;margin:1px">BL NO 101 FLAT NO -1204,LAXMI KRUPA APPT,
-                        SOLA ROAD,NARANPURA,
-                        AHMEDABAD
+                     <p style="width: 350px;white-space: normal;word-break: break-word;margin:1px">
+                        {{seller.address |title}}
                      </p>
-                     <p style="margin:1px"><b>GSTIN/UIN:</b> 24ALOPJ8037B1Z8</p>
+                     <p style="margin:1px"><b>Mo:</b> {{seller.contact_no}}</p>
+                     <p style="margin:1px"><b>GSTIN/UIN:</b> {{seller.gst_no}}</p>
                   </div>
                </td>
                <td style="width:10%">
@@ -69,9 +69,12 @@
                      <p style="margin:1px; font-size:15px">
                         <b> {{order.customer_id.name}}</b>
                      </p>
-                     <p style="white-space: pre-line;margin:1px">{{order.customer_id.address}}</p>
-                     <p style="margin:1px"><b>MO</b> {{order.customer_id.contact_no}}</p>
-                     <p style="margin:1px"><b>GSTIN/UIN:</b> {{order.customer_id.gst_no}}</p>
+                     <p style="width: 350px;white-space: normal;word-break: break-word;margin:1px">
+                        {{order.customer_id.address}}
+                     </p>
+                     <p style="margin:1px"><b>MO</b> {% if order.customer_id.contact_no %}{{order.customer_id.contact_no}} {% endif %}</p>
+                     <p style="margin:1px"><b>Email</b> {% if order.customer_id.email %}{{order.customer_id.email}} {% endif %}</p>
+                     <p style="margin:1px"><b>GSTIN/UIN:</b> {% if order.customer_id.gst_no %}{{order.customer_id.gst_no}} {% endif %}</p>
                   </div>
                </td>
                <td style="width:10%">
@@ -96,6 +99,7 @@
             <tr>
                <td style="width:20%; border-bottom:none;" colspan='2'>
                   <p style="margin:1px; white-space: nowrap; font-size:10px;">Terms of Delivery</p>
+                  <div style='height:30px'><p></p></div>
                </td>
             </tr>
             <tr>
@@ -108,109 +112,133 @@
       >
          <thead>
             <tr>
-               <th style="width:2%">S No.</th>
-               <th style="width:47%">Description of Goods.</th>
-               <th style="width:8%">HSN/SAC</th>
-               <th style="width:5%">Qunatity</th>
-               <th style="width:10%">Rate<br><p style="margin:1px; white-space: nowrap; font-size:10px;">(Incl. of Tax)</p></th>
-               <th style="width:10%">Rate</th>
-               <th style="width:3%">per</th>
-               <th style="width:15%">Amonut</th>
+               <th style="width:2%; text-align:center">S No.</th>
+               <th style="width:52%; text-align:center">Description of Goods.</th>
+               <th style="width:5%; text-align:center">HSN/SAC <br>Code</th>
+               <th style="width:3%; text-align:center">QTY</th>
+               <th style="width:3%; text-align:center">Unit</th>
+               <th style="width:7%; text-align:center">List Price</th>
+               <th style="width:3%; text-align:center">Discount</th>
+               <th style="width:4%; text-align:center">CGST <br>Rate</th>
+               <th style="width:5%; text-align:center">CGST <br>Amonut</th>
+               <th style="width:4%; text-align:center">SGST <br>Rate</th>
+               <th style="width:5%; text-align:center">SGST <br>Amonut</th>
+               <th style="width:7%; text-align:center">Amonut</th>
             </tr>
          </thead>
          <tbody>
             {% for pr in orderList %}
                <tr>
-                  <td style="border-top:none;border-bottom:none; width:2%">{{forloop.counter}}. </td>
-                  <td style="border-top:none;border-bottom:none; width:47%">{{pr.product_id.product_name_eng}}</td>
-                  <td style="border-top:none;border-bottom:none; width:8%">{{pr.product_id.product_hsn_code}}</td>
-                  <td style="border-top:none;border-bottom:none; width:5%; text-align:center">{{pr.qty}}</td>
-                  <td style="border-top:none;border-bottom:none; width:10%; text-align:right">{{pr.product_id.product_price}}</td>
-                  <td style="border-top:none;border-bottom:none; width:10%; text-align:right">{{pr.product_id.product_price}}</td>
-                  <td style="border-top:none;border-bottom:none; width:3%">{% if pr.product_id.product_unit %}{{pr.product_id.product_unit}}{% endif %}</td>
-                  <td style="border-top:none;border-bottom:none; width:15%; text-align:right">{{pr.amount}}</td>
+                  <td style="width:2%; border-top:none; padding-bottom:3px; border-bottom:none;">{{forloop.counter}}. </td>
+                  <td style="width:52%; border-top:none; padding-bottom:3px; border-bottom:none;">{{pr.product_id.product_name_eng}}</td>
+                  <td style="width:5%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:center;">{{pr.product_id.product_hsn_code}}</td>
+                  <td style="width:3%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:center;">{{pr.qty}}</td>
+                  <td style="width:3%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:center;">{% if pr.product_id.product_unit %}{{pr.product_id.product_unit}}{% endif %}</td>
+                  <td style="width:7%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:right;">{{pr.product_id.product_price}}</td>
+                  <td style="width:3%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:center;">{% if pr.product_id.product_discount_rate %}{{pr.product_id.product_discount_rate}}%{% endif %}</td>
+                  <td style="width:4%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:center;">{{pr.cgst_rate}}%</td>
+                  <td style="width:5%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:right;">{{pr.cgst_amount}}</td>
+                  <td style="width:4%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:center;">{{pr.sgst_rate}}%</td>
+                  <td style="width:5%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:right;">{{pr.sgst_amount}}</td>
+                  <td style="width:7%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:right;">{{pr.tax_amount}}</td>
                </tr>
                {% endfor %}
                <tr>
-                  <td style="border-top:none;border-bottom:none; width:2%">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:47%">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:8%">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:5%; text-align:center">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:10%; text-align:right">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:10%; text-align:right">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:3%">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:15%; text-align:right">&nbsp;</td>
-               </tr>
-               <tr>
-                  <td style="border-top:none;border-bottom:none; width:2%">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:47%">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:8%">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:5%; text-align:center">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:10%; text-align:right">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:10%; text-align:right">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:3%">&nbsp;</td>
-                  <td style="border-bottom:none; width:15%; text-align:right">{{order.amount}}</td>
-               </tr>
-               <tr>
-                  <td style="border-top:none;border-bottom:none; width:2%"></td>
-                  <td style="border-top:none;border-bottom:none; width:47%; text-align:right; font-style:italic; font-weight:bold;">SGST</td>
-                  <td style="border-top:none;border-bottom:none; width:8%"></td>
-                  <td style="border-top:none;border-bottom:none; width:5%; text-align:center"></td>
-                  <td style="border-top:none;border-bottom:none; width:10%; text-align:right"></td>
-                  <td style="border-top:none;border-bottom:none; width:10%; text-align:right"></td>
-                  <td style="border-top:none;border-bottom:none; width:3%"></td>
-                  <td style="border-top:none;border-bottom:none; width:15%; text-align:right">{{order.sgst_amount}}</td>
-               </tr>
-               <tr>
-                  <td style="border-top:none;border-bottom:none; width:2%"></td>
-                  <td style="border-top:none;border-bottom:none; width:47%; text-align:right; font-style:italic; font-weight:bold;">CGST</td>
-                  <td style="border-top:none;border-bottom:none; width:8%"></td>
-                  <td style="border-top:none;border-bottom:none; width:5%; text-align:center"></td>
-                  <td style="border-top:none;border-bottom:none; width:10%; text-align:right"></td>
-                  <td style="border-top:none;border-bottom:none; width:10%; text-align:right"></td>
-                  <td style="border-top:none;border-bottom:none; width:3%"></td>
-                  <td style="border-top:none;border-bottom:none; width:15%; text-align:right">{{order.cgst_amount}}</td>
-               </tr>
-               <tr>
-                  <td style="border-top:none;border-bottom:none; width:2%">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:47%">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:8%">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:5%; text-align:center">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:10%; text-align:right">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:10%; text-align:right">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:3%">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:15%; text-align:right">&nbsp;</td>
-               </tr>
-               <tr>
-                  <td style="border-top:none;border-bottom:none; width:2%">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:47%">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:8%">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:5%; text-align:center">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:10%; text-align:right">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:10%; text-align:right">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:3%">&nbsp;</td>
-                  <td style="border-top:none;border-bottom:none; width:15%; text-align:right">&nbsp;</td>
+                  <td style="border-top:none;">&nbsp;</td>
+                  <td style="border-top:none;">&nbsp;</td>
+                  <td style="border-top:none;">&nbsp;</td>
+                  <td style="border-top:none;">&nbsp;</td>
+                  <td style="border-top:none;">&nbsp;</td>
+                  <td style="border-top:none;">&nbsp;</td>
+                  <td style="border-top:none;">&nbsp;</td>
+                  <td style="border-top:none;">&nbsp;</td>
+                  <td style="border-top:none;">&nbsp;</td>
+                  <td style="border-top:none;">&nbsp;</td>
+                  <td style="border-top:none;">&nbsp;</td>
+                  <td style="border-top:none;">&nbsp;</td>
                </tr>
          </tbody>
          <tfoot>
-            <tr style="text-align:right">
-               <th style="width:2%"></th>
-               <th style="width:47%;">Total</th>
-               <th style="width:8%"></th>
-               <th style="width:5%"></th>
-               <th style="width:10%"></th>
-               <th style="width:10%"></th>
-               <th style="width:3%"></th>
-               <th style="width:15%">₹ &nbsp;&nbsp;&nbsp;{{order.total_amount}}</th>
+            <tr style="text-align:right;">
+               <td colspan='11' style="text-align:right; padding:5px;">
+                  <div style="height:2rem">
+                     <div>&nbsp;
+                     </div>
+                     <div style="margin-right:100px; font-style:italic">
+                        {{order.round_type}}
+                     </div>
+               </td>
+               <td style="width:15%; padding:5px;">
+                  <div style="height:2rem;">
+                     <div style="font-weight:bold;">
+                        {{order.total_amount}}
+                     </div>
+                     <div>
+                        {{order.round_off}}
+                     </div>
+                  </div>
+               </td>
             </tr>
-            <tr style="text-align:left">
-               <td colspan='8'>
+            <tr>
+               <th style="border-bottom:none; text-align:right; padding:5px;" colspan='11'>Grand Total</th>
+               <th colspan='1' style="width:15%;">{{order.grand_total_amount}}</th>
+            </tr>
+            <tr>
+               <td colspan='11' style="border-top:none; border-bottom:none; border-right:none;">&nbsp;</td>
+               <td colspan='1' style="width:15%; border-bottom:none; border-left:none;">&nbsp;</td>
+            </tr>
+            <tr>
+               <td colspan='12' style="border-top:none; border-bottom:none;">
+                  <table width='50%' cellpadding="1" cellspacing="0" style="margin:0 0 10px 5rem; text-align:center;">
+                     <tr>
+                        <th style="border-bottom:solid 1px black; padding:3px;">Total Rate</th>
+                        <th style="border-bottom:solid 1px black; padding:3px;">Taxable Amt.</th>
+                        <th style="border-bottom:solid 1px black; padding:3px;">CGST Amt.</th>
+                        <th style="border-bottom:solid 1px black; padding:3px;">SGST Amt.</th>
+                        <th style="border-bottom:solid 1px black; padding:3px;">Total Tax</th>
+                     </tr>
+                     {% for tax in taxes_order %}
+                     <tr>
+                        <td>{% if tax.tax_rate %}{{tax.tax_rate}}%{% endif %}</td>
+                        <td>{{tax.taxable_amount}}</td>
+                        <td>{{tax.cgst_amount}}</td>
+                        <td>{{tax.sgst_amount}}</td>
+                        <td>{{tax.total_tax_amount}}</td>
+                     </tr>
+                     {% endfor %}
+                     <tr>
+                        <td style="border-top:solid 1px black; padding-top:2px;"></td>
+                        <td style="border-top:solid 1px black; padding-top:2px;">{{order.taxable_amount}}</td>
+                        <td style="border-top:solid 1px black; padding-top:2px;">{{order.cgst_amount}}</td>
+                        <td style="border-top:solid 1px black; padding-top:2px;">{{order.sgst_amount}}</td>
+                        <th style="border-top:solid 1px black; padding-top:2px;">{{order.total_tax_amount}}</th>
+                     </tr>
+                  </table>
+               </td>
+            </tr>
+            </tr>
+            <tr style="text-align:left;">
+               <td colspan='12'>
                   <p style="margin:1px; white-space: nowrap; font-size:12px;">Amonut Chargeable (in words)</p>
                   <p style="margin:1px; white-space: nowrap; font-size:12px; font-weight:bold;">INR {{totalAmountWords | title}}</p>
                </td>
             </tr>
             <tr style="text-align:left">
-               <td colspan='4'>
+               <td colspan='12'>
+                  <div style="display:flex;">
+                     <div>
+                        <p style="margin:1px; white-space: nowrap; font-size:15px; font-weight:bold;">Bank Details: </p>
+                     </div>
+                     <div style="margin-left:5px">
+                        <p style="margin:1px; white-space: nowrap; font-size:13px;">IDBI BANK</p>
+                        <p style="margin:1px; white-space: nowrap; font-size:13px;">A/c No:- 0085102000034803</p>
+                        <p style="margin:1px; white-space: nowrap; font-size:13px;">IFSC:- IBKL0000085</p>
+                     </div>
+                  </div>
+               </td>
+            </tr>
+            <tr style="text-align:left">
+               <td colspan='7'>
                   <div style="margin: 1px;
                      text-align: left;
                      font-size: 13px;"
@@ -223,7 +251,7 @@
                      <p style="margin:1px">all particulars are true and correct.</p>
                   </div>
                </td>
-               <td colspan='4'>
+               <td colspan='5'>
                   <div style="margin:1px;text-align:center;">
                      <p style="margin:1px; font-size:15px"><b>VARDHAMAN GRUH UDHYOG</b></p>
                      <p style="margin:1px"><b>SOLA ROAD, AHMEDABAD</b></p>

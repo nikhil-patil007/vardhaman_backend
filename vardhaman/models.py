@@ -34,6 +34,7 @@ class Products(models.Model):
     product_price = models.DecimalField(max_digits=10, decimal_places=2)
     product_tax_price = models.DecimalField(max_digits=10, decimal_places=2)
     product_hsn_code = models.CharField(max_length=255,null=True)
+    is_delete = models.CharField(max_length=10,default='0',choices=[("0","No"),("1","Yes")])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -42,15 +43,14 @@ class Products(models.Model):
         
 class Order(models.Model):
     customer_id = models.ForeignKey(User,blank=True,null=True,on_delete=models.SET_NULL)
-    buyer_name = models.CharField(max_length=255,null=True,blank=True)
-    buyer_mobile = models.CharField(max_length=255,null=True,blank=True)
-    buyer_email = models.CharField(max_length=255,null=True,blank=True)
-    buyer_GST = models.CharField(max_length=255,null=True,blank=True)
-    buyer_address = models.CharField(max_length=255,null=True,blank=True)
-    amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    round_off = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    round_type = models.CharField(default="less",max_length=255)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    grand_total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    taxable_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     cgst_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     sgst_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    total_tax_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     status = models.CharField(max_length=10,default='0',choices=[("0","Pending"),("1","Approved")])
     created_at = models.DateTimeField(auto_now_add=True)
     
@@ -61,9 +61,23 @@ class Order_data(models.Model):
     order_id = models.ForeignKey(Order,blank=True,null=True,on_delete=models.CASCADE)
     product_id = models.ForeignKey(Products,blank=True,null=True,on_delete=models.CASCADE)
     qty = models.CharField(max_length=255,blank=True,null=True)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    cgst_rate = models.CharField(default='0',max_length=255,blank=True,null=True)
+    sgst_rate = models.CharField(default='0',max_length=255,blank=True,null=True)
+    cgst_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    sgst_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    tax_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     status = models.CharField(max_length=10,default='0',choices=[("0","Pending"),("1","Approved")])
     created_at = models.DateTimeField(auto_now_add=True)
     class Meta:
         db_table = "Orders_list"
+        
+class order_taxes(models.Model):
+    order_id = models.ForeignKey(Order,blank=True,null=True,on_delete=models.CASCADE)
+    tax_rate = models.CharField(default='0',max_length=255,blank=True,null=True)
+    taxable_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    cgst_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    sgst_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    total_tax_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    
     

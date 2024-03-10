@@ -84,7 +84,7 @@
                                 <div class="form-row">
                                     <div class="col-md-4 mb-3">
                                         <label for="productQty">Unit Type:</label>
-                                        <input type="text" class="form-control" id="productUnit" name="productUnit" value='{{productData.product_unit}}' required>
+                                        <input type="text" class="form-control" id="productUnit" name="productUnit" value='{% if productData.product_unit %}{{productData.product_unit}}{% endif %}' required>
                                         <div class="invalid-feedback">
                                             Please enter a valid unit.
                                         </div>
@@ -114,7 +114,7 @@
                                     </div>
                                     <div class="col-md-2 mb-3">
                                         <label for="productPrice">Product Discount:</label>
-                                        <input type="text" class="form-control integerInput" oninput="validateNumeric(this)" id="productDiscount" maxlength='2' name="productDiscount" value='{{productData.product_discount_rate}}' required>
+                                        <input type="text" class="form-control integerInput" oninput="validateNumeric(this)" id="productDiscount" maxlength='2' name="productDiscount" value='{% if productData.product_discount_rate %}{{productData.product_discount_rate}}{% else %}0{% endif %}' required>
                                         <div class="invalid-feedback">
                                             Please enter a valid product Discount.
                                         </div>

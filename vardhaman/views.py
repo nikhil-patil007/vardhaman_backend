@@ -28,15 +28,18 @@ statusCode = {
     "2" : 'Rejected'
 }
 
-# Values of CGST and SGST
-cgstPercent = 4
-sgstPercent = 4
-
 # GST counter Function
 def calculate_sgst(total_amount, sgst_rate):
     sgst_amount = (total_amount * sgst_rate) / 100
     return sgst_amount
 
+# check the num indicator
+def sign_indicator(amount):
+    # print(number)
+    if amount - int(amount) < 0.5:
+        return True
+    else:
+        return False
 # funtion return the Product Data 
 def getProductData(product):
     productObject = {
@@ -52,6 +55,7 @@ def getProductData(product):
         "product_gst_rate": product.product_gst_rate if f"{product.product_gst_rate}%" else "",
         "product_discount_rate": product.product_discount_rate if f"{product.product_discount_rate}%" else "",
         "product_hsn_code": product.product_hsn_code,
+        "is_delete": product.is_delete,
         "created_at": product.created_at,
         "updated_at": product.updated_at,
     }
@@ -80,7 +84,7 @@ def getInwordsUsingNumber(amount):
     decimal_part = int((amount - integer_part) * 100)
     integer_words = num2words(integer_part).casefold().replace("-", " ").replace("and", "")
     decimal_words = num2words(decimal_part).casefold().replace("-", " ").replace("and", "")
-    return f"{integer_words} rupees and {decimal_words} paise"
+    return f"{integer_words} rupees"
 
 # User Register API
 @api_view(["POST"])
@@ -249,7 +253,7 @@ def userApproval(request):
 @tokenVerified
 def getAllProductsList(request):
     try:
-        productData = Products.objects.all()
+        productData = Products.objects.filter(is_delete='0')
         productList = []
         for product in productData:
             product_data = getProductData(product)
@@ -273,7 +277,7 @@ def searchProducts(request):
             
         productData = Products.objects.filter(
             (Q(product_name_eng__icontains=name) | Q(product_name_guj__icontains=name) | Q(product_name_hin__icontains=name))
-        )
+        ).exclude(is_delete='1')
         
         for product in productData:
             product_data = getProductData(product)
@@ -306,15 +310,10 @@ def generateOrder(request):
 
         newOrder = Order.objects.create(
             customer_id = userdata,
-            buyer_name=userdata.name,
-            buyer_email=userdata.email,
-            buyer_mobile=userdata.contact_no,
-            buyer_GST=userdata.gst_no,
-            buyer_address=userdata.address,
-            amount=0.00,
-            cgst_amount=0.00,
-            sgst_amount=0.00,
-            total_amount=0.00,
+            round_off = 0.00,
+            total_amount = 0.00,
+            grand_total_amount = 0.00,
+            status = '0',
         )
         
         price = 0.00
@@ -323,17 +322,28 @@ def generateOrder(request):
             try:
                 productdata = get_object_or_404(Products, id=i['product'])
                 
-                price = float(price) + (float(productdata.product_price) * int(i['qty']))
+                amount = float(productdata.product_price) * int(i['qty']) # count the total amount of product
+                product_tax = (float(productdata.product_gst_rate) / 2) # count the tax for cgst and sgst
+                gst_cal_amount = calculate_sgst(amount, product_tax) # count price with only cgst and sgst
+                tax_amount= (float(gst_cal_amount)*2) + float(amount)
+                price = float(price) + tax_amount
                 
                 listing_order = Order_data.objects.create(
                     order_id = newOrder,
                     product_id = productdata,
-                    amount = float(productdata.product_price) * int(i['qty']),
                     qty = i['qty'],
+                    cgst_rate = product_tax,
+                    sgst_rate = product_tax,
+                    cgst_amount = gst_cal_amount,
+                    sgst_amount = gst_cal_amount,
+                    amount =amount,
+                    tax_amount= tax_amount,
+                    status = '0',
                 )
             except:
                 pass
-        newOrder.amount = price
+        newOrder.total_amount = price
+        newOrder.grand_total_amount = price
         newOrder.save() 
         return Response({'message':"Order Created"},status=200)
     except json.JSONDecodeError:
@@ -376,23 +386,33 @@ def listOfOrders(request,userId):
                     itemObj['id'] = ls.id
                     
                     itemObj['product_id'] = ls.product_id.id
-                    itemObj['product'] = f"{ls.product_id.product_name_eng} ({ls.product_id.product_qty})"
+                    itemObj['product_name_eng'] = f"{ls.product_id.product_name_eng}"
+                    itemObj['product_name_guj'] = f"{ls.product_id.product_name_guj}"
+                    itemObj['product_name_hin'] = f"{ls.product_id.product_name_hin}"
+                    itemObj['product_qty'] = f"{ls.product_id.product_qty}"
+                    itemObj['product_unit'] = f"{ls.product_id.product_unit}"
                     try: 
                         itemObj['product_image'] = ls.product_id.product_image.url if ls.product_id.product_image else ""
                     except:
                         itemObj['product_image'] = ''
                         
                     itemObj['product_price'] = ls.product_id.product_price
+                    itemObj['product_tax_price'] = ls.product_id.product_tax_price
                     itemObj['qty'] = ls.qty
                     itemObj['amount'] = ls.amount
+                    itemObj['cgst_amount'] = ls.cgst_amount
+                    itemObj['sgst_amount'] = ls.sgst_amount
+                    itemObj['grand_total'] = ls.tax_amount
                     itemObj['status'] = statusCode[ls.status]
                     listOfOrder.append(itemObj)
             newData['id'] = item.id
             newData['customer_name'] = item.customer_id.name
-            newData['amount'] = item.amount
             newData['cgst_amount'] = item.cgst_amount
             newData['sgst_amount'] = item.sgst_amount
-            newData['total_amount'] = item.total_amount
+            newData['taxable_amount'] = item.taxable_amount
+            newData['round_off'] = item.round_off
+            newData['total_tax_amount'] = item.total_tax_amount
+            newData['total_amount'] = item.grand_total_amount
             newData['created_at'] = item.created_at
             newData['status'] = statusCode[item.status] 
             newData['orderList'] = listOfOrder 
@@ -403,6 +423,51 @@ def listOfOrders(request,userId):
         logger.error(f"User Register Exception : {str(e)}")
         return Response({'message': str(e)}, status=500)
 
+# this function is return the single Values.
+def process_tax_data(orderId,data):
+    processed_data = {}
+    orderVal = get_object_or_404(Order,id=orderId)
+    for item in data:
+        tax_rate = item['tax_rate']
+        taxable_amount = item['taxable_amount']
+        if tax_rate in processed_data:
+            processed_data[tax_rate] += taxable_amount
+        else:
+            processed_data[tax_rate] = taxable_amount
+    newList = [{'tax_rate': tax_rate, 'taxable_amount': amount} for tax_rate, amount in processed_data.items()]
+
+    taxable_amount =  0.00
+    cgst_amount =  0.00
+    sgst_amount =  0.00
+    total_tax_amount =  0.00
+    
+    for i in newList:
+        if i['tax_rate'] and i['taxable_amount']:
+            orderTax = order_taxes.objects.filter(order_id=orderVal,tax_rate=i['tax_rate'])
+            rateCount = product_tax = (float(i['tax_rate']) / 2) # count the tax for cgst and sgst
+            gst_cal_amount = calculate_sgst(i['taxable_amount'], rateCount)
+            taxable_amount += float(i['taxable_amount'])
+            tax_total_count = float(gst_cal_amount) + float(gst_cal_amount)
+            
+            cgst_amount += float(gst_cal_amount)
+            sgst_amount += float(gst_cal_amount)
+            total_tax_amount += float(tax_total_count)
+            if not len(orderTax) > 0:
+                newo = order_taxes.objects.create(
+                    order_id = orderVal,
+                    tax_rate = i['tax_rate'],
+                    taxable_amount = float(i['taxable_amount']),
+                    cgst_amount = gst_cal_amount,
+                    sgst_amount = gst_cal_amount,
+                    total_tax_amount = tax_total_count,
+                )
+    return {
+        "taxable_amount":taxable_amount,
+        "cgst_amount":cgst_amount,
+        "sgst_amount":sgst_amount,
+        "total_tax_amount":total_tax_amount
+        }
+
 # Orders Approvel API
 @api_view(['POST'])
 @tokenVerified
@@ -410,6 +475,7 @@ def updateOrders(request,orderId):
     try:
         data = json.loads(request.body.decode('utf-8'))
         orderList = data.get('orderList')
+        taxList = []
         
         if not orderList:
             return Response({'message':"Please provide appropiat orderList"},status=400)
@@ -422,19 +488,33 @@ def updateOrders(request,orderId):
         listOrders = [i for i in orderList]
         order_data_list = Order_data.objects.filter(id__in=listOrders)
         
-        sum = 0
+        addition = 0
         for lis in order_data_list:
+            taxObj = {}
             if(lis.order_id == orderVal):
-                sum = float(sum) + float(lis.amount)
+                taxObj['tax_rate'] = lis.product_id.product_gst_rate
+                taxObj['taxable_amount'] = float(lis.product_id.product_price) * float(lis.qty)
+                taxList.append(taxObj)
+                addition = float(addition) + float(lis.tax_amount)
                 lis.status = '1'
                 lis.save()
+    
+        taxProcessed = process_tax_data(orderId,taxList)
+        totalAmount = float(addition)
+        sumOrmin = sign_indicator(totalAmount - int(totalAmount))
         
-        cgstAmt = calculate_sgst(sum,cgstPercent)
-        sgstAmt = calculate_sgst(sum,sgstPercent)
-        orderVal.amount = sum
-        orderVal.cgst_amount = cgstAmt
-        orderVal.sgst_amount = sgstAmt
-        orderVal.total_amount = float(sum) + float(cgstAmt) + float(sgstAmt)
+        orderVal.round_type = "Less: Rounded Off (+)"
+        if sumOrmin:
+            orderVal.round_type = "Less: Rounded Off (-)"
+        
+        orderVal.taxable_amount = float(taxProcessed['taxable_amount'])
+        orderVal.cgst_amount = float(taxProcessed['cgst_amount'])
+        orderVal.sgst_amount = float(taxProcessed['sgst_amount'])
+        orderVal.total_tax_amount = float(taxProcessed['total_tax_amount'])
+        
+        orderVal.total_amount = totalAmount
+        orderVal.round_off = totalAmount - int(totalAmount)
+        orderVal.grand_total_amount = round(totalAmount)
         orderVal.status = '1'
         orderVal.save()
         return Response({'message':"Order Updated"},status=200)
@@ -455,13 +535,16 @@ def downloadPdf(request,orderId):
             return Response({"message": "Order matching query does not exist."},status=400)
             
         ordersList = Order_data.objects.filter(order_id=orderId,status='1')
+        taxes_order = order_taxes.objects.filter(order_id=orderId)
         
         totalAmountWithGST = float(orders.total_amount) + (calculate_sgst(float(orders.total_amount), 4) * 2)
         
         context = {
             'order': orders,
-            'totalAmountWords': getInwordsUsingNumber(orders.total_amount),
+            'seller': User.objects.filter(role='1').first(),
+            'totalAmountWords': getInwordsUsingNumber(orders.grand_total_amount),
             'orderList': ordersList,
+            'taxes_order': taxes_order,
         }
         return render(request,'pdf_template.html', context)
     except Exception as e:
