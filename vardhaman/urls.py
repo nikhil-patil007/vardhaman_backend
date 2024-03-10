@@ -20,6 +20,7 @@ urlpatterns = [
     # Templates Path
     path('', templateviews.index, name='indexpage'),
     path('logout', templateviews.logout, name='logout'),
+    path('build/downloadApplication', templateviews.downloadApplication, name='downloadApplication'),
     path("login",  templateviews. login, name="login"),
     path('adminlogin', templateviews.loginFunction, name='loginadmin'),
     path('users/all', templateviews.userPage, name='userPage'),

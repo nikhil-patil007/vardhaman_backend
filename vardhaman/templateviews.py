@@ -1,8 +1,11 @@
 from django.shortcuts import render, redirect
+from django.http import FileResponse, HttpResponse
 from django.contrib.auth.hashers  import make_password,check_password
 from .models import *
 from num2words import num2words
 import logging
+import os
+
 logger = logging.getLogger(__name__)
 
 # this function is returns the amount based on the Number
@@ -222,3 +225,17 @@ def logout(request):
         return redirect("login")
     except:
         return redirect("login")
+    
+def downloadApplication(request):
+    try:
+        # Define the path to the file
+        file_path = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'applicationBuild', 'vardhamanstore.apk'))
+        print(file_path)
+        if os.path.exists(file_path):
+            with open(file_path, 'rb') as file:
+                response = FileResponse(file_path)
+                return response
+        else:
+            return HttpResponse("File not found", status=404)
+    except Exception as e:
+        return HttpResponse(f"Error: {e}", status=500)
