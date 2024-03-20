@@ -109,7 +109,7 @@ def userRegister(request):
         contact_no = data.get('contact_no')
         password = data.get('password')
         address = data.get('address')
-        expoToken = data.get('expoToken')
+        firebase_token = data.get('firebase_token')
         if not data:
             return Response({'message':"Please provide valid name, email, contact_no, and password."},status=400)
         
@@ -121,7 +121,7 @@ def userRegister(request):
             role = '0',
             name = name,
             email = email,
-            expo_go_token = expoToken,
+            expo_go_token = firebase_token,
             contact_no = contact_no,
             password = make_password(password),
             address = address,
@@ -144,7 +144,7 @@ def userLogin(request):
         data = json.loads(request.body.decode('utf-8'))
         username = data.get('username')
         password = data.get('password')
-        expoToken = data.get('expoToken')
+        firebase_token = data.get('firebase_token')
 
         if not (username and password):
             return Response({'message': "Please provide a valid username and password."}, status=400)
@@ -163,7 +163,7 @@ def userLogin(request):
             return Response({'message': "Access Denied."}, status=403)
 
         if check_password(password, user_data.password):
-            user_data.expo_go_token = expoToken
+            user_data.expo_go_token = firebase_token
             user_data.save()
             refresh = RefreshToken.for_user(user_data)
             token = str(refresh.access_token)
