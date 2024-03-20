@@ -8,6 +8,7 @@ from num2words import num2words
 
 from rest_framework_simplejwt.tokens import RefreshToken  # use to generate Token
 from .isAuthanticated import tokenVerified # Custome Class to check Token
+from .notificationview import send_notification # Function to send notification
 
 import json
 import logging
@@ -69,7 +70,7 @@ def getUsersData(user):
         "email" : user.email if user.email else "",
         "contact_no" : user.contact_no if user.contact_no else "",
         "is_approved" : user.is_approved if user.is_approved else "",
-        "firebase_token" : user.firebase_token if user.firebase_token else "",
+        "notificationToken" : user.expo_go_token if user.expo_go_token else "",
         "address" : user.address if user.address else "",
         "role" : user.role if user.role else "",
         'gst_no': user.gst_no if user.gst_no else "",
@@ -86,6 +87,18 @@ def getInwordsUsingNumber(amount):
     decimal_words = num2words(decimal_part).casefold().replace("-", " ").replace("and", "")
     return f"{integer_words} rupees"
 
+
+# manage Notification Center function
+def manageNotifications(tokenFor, expoToken ,title, message):
+    if tokenFor == "User":
+        send_notification(expoToken,title, message)
+    
+    if tokenFor == "Admin":
+        allUser = User.objects.filter(role='1',is_approved='1')
+        for admin in allUser:
+            if admin.expo_go_token:
+                send_notification(admin.expo_go_token,title, message)
+            
 # User Register API
 @api_view(["POST"])
 def userRegister(request):
@@ -96,7 +109,7 @@ def userRegister(request):
         contact_no = data.get('contact_no')
         password = data.get('password')
         address = data.get('address')
-        firebase_token = data.get('firebase_token')
+        expoToken = data.get('expoToken')
         if not data:
             return Response({'message':"Please provide valid name, email, contact_no, and password."},status=400)
         
@@ -108,11 +121,13 @@ def userRegister(request):
             role = '0',
             name = name,
             email = email,
+            expo_go_token = expoToken,
             contact_no = contact_no,
             password = make_password(password),
             address = address,
-            firebase_token = firebase_token,
         )
+        
+        manageNotifications('Admin','',"New User Registration", f"A new user named {name} has registered. Please review their details in the admin panel.")
         return Response({'message':"User register successfully.Wait for Approval."},status=200)
     except json.JSONDecodeError:
         return Response({'message': "Invalid JSON data in the request body."}, status=400)
@@ -129,7 +144,7 @@ def userLogin(request):
         data = json.loads(request.body.decode('utf-8'))
         username = data.get('username')
         password = data.get('password')
-        firebase_token = data.get('firebase_token')
+        expoToken = data.get('expoToken')
 
         if not (username and password):
             return Response({'message': "Please provide a valid username and password."}, status=400)
@@ -148,7 +163,7 @@ def userLogin(request):
             return Response({'message': "Access Denied."}, status=403)
 
         if check_password(password, user_data.password):
-            user_data.firebase_token = firebase_token
+            user_data.expo_go_token = expoToken
             user_data.save()
             refresh = RefreshToken.for_user(user_data)
             token = str(refresh.access_token)
@@ -239,6 +254,14 @@ def userApproval(request):
 
         user_instance = get_object_or_404(User, id=userId)
         user_instance.is_approved = approval_status
+        if user_instance.is_approved == '0':
+            if approval_status == '1':
+                manageNotifications('User',user_instance.expo_go_token, f"Approval Confirmation for {user_instance.name}", f"Congratulations, {user_instance.name}! Your registration has been approved by the admin. Welcome to Vardhaman!")
+                # send_notification(expoToken, f"Approval Confirmation for {user_instance.name}", f"Congratulations, {user_instance.name}! Your registration has been approved by the admin. Welcome to Vardhaman!")
+            if approval_status == '2':
+                # send_notification(expoToken, f"Registration Rejection for {user_instance.name}", f"We regret to inform you that your registration has been rejected. If you have any questions or concerns, please don't hesitate to reach out to us.")
+                manageNotifications('User',user_instance.expo_go_token, f"Registration Rejection for {user_instance.name}", f"We regret to inform you that your registration has been rejected. If you have any questions or concerns, please don't hesitate to reach out to us.")
+            
         user_instance.save()
         return Response({'message': f"User{status_value[approval_status]}successfully"}, status=200)
     except json.JSONDecodeError:
@@ -345,6 +368,8 @@ def generateOrder(request):
         newOrder.total_amount = price
         newOrder.grand_total_amount = price
         newOrder.save() 
+        manageNotifications('User',userdata.expo_go_token, f"Order Created by {userdata.name}", f"A new order has been created by {userdata.name}. Please review the details promptly.")
+        # send_notification(expoToken, f"Order Created by {userdata.name}", f"A new order has been created by {userdata.name}. Please review the details promptly.")
         return Response({'message':"Order Created"},status=200)
     except json.JSONDecodeError:
         return Response({'message': "Invalid JSON data in the request body."}, status=400)
@@ -517,6 +542,10 @@ def updateOrders(request,orderId):
         orderVal.grand_total_amount = round(totalAmount)
         orderVal.status = '1'
         orderVal.save()
+        userName = orderVal.customer_id
+        
+        manageNotifications('User',userName.expo_go_token, f"Order Confirmation for {userName.name}", f"Your order has been confirmed by the admin. Thank you for your purchase!")
+        # send_notification(expoToken, f"Order Confirmation for {userName}", f"Your order has been confirmed by the admin. Thank you for your purchase!")
         return Response({'message':"Order Updated"},status=200)
     except json.JSONDecodeError:
         return Response({'message': "Invalid JSON data in the request body."}, status=400)
