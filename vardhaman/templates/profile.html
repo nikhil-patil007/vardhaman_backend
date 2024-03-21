@@ -21,12 +21,6 @@
     <link rel="stylesheet" href="{% static 'assets\css\main.css' %}">
     <link rel="stylesheet" href="{% static 'assets\css\color_skins.css' %}">
 </head>
-<style>
-    .imageData {
-        height: 5rem;
-        width: 6rem;
-    }
-</style>
 
 <body class="theme-purple">
     <!-- Page Loader -->
@@ -45,7 +39,7 @@
    <section class="content home">
         <div class="block-header">
             <div class="col-lg-3 col-md-3 col-sm-12">
-                <h2><img class="navbar-brand" src="{% static 'assets\images\Index-Icons\pro.png' %}" width="50" style="border-radius: 100px;"/>Products {% if productData.id %}Edit{% else%}Add{% endif %} Data<small class="text-muted">Welcome to Vardhaman Gruh Udhyog</small></h2>
+                <h2><img class="navbar-brand" src="{% static 'assets\images\Index-Icons\pro.png' %}" width="50" style="border-radius: 100px;"/>Admin Profile<small class="text-muted">Welcome to Vardhaman Gruh Udhyog</small></h2>
             </div>
         </div>
         <br>
@@ -56,86 +50,73 @@
                 <div class="tab-pane table-responsive active" id="All">
                     <div class="container">
                         <div class="form-container">
-                            <form id="productForm" autocomplete='off' class="needs-validation" novalidate enctype="multipart/form-data" action="{% url 'productAddUpdateFunctionality' %}" method="POST"> {% csrf_token %}
-                                <input type="hidden" class="form-control" id="productid" name="productid" value='{{productData.id}}' required>
+                            <form id="productForm" autocomplete='off' class="needs-validation" novalidate enctype="multipart/form-data" action="{% url 'profileUpdate' %}" method="POST"> {% csrf_token %}
                                 <div class="form-row">
-                                    <div class="col-md-4 mb-3">
-                                        <label for="productName">Product Name (English):</label>
-                                        <input type="text" class="form-control" id="productNameEng" Placeholder='Please Enter Product Name In English' name="productNameEng" value='{{productData.product_name_eng}}' required>
+                                    <div class="col-md-12 mb-3">
+                                        <label for="productQty">Shop Name:</label>
+                                        <input type="text" class="form-control" id="shopname" Placeholder='Please Enter Shop Name' name="shopname" value='{{userData.shopname}}' required>
                                         <div class="invalid-feedback">
-                                            Please enter a product name in English.
+                                            Please enter a Shop Name.
                                         </div>
                                     </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="productDescription">Product Name (Gujrati):</label>
-                                        <input type="text" class="form-control" id="productNameGuj" Placeholder='Please Enter Product Name In Gujrati' name="productNameGuj" value='{{productData.product_name_guj}}' required>
+                                </div>
+                                <hr/>
+                                <div class="form-row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="productName">Bank Name:</label>
+                                        <input type="text" class="form-control" id="bankName" Placeholder='Please Enter Bank Name' name="bankName" value='{{userData.bankname}}' required>
                                         <div class="invalid-feedback">
-                                            Please enter a product name in Gujrati.
+                                            Please enter a Bank Name
                                         </div>
                                     </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="productDescription">Product Name (Hindi):</label>
-                                        <input type="text" class="form-control" id="productNameHin" Placeholder='Please Enter Product Name In Hindi' name="productNameHin" value='{{productData.product_name_hin}}' required>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="productName">Account Holder Name:</label>
+                                        <input type="text" class="form-control" id="holderName" Placeholder='Please Enter Account Holder Name' name="holderName" value='{{userData.holderName}}' required>
                                         <div class="invalid-feedback">
-                                            Please enter a product name in Hindi.
+                                            Please enter a Account Holder Name
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-row">
-                                    <div class="col-md-4 mb-3">
-                                        <label for="productQty">Unit Type:</label>
-                                        <input type="text" class="form-control" id="productUnit" name="productUnit" value='{% if productData.product_unit %}{{productData.product_unit}}{% endif %}' required>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="productName">IFSC Code:</label>
+                                        <input type="text" class="form-control" id="ifscCode" Placeholder='Please Enter IFSC Code' name="ifscCode" value='{{userData.ifsc_code}}' required>
                                         <div class="invalid-feedback">
-                                            Please enter a valid unit.
+                                            Please enter a IFSC Code
                                         </div>
                                     </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="productQty">Quantity Type:</label>
-                                        <input type="text" class="form-control" id="productQty" name="productQty" value='{{productData.product_qty}}' required>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="productName">Branch Name:</label>
+                                        <input type="text" class="form-control" id="branchName" Placeholder='Please Enter Branch Name' name="branchName" value='{{userData.branch_name}}' required>
                                         <div class="invalid-feedback">
-                                            Please enter a valid quantity.
+                                            Please enter a Branch Name
                                         </div>
                                     </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="productHSN">HSN Code:</label>
-                                        <input type="text" class="form-control" id="productHSN" name="productHSN" value='{{productData.product_hsn_code}}' required>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="productName">Account Number:</label>
+                                        <input type="text" class="form-control" oninput="validateNumeric(this)" id="accountNum" Placeholder='Please Enter Account Number' name="accountNum" value='{{userData.account_num}}' required>
                                         <div class="invalid-feedback">
-                                            Please enter a valid HSN code.
+                                            Please enter a Account Number
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr/>
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="productQty">FSSAI No:</label>
+                                        <input type="text" class="form-control" id="fassai" Placeholder='Please Enter FSSAI No' name="fassai" value='{{userData.fassai}}' required>
+                                        <div class="invalid-feedback">
+                                            Please enter a FSSAI No.
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-row">
-                                    <div class="col-md-2 mb-3">
-                                        <label for="productPrice">Product GST:</label>
-                                        <input type="text" class="form-control integerInput" oninput="validateNumeric(this)" id="productGST" maxlength='2' name="productGST" value='{{productData.product_gst_rate}}' required>
+                                    <div class="col-md-12 mb-3">
+                                        <label for="productQty">GSTIN/UIN No:</label>
+                                        <input type="text" class="form-control" id="gst" Placeholder='Please Enter GSTIN/UIN' name="gst" value='{{userData.gst_no}}' required>
                                         <div class="invalid-feedback">
-                                            Please enter a valid product GST.
+                                            Please enter a GSTIN/UIN No.
                                         </div>
-                                    </div>
-                                    <div class="col-md-2 mb-3">
-                                        <label for="productPrice">Product Discount:</label>
-                                        <input type="text" class="form-control integerInput" oninput="validateNumeric(this)" id="productDiscount" maxlength='2' name="productDiscount" value='{% if productData.product_discount_rate %}{{productData.product_discount_rate}}{% else %}0{% endif %}'>
-                                        <div class="invalid-feedback">
-                                            Please enter a valid product Discount.
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="productPrice">Product Price:</label>
-                                        <input type="text" class="form-control" id="productPrice" name="productPrice" value='{{productData.product_price}}' readonly>
-                                        
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="productPrice">Product Price (Incl Tax):</label>
-                                        <input type="text" class="form-control integerInput" id="productTaxPrice" oninput="validateNumeric(this)" name="productTaxPrice" value='{{productData.product_tax_price}}' required>
-                                        <div class="invalid-feedback">
-                                            Please enter a valid product price.
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="col-md-12 mb-6">
-                                        <label for="productImage">Product Image:</label>
-                                        <input type="file" class="form-control" id="productImage" name="productImage" accept="image/*" {% if not productData.id %} required {% endif %}>
                                     </div>
                                 </div>
                                 <div style="margin: 1rem;"></div>
@@ -174,20 +155,6 @@
             // Remove leading zeros, except for the case where it's the only character
             input.value = input.value.replace(/^0+(?=[^.])/, '');
         }
-
-        jQuery(document).ready(function(){
-            // Count the GST price
-            jQuery('.integerInput').on('input', function() {
-                const gstRate = jQuery('#productGST').val();
-                const discountRate = jQuery('#productDiscount').val();
-                const originalPrice = jQuery('#productTaxPrice').val();
-                const gstAmount = ((parseFloat(originalPrice) * parseInt(gstRate)) / 100);
-                const disAmount = ((parseFloat(originalPrice) * parseInt(discountRate)) / 100);
-                const newAmount = (parseFloat(originalPrice) - parseFloat(disAmount)) - parseFloat(gstAmount);
-                // const originalPrice = jQuery('#productPrice').val();
-                jQuery("#productPrice").val(newAmount ? newAmount : 0);
-            });
-        });
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {

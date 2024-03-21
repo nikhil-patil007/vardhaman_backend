@@ -20,8 +20,9 @@ urlpatterns = [
     # Templates Path
     path('', templateviews.index, name='indexpage'),
     path('logout', templateviews.logout, name='logout'),
-    path('build/downloadApplication', templateviews.downloadApplication, name='downloadApplication'),
-    path("login",  templateviews. login, name="login"),
+    path("login",  templateviews.login, name="login"),
+    path('profilePage', templateviews.profilePage, name="profilePage"),
+    path('profileUpdate', templateviews.profileUpdate, name="profileUpdate"),
     path('adminlogin', templateviews.loginFunction, name='loginadmin'),
     path('users/all', templateviews.userPage, name='userPage'),
     path('products/all', templateviews.productsPage, name='productPage'),

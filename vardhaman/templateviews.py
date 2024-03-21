@@ -53,9 +53,20 @@ def userPage(request):
         data = {
             'users':users,
             'currentPage':'user',
-            'currentPage':'user',
         }
         return render(request, "allUsers.html",data)
+    
+    return redirect("login")
+
+# Admin Profile Page Path
+def profilePage(request):
+    if 'userId' in request.session:
+        userData = User.objects.get(id=request.session['userId'])
+        data = {
+            'userData':userData,
+            'currentPage':'profile',
+        }
+        return render(request, "profile.html",data)
     
     return redirect("login")
     
@@ -85,23 +96,23 @@ def ordersPage(request):
 # Invoice Page Path
 def invoicePage(request):
     if 'userId' in request.session:
-        # try:
-        orderId = request.POST.get('orderId','')
-        orders = Order.objects.get(id=orderId)
-        ordersList = Order_data.objects.filter(order_id=orderId, status='1')
-        taxes_order = order_taxes.objects.filter(order_id=orderId)
-              
-        data = {
-            'currentPage': 'orders',
-            'order': orders,
-            'orderList': ordersList,
-            'totalAmountWords': getInwordsUsingNumber(orders.total_amount),
-            'seller': User.objects.filter(role='1').first(),
-            'taxes_order': taxes_order,
-        }
-        return render(request, 'invoice.html', data)
-        # except:
-        #     return redirect('ordersPage')
+        try:
+            orderId = request.POST.get('orderId','')
+            orders = Order.objects.get(id=orderId)
+            ordersList = Order_data.objects.filter(order_id=orderId, status='1')
+            taxes_order = order_taxes.objects.filter(order_id=orderId)
+                
+            data = {
+                'currentPage': 'orders',
+                'order': orders,
+                'orderList': ordersList,
+                'totalAmountWords': getInwordsUsingNumber(orders.total_amount),
+                'seller': User.objects.filter(role='1').first(),
+                'taxes_order': taxes_order,
+            }
+            return render(request, 'invoice.html', data)
+        except:
+            return redirect('ordersPage')
             
     return redirect('login')
     
@@ -179,6 +190,22 @@ def productAddUpdateFunctionality(request):
         return redirect("productPage")
     return redirect("login")    
     
+# Profile Update Functionality
+def profileUpdate(request):
+    if 'userId' in request.session:
+        userData = User.objects.get(id=request.session['userId'])
+        userData.shopname = request.POST.get('shopname', '') or userData.shopname
+        userData.bankname = request.POST.get('bankName', '') or userData.bankname
+        userData.holderName = request.POST.get('holderName', '') or userData.holderName
+        userData.ifsc_code = request.POST.get('ifscCode', '') or userData.ifsc_code
+        userData.branch_name = request.POST.get('branchName', '') or userData.branch_name
+        userData.account_num = request.POST.get('accountNum', '') or userData.account_num
+        userData.fassai = request.POST.get('fassai', '') or userData.fassai
+        userData.gst_no = request.POST.get('gst', '') or userData.gst_no
+        userData.save()
+        return redirect('profilePage')
+    return redirect("login")    
+
 # Delete Product Path 
 def productDeleteFunctionality(request,productId):
     if 'userId' in request.session:
@@ -226,16 +253,3 @@ def logout(request):
     except:
         return redirect("login")
     
-def downloadApplication(request):
-    try:
-        # Define the path to the file
-        file_path = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'applicationBuild', 'vardhamanstore.apk'))
-        print(file_path)
-        if os.path.exists(file_path):
-            with open(file_path, 'rb') as file:
-                response = FileResponse(file_path)
-                return response
-        else:
-            return HttpResponse("File not found", status=404)
-    except Exception as e:
-        return HttpResponse(f"Error: {e}", status=500)

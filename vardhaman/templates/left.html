@@ -5,7 +5,7 @@
         <div class="tab-pane stretchRight active" id="dashboard">
             <div class="menu">
                 <ul class="list">
-                    <li>
+                    <li class="{% if currentPage == 'profile' %}active open{% endif %}">
                         <div class="user-info">
                             <a href="javascript:void(0)">
                                 <img src="{% static 'images\favicon.svg' %}" height='120px' width='100%' style="margin-top: 10px; margin-bottom: 10px;" alt="">
@@ -13,6 +13,9 @@
                             <div class="detail">
                                 <h6>Hi,</h6>
                                 <h4>Mr. {{request.session.userName}}</h4>
+                                <a href="{% url 'profilePage' %}">
+                                    <i class="zmdi zmdi-account"></i><span>My Profile</span>
+                                </a>
                             </div>
                         </div>
                     </li>
@@ -23,7 +26,7 @@
                     </li>
                     <li class="{% if currentPage == 'user' %}active open{% endif %}">
                         <a href="{% url 'userPage' %}">
-                            <i class="zmdi zmdi-account"></i><span>All Users</span>
+                            <i class="zmdi zmdi-accounts"></i><span>All Users</span>
                         </a>
                     </li>
                     <li class="{% if currentPage == 'product' %}active open{% endif %}">
