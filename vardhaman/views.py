@@ -254,12 +254,11 @@ def userApproval(request):
 
         user_instance = get_object_or_404(User, id=userId)
         user_instance.is_approved = approval_status
-        if user_instance.is_approved == '0':
-            if approval_status == '1':
-                manageNotifications('User',user_instance.expo_go_token, f"Approval Confirmation for {user_instance.name}", f"Congratulations, {user_instance.name}! Your registration has been approved by the admin. Welcome to Vardhaman!")
-                # send_notification(expoToken, f"Approval Confirmation for {user_instance.name}", f"Congratulations, {user_instance.name}! Your registration has been approved by the admin. Welcome to Vardhaman!")
-            if approval_status == '2':
-                # send_notification(expoToken, f"Registration Rejection for {user_instance.name}", f"We regret to inform you that your registration has been rejected. If you have any questions or concerns, please don't hesitate to reach out to us.")
+        if approval_status == '1':
+            manageNotifications('User',user_instance.expo_go_token, f"Approval Confirmation for {user_instance.name}", f"Congratulations, {user_instance.name}! Your registration has been approved by the admin. Welcome to Vardhaman!")
+            # send_notification(expoToken, f"Approval Confirmation for {user_instance.name}", f"Congratulations, {user_instance.name}! Your registration has been approved by the admin. Welcome to Vardhaman!")
+        if approval_status == '2':
+            # send_notification(expoToken, f"Registration Rejection for {user_instance.name}", f"We regret to inform you that your registration has been rejected. If you have any questions or concerns, please don't hesitate to reach out to us.")
                 manageNotifications('User',user_instance.expo_go_token, f"Registration Rejection for {user_instance.name}", f"We regret to inform you that your registration has been rejected. If you have any questions or concerns, please don't hesitate to reach out to us.")
             
         user_instance.save()
@@ -368,6 +367,7 @@ def generateOrder(request):
         newOrder.total_amount = price
         newOrder.grand_total_amount = price
         newOrder.save() 
+        
         manageNotifications('User',userdata.expo_go_token, f"Order Created by {userdata.name}", f"A new order has been created by {userdata.name}. Please review the details promptly.")
         # send_notification(expoToken, f"Order Created by {userdata.name}", f"A new order has been created by {userdata.name}. Please review the details promptly.")
         return Response({'message':"Order Created"},status=200)
