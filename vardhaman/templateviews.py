@@ -16,6 +16,10 @@ def getInwordsUsingNumber(amount):
     decimal_words = num2words(decimal_part).casefold().replace("-", " ").replace("and", "")
     return f"{integer_words} rupees and {decimal_words} paise"
 
+# GST counter Function
+def calculate_sgst(totalAmount, gstRate):
+    gstPrice = (totalAmount * gstRate) / 100
+    return gstPrice
 
 # Home Page Path
 def index(request):
@@ -155,19 +159,22 @@ def productAddUpdateFunctionality(request):
         productDiscount = request.POST.get('productDiscount', '')
         productTaxPrice = request.POST.get('productTaxPrice', '')
         
+        productGstPrice = calculate_sgst(float(productTaxPrice),float(productGST))
+        
         if not productid:
             productdata = Products.objects.create(
-                product_name_eng=productNameEng,
-                product_name_guj=productNameGuj,
-                product_name_hin=productNameHin,
-                product_image=productImage,
-                product_qty=productQty,
-                product_unit=productUnit,
-                product_price=productPrice,
-                product_hsn_code=productHSN,
-                product_gst_rate=productGST,
-                product_discount_rate=productDiscount,
-                product_tax_price=productTaxPrice,
+                product_name_eng = productNameEng,
+                product_name_guj = productNameGuj,
+                product_name_hin = productNameHin,
+                product_image = productImage,
+                product_qty = productQty,
+                product_unit = productUnit,
+                product_price = productPrice,
+                product_gst = productGstPrice,
+                product_hsn_code = productHSN,
+                product_gst_rate = productGST,
+                product_discount_rate = productDiscount,
+                product_tax_price = productTaxPrice,
             )
         else:
             product = Products.objects.get(id=productid)
@@ -175,6 +182,7 @@ def productAddUpdateFunctionality(request):
             product.product_name_guj = productNameGuj or product.product_name_guj
             product.product_name_hin = productNameHin or product.product_name_hin
             product.product_gst_rate = productGST or product.product_gst_rate
+            product.product_gst = productGstPrice or product.product_gst
             product.product_discount_rate = productDiscount or product.product_discount_rate
             product.product_tax_price = productTaxPrice or product.product_tax_price
 

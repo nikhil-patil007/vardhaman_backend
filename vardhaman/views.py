@@ -36,7 +36,6 @@ def calculate_sgst(total_amount, sgst_rate):
 
 # check the num indicator
 def sign_indicator(amount):
-    # print(number)
     if amount - int(amount) < 0.5:
         return True
     else:
@@ -346,7 +345,7 @@ def generateOrder(request):
                 
                 amount = float(productdata.product_price) * int(i['qty']) # count the total amount of product
                 product_tax = (float(productdata.product_gst_rate) / 2) # count the tax for cgst and sgst
-                gst_cal_amount = calculate_sgst(amount, product_tax) # count price with only cgst and sgst
+                gst_cal_amount = (float(productdata.product_gst) /2 ) * int(i['qty'])  # calculate_sgst(amount, product_tax) # count price with only cgst and sgst
                 tax_amount= (float(gst_cal_amount)*2) + float(amount)
                 price = float(price) + tax_amount
                 
@@ -454,11 +453,12 @@ def process_tax_data(orderId,data):
     orderVal = get_object_or_404(Order,id=orderId)
     for item in data:
         tax_rate = item['tax_rate']
-        taxable_amount = item['taxable_amount']
+        taxable_amount = float(item['taxable_amount']) + float(item['tax_amount'])
         if tax_rate in processed_data:
             processed_data[tax_rate] += taxable_amount
         else:
             processed_data[tax_rate] = taxable_amount
+            
     newList = [{'tax_rate': tax_rate, 'taxable_amount': amount} for tax_rate, amount in processed_data.items()]
 
     taxable_amount =  0.00
@@ -471,7 +471,8 @@ def process_tax_data(orderId,data):
             orderTax = order_taxes.objects.filter(order_id=orderVal,tax_rate=i['tax_rate'])
             rateCount = product_tax = (float(i['tax_rate']) / 2) # count the tax for cgst and sgst
             gst_cal_amount = calculate_sgst(i['taxable_amount'], rateCount)
-            taxable_amount += float(i['taxable_amount'])
+            newTaxAmount = float(i['taxable_amount']) - (float(gst_cal_amount) * 2)
+            taxable_amount += newTaxAmount
             tax_total_count = float(gst_cal_amount) + float(gst_cal_amount)
             
             cgst_amount += float(gst_cal_amount)
@@ -481,17 +482,19 @@ def process_tax_data(orderId,data):
                 newo = order_taxes.objects.create(
                     order_id = orderVal,
                     tax_rate = i['tax_rate'],
-                    taxable_amount = float(i['taxable_amount']),
+                    taxable_amount = newTaxAmount,
                     cgst_amount = gst_cal_amount,
                     sgst_amount = gst_cal_amount,
                     total_tax_amount = tax_total_count,
                 )
-    return {
+    responseData = {
         "taxable_amount":taxable_amount,
         "cgst_amount":cgst_amount,
         "sgst_amount":sgst_amount,
         "total_tax_amount":total_tax_amount
-        }
+    }
+    
+    return responseData
 
 # Orders Approvel API
 @api_view(['POST'])
@@ -519,6 +522,7 @@ def updateOrders(request,orderId):
             if(lis.order_id == orderVal):
                 taxObj['tax_rate'] = lis.product_id.product_gst_rate
                 taxObj['taxable_amount'] = float(lis.product_id.product_price) * float(lis.qty)
+                taxObj['tax_amount'] = float(lis.product_id.product_gst) * float(lis.qty)
                 taxList.append(taxObj)
                 addition = float(addition) + float(lis.tax_amount)
                 lis.status = '1'
@@ -545,7 +549,6 @@ def updateOrders(request,orderId):
         userName = orderVal.customer_id
         
         manageNotifications('User',userName.expo_go_token, f"Order Confirmation for {userName.name}", f"Your order has been confirmed by the admin. Thank you for your purchase!")
-        # send_notification(expoToken, f"Order Confirmation for {userName}", f"Your order has been confirmed by the admin. Thank you for your purchase!")
         return Response({'message':"Order Updated"},status=200)
     except json.JSONDecodeError:
         return Response({'message': "Invalid JSON data in the request body."}, status=400)

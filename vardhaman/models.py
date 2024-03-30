@@ -39,6 +39,7 @@ class Products(models.Model):
     product_gst_rate = models.IntegerField(default=0)
     product_discount_rate = models.IntegerField(default=0)
     product_price = models.DecimalField(max_digits=10, decimal_places=2)
+    product_gst = models.DecimalField(max_digits=10, decimal_places=2)
     product_tax_price = models.DecimalField(max_digits=10, decimal_places=2)
     product_hsn_code = models.CharField(max_length=255,null=True)
     is_delete = models.CharField(max_length=10,default='0',choices=[("0","No"),("1","Yes")])
