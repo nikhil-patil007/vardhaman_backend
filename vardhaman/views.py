@@ -8,7 +8,7 @@ from num2words import num2words
 
 from rest_framework_simplejwt.tokens import RefreshToken  # use to generate Token
 from .isAuthanticated import tokenVerified # Custome Class to check Token
-from .notificationview import send_notification # Function to send notification
+from .helpers import sendNotification, savePdf # Function to send notification
 
 import json
 import logging
@@ -90,13 +90,13 @@ def getInwordsUsingNumber(amount):
 # manage Notification Center function
 def manageNotifications(tokenFor, expoToken ,title, message):
     if tokenFor == "User":
-        send_notification(expoToken,title, message)
+        sendNotification(expoToken,title, message)
     
     if tokenFor == "Admin":
         allUser = User.objects.filter(role='1',is_approved='1')
         for admin in allUser:
             if admin.expo_go_token:
-                send_notification(admin.expo_go_token,title, message)
+                sendNotification(admin.expo_go_token,title, message)
             
 # User Register API
 @api_view(["POST"])
@@ -255,9 +255,9 @@ def userApproval(request):
         user_instance.is_approved = approval_status
         if approval_status == '1':
             manageNotifications('User',user_instance.expo_go_token, f"Approval Confirmation for {user_instance.name}", f"Congratulations, {user_instance.name}! Your registration has been approved by the admin. Welcome to Vardhaman!")
-            # send_notification(expoToken, f"Approval Confirmation for {user_instance.name}", f"Congratulations, {user_instance.name}! Your registration has been approved by the admin. Welcome to Vardhaman!")
+            # sendNotification(expoToken, f"Approval Confirmation for {user_instance.name}", f"Congratulations, {user_instance.name}! Your registration has been approved by the admin. Welcome to Vardhaman!")
         if approval_status == '2':
-            # send_notification(expoToken, f"Registration Rejection for {user_instance.name}", f"We regret to inform you that your registration has been rejected. If you have any questions or concerns, please don't hesitate to reach out to us.")
+            # sendNotification(expoToken, f"Registration Rejection for {user_instance.name}", f"We regret to inform you that your registration has been rejected. If you have any questions or concerns, please don't hesitate to reach out to us.")
                 manageNotifications('User',user_instance.expo_go_token, f"Registration Rejection for {user_instance.name}", f"We regret to inform you that your registration has been rejected. If you have any questions or concerns, please don't hesitate to reach out to us.")
             
         user_instance.save()
@@ -368,7 +368,7 @@ def generateOrder(request):
         newOrder.save() 
         
         manageNotifications('User',userdata.expo_go_token, f"Order Created by {userdata.name}", f"A new order has been created by {userdata.name}. Please review the details promptly.")
-        # send_notification(expoToken, f"Order Created by {userdata.name}", f"A new order has been created by {userdata.name}. Please review the details promptly.")
+        # sendNotification(expoToken, f"Order Created by {userdata.name}", f"A new order has been created by {userdata.name}. Please review the details promptly.")
         return Response({'message':"Order Created"},status=200)
     except json.JSONDecodeError:
         return Response({'message': "Invalid JSON data in the request body."}, status=400)
@@ -496,9 +496,44 @@ def process_tax_data(orderId,data):
     
     return responseData
 
+
+# Download file API
+# @api_view(['GET'])
+# @tokenVerified
+def generatePDF(orderId):
+    try:
+        try:
+            orders = Order.objects.get(id=orderId)
+        except:
+            return Response({"message": "Order matching query does not exist."},status=400)
+            
+        ordersList = Order_data.objects.filter(order_id=orderId,status='1')
+        taxes_order = order_taxes.objects.filter(order_id=orderId)
+        
+        totalAmountWithGST = float(orders.total_amount) + (calculate_sgst(float(orders.total_amount), 4) * 2)
+        
+        context = {
+            'order': orders,
+            'seller': User.objects.filter(role='1').first(),
+            'totalAmountWords': getInwordsUsingNumber(orders.grand_total_amount),
+            'orderList': ordersList,
+            'taxes_order': taxes_order,
+        }
+        
+        fileName,status = savePdf(context)
+        print(fileName)
+        print(status)
+        if not status:
+            return Response({status:200})
+        return Response({status :400})
+    except Exception as e:
+        logger.error(f"Generate PDF Error : {str(e)}")
+        return Response({status:400})
+    
+    
 # Orders Approvel API
 @api_view(['POST'])
-@tokenVerified
+# @tokenVerified
 def updateOrders(request,orderId):
     try:
         data = json.loads(request.body.decode('utf-8'))
@@ -545,6 +580,7 @@ def updateOrders(request,orderId):
         orderVal.round_off = totalAmount - int(totalAmount)
         orderVal.grand_total_amount = round(totalAmount)
         orderVal.status = '1'
+        # generatePDF(orderVal.id)
         orderVal.save()
         userName = orderVal.customer_id
         

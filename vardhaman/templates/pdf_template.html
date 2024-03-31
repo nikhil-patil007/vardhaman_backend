@@ -7,11 +7,23 @@
       <title></title>
    </head>
    <body>
-      <div>
+      <div style="margin:2rem;">
       <table style="font-size: 12px;font-family: monospace;"
          width="100%" border="1" cellpadding="1" cellspacing="0" align="center"
          >
          <tbody>
+            <tr style="border-top:none; border-left:none; border-right:none;">
+               <td colspan='12' >
+                  <div style="display:flex;">
+                     <div style="width:75%;">
+                        <p style="margin:1px; text-align:center; font-size:14px;"><b>Tax Invoice</b></p>
+                     </div>
+                     <div style="width:25%;">
+                        <p style="margin:1px; text-align:right;">(ORIGINAL FOR RECIPIENT)</p>
+                     </div>
+                  </div>
+               </td>
+            </tr>
             <tr>
                <td style='width:80%' rowspan='3'>
                   <div style="margin: 1px;
@@ -19,13 +31,15 @@
                      font-size: 13px;"
                      >
                      <p style="margin:1px; font-size:18px">
-                        <b> VARDHAMAN GRUH UDHYOG</b>
+                        <b> {{seller.shopname|upper}}</b>
                      </p>
                      <p style="width: 350px;white-space: normal;word-break: break-word;margin:1px">
                         {{seller.address |title}}
                      </p>
                      <p style="margin:1px"><b>Mo:</b> {{seller.contact_no}}</p>
+                     <p style="margin:1px"><b>FSSAI No:</b> {{seller.fassai}}</p>
                      <p style="margin:1px"><b>GSTIN/UIN:</b> {{seller.gst_no}}</p>
+                     <p style="margin:1px"><b>State Name:</b> Gujarat, <b>Code:</b> 24</p>
                   </div>
                </td>
                <td style="width:10%">
@@ -99,7 +113,9 @@
             <tr>
                <td style="width:20%; border-bottom:none;" colspan='2'>
                   <p style="margin:1px; white-space: nowrap; font-size:10px;">Terms of Delivery</p>
-                  <div style='height:30px'><p></p></div>
+                  <div style='height:30px'>
+                     <p></p>
+                  </div>
                </td>
             </tr>
             <tr>
@@ -109,7 +125,7 @@
       </table>
       <table style="font-size: 12px;font-family: monospace;"
          width="100%" border="1" cellpadding="1" cellspacing="0" align="center"
-      >
+         >
          <thead>
             <tr>
                <th style="width:2%; text-align:center">S No.</th>
@@ -128,35 +144,35 @@
          </thead>
          <tbody>
             {% for pr in orderList %}
-               <tr>
-                  <td style="width:2%; border-top:none; padding-bottom:3px; border-bottom:none;">{{forloop.counter}}. </td>
-                  <td style="width:52%; border-top:none; padding-bottom:3px; border-bottom:none;">{{pr.product_id.product_name_eng}}</td>
-                  <td style="width:5%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:center;">{{pr.product_id.product_hsn_code}}</td>
-                  <td style="width:3%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:center;">{{pr.qty}}</td>
-                  <td style="width:3%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:center;">{% if pr.product_id.product_unit %}{{pr.product_id.product_unit}}{% endif %}</td>
-                  <td style="width:7%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:right;">{{pr.product_id.product_price}}</td>
-                  <td style="width:3%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:center;">{% if pr.product_id.product_discount_rate %}{{pr.product_id.product_discount_rate}}%{% endif %}</td>
-                  <td style="width:4%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:center;">{{pr.cgst_rate}}%</td>
-                  <td style="width:5%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:right;">{{pr.cgst_amount}}</td>
-                  <td style="width:4%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:center;">{{pr.sgst_rate}}%</td>
-                  <td style="width:5%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:right;">{{pr.sgst_amount}}</td>
-                  <td style="width:7%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:right;">{{pr.tax_amount}}</td>
-               </tr>
-               {% endfor %}
-               <tr>
-                  <td style="border-top:none;">&nbsp;</td>
-                  <td style="border-top:none;">&nbsp;</td>
-                  <td style="border-top:none;">&nbsp;</td>
-                  <td style="border-top:none;">&nbsp;</td>
-                  <td style="border-top:none;">&nbsp;</td>
-                  <td style="border-top:none;">&nbsp;</td>
-                  <td style="border-top:none;">&nbsp;</td>
-                  <td style="border-top:none;">&nbsp;</td>
-                  <td style="border-top:none;">&nbsp;</td>
-                  <td style="border-top:none;">&nbsp;</td>
-                  <td style="border-top:none;">&nbsp;</td>
-                  <td style="border-top:none;">&nbsp;</td>
-               </tr>
+            <tr>
+               <td style="width:2%; border-top:none; padding-bottom:3px; border-bottom:none;">{{forloop.counter}}. </td>
+               <td style="width:52%; border-top:none; padding-bottom:3px; border-bottom:none;">{{pr.product_id.product_name_eng}}</td>
+               <td style="width:5%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:center;">{{pr.product_id.product_hsn_code}}</td>
+               <td style="width:3%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:center;">{{pr.qty}}</td>
+               <td style="width:3%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:center;">{% if pr.product_id.product_unit %}{{pr.product_id.product_unit}}{% endif %}</td>
+               <td style="width:7%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:right;">{{pr.product_id.product_price}}</td>
+               <td style="width:3%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:center;">{% if pr.product_id.product_discount_rate %}{{pr.product_id.product_discount_rate}}%{% endif %}</td>
+               <td style="width:4%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:center;">{{pr.cgst_rate}}%</td>
+               <td style="width:5%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:right;">{{pr.cgst_amount}}</td>
+               <td style="width:4%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:center;">{{pr.sgst_rate}}%</td>
+               <td style="width:5%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:right;">{{pr.sgst_amount}}</td>
+               <td style="width:7%; border-top:none; padding-bottom:3px; border-bottom:none; text-align:right;">{{pr.tax_amount}}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+               <td style="border-top:none;">&nbsp;</td>
+               <td style="border-top:none;">&nbsp;</td>
+               <td style="border-top:none;">&nbsp;</td>
+               <td style="border-top:none;">&nbsp;</td>
+               <td style="border-top:none;">&nbsp;</td>
+               <td style="border-top:none;">&nbsp;</td>
+               <td style="border-top:none;">&nbsp;</td>
+               <td style="border-top:none;">&nbsp;</td>
+               <td style="border-top:none;">&nbsp;</td>
+               <td style="border-top:none;">&nbsp;</td>
+               <td style="border-top:none;">&nbsp;</td>
+               <td style="border-top:none;">&nbsp;</td>
+            </tr>
          </tbody>
          <tfoot>
             <tr style="text-align:right;">
@@ -169,93 +185,103 @@
                      </div>
                </td>
                <td style="width:15%; padding:5px;">
-                  <div style="height:2rem;">
-                     <div style="font-weight:bold;">
-                        {{order.total_amount}}
-                     </div>
-                     <div>
-                        {{order.round_off}}
-                     </div>
-                  </div>
+               <div style="height:2rem;">
+               <div style="font-weight:bold;">
+               {{order.total_amount}}
+               </div>
+               <div>
+               {{order.round_off}}
+               </div>
+               </div>
                </td>
             </tr>
             <tr>
-               <th style="border-bottom:none; text-align:right; padding:5px;" colspan='11'>Grand Total</th>
-               <th colspan='1' style="width:15%;">{{order.grand_total_amount}}</th>
+            <th style="border-bottom:none; text-align:right; padding:5px;" colspan='11'>Grand Total</th>
+            <th colspan='1' style="width:15%;">{{order.grand_total_amount}}</th>
             </tr>
             <tr>
-               <td colspan='11' style="border-top:none; border-bottom:none; border-right:none;">&nbsp;</td>
-               <td colspan='1' style="width:15%; border-bottom:none; border-left:none;">&nbsp;</td>
+            <td colspan='11' style="border-top:none; border-bottom:none; border-right:none;">&nbsp;</td>
+            <td colspan='1' style="width:15%; border-bottom:none; border-left:none;">&nbsp;</td>
             </tr>
             <tr>
-               <td colspan='12' style="border-top:none; border-bottom:none;">
-                  <table width='50%' cellpadding="1" cellspacing="0" style="margin:0 0 10px 5rem; text-align:center;">
-                     <tr>
-                        <th style="border-bottom:solid 1px black; padding:3px;">Total Rate</th>
-                        <th style="border-bottom:solid 1px black; padding:3px;">Taxable Amt.</th>
-                        <th style="border-bottom:solid 1px black; padding:3px;">CGST Amt.</th>
-                        <th style="border-bottom:solid 1px black; padding:3px;">SGST Amt.</th>
-                        <th style="border-bottom:solid 1px black; padding:3px;">Total Tax</th>
-                     </tr>
-                     {% for tax in taxes_order %}
-                     <tr>
-                        <td>{% if tax.tax_rate %}{{tax.tax_rate}}%{% endif %}</td>
-                        <td>{{tax.taxable_amount}}</td>
-                        <td>{{tax.cgst_amount}}</td>
-                        <td>{{tax.sgst_amount}}</td>
-                        <td>{{tax.total_tax_amount}}</td>
-                     </tr>
-                     {% endfor %}
-                     <tr>
-                        <td style="border-top:solid 1px black; padding-top:2px;"></td>
-                        <td style="border-top:solid 1px black; padding-top:2px;">{{order.taxable_amount}}</td>
-                        <td style="border-top:solid 1px black; padding-top:2px;">{{order.cgst_amount}}</td>
-                        <td style="border-top:solid 1px black; padding-top:2px;">{{order.sgst_amount}}</td>
-                        <th style="border-top:solid 1px black; padding-top:2px;">{{order.total_tax_amount}}</th>
-                     </tr>
-                  </table>
-               </td>
+            <td colspan='12' style="border-top:none; border-bottom:none;">
+            <table width='50%' cellpadding="1" cellspacing="0" style="margin:0 0 10px 5rem; text-align:center;">
+            <tr>
+            <th style="border-bottom:solid 1px black; padding:3px;">Total Rate</th>
+            <th style="border-bottom:solid 1px black; padding:3px;">Taxable Amt.</th>
+            <th style="border-bottom:solid 1px black; padding:3px;">CGST Amt.</th>
+            <th style="border-bottom:solid 1px black; padding:3px;">SGST Amt.</th>
+            <th style="border-bottom:solid 1px black; padding:3px;">Total Tax</th>
+            </tr>
+            {% for tax in taxes_order %}
+            <tr>
+            <td>{% if tax.tax_rate %}{{tax.tax_rate}}%{% endif %}</td>
+            <td>{{tax.taxable_amount}}</td>
+            <td>{{tax.cgst_amount}}</td>
+            <td>{{tax.sgst_amount}}</td>
+            <td>{{tax.total_tax_amount}}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+            <td style="border-top:solid 1px black; padding-top:2px;"></td>
+            <td style="border-top:solid 1px black; padding-top:2px;">{{order.taxable_amount}}</td>
+            <td style="border-top:solid 1px black; padding-top:2px;">{{order.cgst_amount}}</td>
+            <td style="border-top:solid 1px black; padding-top:2px;">{{order.sgst_amount}}</td>
+            <th style="border-top:solid 1px black; padding-top:2px;">{{order.total_tax_amount}}</th>
+            </tr>
+            </table>
+            </td>
             </tr>
             </tr>
             <tr style="text-align:left;">
-               <td colspan='12'>
-                  <p style="margin:1px; white-space: nowrap; font-size:12px;">Amonut Chargeable (in words)</p>
-                  <p style="margin:1px; white-space: nowrap; font-size:12px; font-weight:bold;">INR {{totalAmountWords | title}}</p>
-               </td>
+            <td colspan='12'>
+            <p style="margin:1px; white-space: nowrap; font-size:12px;">Amonut Chargeable (in words)</p>
+            <p style="margin:1px; white-space: nowrap; font-size:12px; font-weight:bold;">INR {{totalAmountWords | title}}</p>
+            </td>
             </tr>
             <tr style="text-align:left">
-               <td colspan='12'>
-                  <div style="display:flex;">
-                     <div>
-                        <p style="margin:1px; white-space: nowrap; font-size:15px; font-weight:bold;">Bank Details: </p>
-                     </div>
-                     <div style="margin-left:5px">
-                        <p style="margin:1px; white-space: nowrap; font-size:13px;">IDBI BANK</p>
-                        <p style="margin:1px; white-space: nowrap; font-size:13px;">A/c No:- 0085102000034803</p>
-                        <p style="margin:1px; white-space: nowrap; font-size:13px;">IFSC:- IBKL0000085</p>
-                     </div>
-                  </div>
-               </td>
+            <td colspan='12'>
+            <div style="display:flex;">
+            <div>
+            <p style="margin:1px; white-space: nowrap; font-size:15px; font-weight:bold;">Bank Details: </p>
+            </div>
+            <div style="margin-left:5px">
+            <p style="margin:1px; white-space: nowrap; font-size:13px;">Bank:- {{seller.bankname}} / <span>Branch: {{seller.branch_name}}</span</p>
+            <p style="margin:1px; white-space: nowrap; font-size:13px;">A/c Holder Name:- {{seller.holderName}}</p>
+            <p style="margin:1px; white-space: nowrap; font-size:13px;">A/c No:- {{seller.account_num}}</p>
+            <p style="margin:1px; white-space: nowrap; font-size:13px;">IFSC:- {{seller.ifsc_code}}</p>
+            </div>
+            </div>
+            </td>
             </tr>
             <tr style="text-align:left">
-               <td colspan='7'>
-                  <div style="margin: 1px;
-                     text-align: left;
-                     font-size: 13px;"
-                     >
-                     <p style="margin:1px; font-size:15px">
-                        <u>Declaration</u>
-                     </p>
-                     <p style="margin:1px">We declare that this invoice shows the</p>
-                     <p style="margin:1px">actual price of the goods described and that</p>
-                     <p style="margin:1px">all particulars are true and correct.</p>
-                  </div>
-               </td>
-               <td colspan='5'>
-                  <div style="margin:1px;text-align:center;">
-                     <p style="margin:1px; font-size:15px"><b>VARDHAMAN GRUH UDHYOG</b></p>
-                     <p style="margin:1px"><b>SOLA ROAD, AHMEDABAD</b></p>
-                     <p style="margin:1px">9913370031</p>
+            <td colspan='7'>
+            <div style="margin: 1px;
+               text-align: left;
+               font-size: 13px;"
+               >
+               <p style="margin:1px; font-size:15px">
+                  <u>Declaration</u>
+               </p>
+               <p style="margin:1px">We declare that this invoice shows the</p>
+               <p style="margin:1px">actual price of the goods described and that</p>
+               <p style="margin:1px">all particulars are true and correct.</p>
+            </div>
+            </td>
+            <td colspan='5'>
+            <div style="margin:1px;text-align:center;">
+            <p style="margin:1px; font-size:15px">for, <b>{{seller.shopname|upper}}</b></p>
+            <p style="margin:1px">&nbsp;</p>
+            <p style="margin:1px">&nbsp;</p>
+            <p style="margin:1px">Authorised Signatory</p>
+            </div>
+            </td>
+            </tr>
+            <tr style="border:none;">
+               <td colspan='12'>
+                  <div style="margin: 1px; text-align:center; font-size: 13px;">
+                     <p style="margin:1px">SUBJECT TO AHMEDABAD JURIDICTION</p>
+                     <p style="margin:1px">This is a Computer Generated Invoice</p>
                   </div>
                </td>
             </tr>
