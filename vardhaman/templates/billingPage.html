@@ -21,6 +21,12 @@
     <link rel="stylesheet" href="{% static 'assets\css\main.css' %}">
     <link rel="stylesheet" href="{% static 'assets\css\color_skins.css' %}">
 </head>
+<style>
+    .imageData {
+        height: 5rem;
+        width: 6rem;
+    }
+</style>
 
 <body class="theme-purple">
     <!-- Page Loader -->
@@ -39,7 +45,7 @@
    <section class="content home">
         <div class="block-header">
             <div class="col-lg-3 col-md-3 col-sm-12">
-                <h2><img class="navbar-brand" src="{% static 'assets\images\Index-Icons\pro.png' %}" width="50" style="border-radius: 100px;"/>Admin Profile<small class="text-muted">Welcome to Vardhaman Gruh Udhyog</small></h2>
+                <h2><img class="navbar-brand" src="{% static 'assets\images\Index-Icons\order.jpg' %}" width="50" style="border-radius: 100px;"/>Billing Page<small class="text-muted">Welcome to Vardhaman Gruh Udhyog</small></h2>
             </div>
         </div>
         <br>
@@ -50,79 +56,55 @@
                 <div class="tab-pane table-responsive active" id="All">
                     <div class="container">
                         <div class="form-container">
-                            <form id="productForm" autocomplete='off' class="needs-validation" novalidate enctype="multipart/form-data" action="{% url 'profileUpdate' %}" method="POST"> {% csrf_token %}
-                                <div class="form-row">
-                                    <div class="col-md-12 mb-3">
-                                        <label for="productQty">Shop Name:</label>
-                                        <input type="text" class="form-control" id="shopname" Placeholder='Please Enter Shop Name' name="shopname" value='{{userData.shopname}}' required>
-                                        <div class="invalid-feedback">
-                                            Please enter a Shop Name.
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr/>
+                            <form id="productForm" autocomplete='off' class="needs-validation" novalidate enctype="multipart/form-data" action="{% url 'productAddUpdateFunctionality' %}" method="POST"> {% csrf_token %}
                                 <div class="form-row">
                                     <div class="col-md-6 mb-3">
-                                        <label for="productName">Bank Name:</label>
-                                        <input type="text" class="form-control" id="bankName" Placeholder='Please Enter Bank Name' name="bankName" value='{{userData.bankname}}' required>
+                                        <label for="customerName">Customer's Name:</label>
+                                        <input type="text" class="form-control" id="customerName" Placeholder='Please Enter Name of Customer' name="customerName" required>
                                         <div class="invalid-feedback">
-                                            Please enter a Bank Name
+                                            Please enter a Customer's name.
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label for="productName">Account Holder Name:</label>
-                                        <input type="text" class="form-control" id="holderName" Placeholder='Please Enter Account Holder Name' name="holderName" value='{{userData.holderName}}' required>
+                                        <label for="customerNumber">Customer's Contact No:</label>
+                                        <input type="text" class="form-control" id="customerNo" maxlength="10" oninput="validateNumeric(this)" Placeholder="Please Enter Customer's Contact Number" name="customerNo"  required>
                                         <div class="invalid-feedback">
-                                            Please enter a Account Holder Name
+                                            Please enter a Customer's Contact Number.
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-row">
-                                    <div class="col-md-3 mb-3">
-                                        <label for="productName">IFSC Code:</label>
-                                        <input type="text" class="form-control" id="ifscCode" Placeholder='Please Enter IFSC Code' name="ifscCode" value='{{userData.ifsc_code}}' required>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="customerEmail">Customer's Email:</label>
+                                        <input type="text" class="form-control" id="customerEmail" Placeholder="Please Enter Customer's Email" name="customerEmail">
                                         <div class="invalid-feedback">
-                                            Please enter a IFSC Code
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 mb-3">
-                                        <label for="productName">Branch Name:</label>
-                                        <input type="text" class="form-control" id="branchName" Placeholder='Please Enter Branch Name' name="branchName" value='{{userData.branch_name}}' required>
-                                        <div class="invalid-feedback">
-                                            Please enter a Branch Name
+                                            Please enter a Customer's Email.
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label for="productName">Account Number:</label>
-                                        <input type="text" class="form-control" oninput="validateNumeric(this)" id="accountNum" Placeholder='Please Enter Account Number' name="accountNum" value='{{userData.account_num}}' required>
+                                        <label for="customerAddress">Customer's Address:</label>
+                                        <input type="text" class="form-control" id="customerAddress" Placeholder="Please Enter Customer's Address" name="customerAddress"  required>
                                         <div class="invalid-feedback">
-                                            Please enter a Account Number
+                                            Please enter a Customer's Address.
                                         </div>
                                     </div>
                                 </div>
                                 <hr/>
                                 <div class="form-row">
                                     <div class="col-md-12 mb-3">
-                                        <label for="productQty">FSSAI No:</label>
-                                        <input type="text" class="form-control" id="fassai" Placeholder='Please Enter FSSAI No' name="fassai" value='{{userData.fassai}}' required>
-                                        <div class="invalid-feedback">
-                                            Please enter a FSSAI No.
+                                        <label for="ProductSearch">Search Product:</label>
+                                        <input type="text" class="form-control searchProduct" id="searchProduct" Placeholder="Search Product Name" name="searchProduct">
+                                        <div class="productList" id="productList" hidden>
+                                            
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-row">
-                                    <div class="col-md-12 mb-3">
-                                        <label for="productQty">GSTIN/UIN No:</label>
-                                        <input type="text" class="form-control" id="gst" Placeholder='Please Enter GSTIN/UIN' name="gst" value='{{userData.gst_no}}' required>
-                                        <div class="invalid-feedback">
-                                            Please enter a GSTIN/UIN No.
-                                        </div>
-                                    </div>
-                                </div>
+                                
+                                <hr/>
                                 <div style="margin: 1rem;"></div>
                                 <div class="form-row">
                                     <div class="col-md-12 text-right">
-                                        <a href="{% url 'indexpage' %}" class="btn btn-danger">Cancel</a>
+                                        <a href="{% url 'ordersPage' %}" class="btn btn-danger">Cancel</a>
                                         <button type="submit" class="btn btn-success mr-2">{% if productData.id %}Update{% else%}Submit{% endif %}</button>
                                     </div>
                                 </div>
@@ -155,6 +137,47 @@
             // Remove leading zeros, except for the case where it's the only character
             input.value = input.value.replace(/^0+(?=[^.])/, '');
         }
+
+        jQuery(document).ready(function(){
+            // Count the GST price
+            jQuery('.searchProduct').on('input', function() {
+                const searchValue = jQuery('#searchProduct').val();
+                mydata = {name:searchValue, 'csrfmiddlewaretoken': '{{ csrf_token }}'}
+                jQuery("#productList").attr("hidden",true)
+                if(searchValue.length > 3){
+                    jQuery("#productList").html("")
+                    $.ajax({
+                        url : "{% url 'productSearchByName' %}",
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(mydata),
+                        success: function(response) {
+                            jQuery("#productList").html("")
+                            // Handle successful response
+                            if(response.status === 200){
+                                jQuery("#productList").removeAttr("hidden")
+                                const dataResponse = response.data
+                                if(dataResponse.length !== 0){
+                                    $.each(dataResponse, function(i, item){
+                                        console.log("Line no 127",item)
+                                        jQuery("#productList").append(`<p> ${item.product_name_eng} </p>`);
+                                    })
+                                }else{
+                                    jQuery("#productList").append(`<p>No Product Available</p>`);
+
+                                }
+                            }
+                        
+                            console.log(response.status);
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle error
+                            console.error(xhr.responseText);
+                        }
+                    });
+                }
+            });
+        });
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {

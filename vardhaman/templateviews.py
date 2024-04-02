@@ -1,8 +1,12 @@
 from django.shortcuts import render, redirect
-from django.http import FileResponse, HttpResponse
+from django.http import FileResponse, HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers  import make_password,check_password
 from .models import *
 from num2words import num2words
+from .views import getProductData
+from django.db.models import Q
+import json
 import logging
 import os
 
@@ -95,6 +99,15 @@ def ordersPage(request):
             'currentPage': 'orders',
         }
         return render(request, 'allOrders.html', data)
+    return redirect('login')
+
+# All Billing Page Path
+def billingPage(request):
+    if 'userId' in request.session:
+        data = {
+            'currentPage': 'orders',
+        }
+        return render(request, 'billingPage.html', data)
     return redirect('login')
 
 # Invoice Page Path
@@ -260,4 +273,28 @@ def logout(request):
         return redirect("login")
     except:
         return redirect("login")
-    
+
+# Products search Function 
+@csrf_exempt  
+def productSearchByName(request):
+    try:
+        if request.method == 'POST':
+            data = json.loads(request.body.decode('utf-8'))
+            name = data.get('name')
+            productList = []
+            
+            if not name:
+                return JsonResponse({"data": productList,"status":200})
+                
+            productData = Products.objects.filter(Q(product_name_eng__icontains=name)).exclude(is_delete='1')
+            
+            for product in productData:
+                product_data = getProductData(product)
+                productList.append(product_data)
+            
+            return JsonResponse({'data': productList,"status":200})
+        else:
+            return JsonResponse({"message": "Method not allowed",'status':405} )    
+    except Exception as e:
+        logger.error(f"User Register Exception : {str(e)}")
+        return JsonResponse({'message': str(e),"status":405})

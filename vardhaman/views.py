@@ -50,8 +50,8 @@ def getProductData(product):
         "product_name_hin": product.product_name_hin if product.product_name_hin else "",
         "product_qty": product.product_qty if product.product_qty else "",
         "product_unit": product.product_unit if product.product_unit else "",
-        "product_price": product.product_price if f"₹ {product.product_price}" else "₹ 0.00",
-        "product_price_inc_tax": product.product_tax_price if f"₹ {product.product_tax_price}" else "₹ 0.00",
+        "product_price_not_tax": product.product_price if f"₹ {product.product_price}" else "₹ 0.00",
+        "product_price": product.product_tax_price if f"₹ {product.product_tax_price}" else "₹ 0.00",
         "product_gst_rate": product.product_gst_rate if f"{product.product_gst_rate}%" else "",
         "product_discount_rate": product.product_discount_rate if f"{product.product_discount_rate}%" else "",
         "product_hsn_code": product.product_hsn_code,
@@ -328,9 +328,16 @@ def generateOrder(request):
         
         if userdata.is_approved in ('0', '2'):
             return Response({'message': "Access Denied."}, status=403)
+        
+        if not userdata.name or not userdata.email or not userdata.contact_no or not userdata.address:
+            return Response({'message': "Please Update Your Profile First"}, status=403)
 
         newOrder = Order.objects.create(
             customer_id = userdata,
+            name = userdata.name,
+            email = userdata.email,
+            contact_no = userdata.contact_no,
+            address = userdata.address,
             round_off = 0.00,
             total_amount = 0.00,
             grand_total_amount = 0.00,

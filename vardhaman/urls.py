@@ -31,5 +31,7 @@ urlpatterns = [
     path('products/<str:productId>/edit', templateviews.editProductPage, name='editProductPage'),
     path('products/<str:productId>/delete', templateviews.productDeleteFunctionality, name='deleteProductPage'),
     path('orders/all', templateviews.ordersPage, name='ordersPage'),
+    path('productSearching', templateviews.productSearchByName, name='productSearchByName'),
     path('orders/invoice', templateviews.invoicePage, name='invoicepage'),
+    path('orders/billing', templateviews.billingPage, name='billingPage'),
 ]

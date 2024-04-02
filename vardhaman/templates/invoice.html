@@ -132,13 +132,13 @@
                                  Buyer (Bill to)
                               </p>
                               <p style="margin:1px; font-size:15px">
-                                 <b> {{order.customer_id.name}}</b>
+                                 <b> {{order.name}}</b>
                               </p>
                               <p style="width: 350px;white-space: normal;word-break: break-word;margin:1px">
-                                 {{order.customer_id.address}}
+                                 {{order.address}}
                               </p>
-                              <p style="margin:1px"><b>MO</b> {% if order.customer_id.contact_no %}{{order.customer_id.contact_no}} {% endif %}</p>
-                              <p style="margin:1px"><b>Email</b> {% if order.customer_id.email %}{{order.customer_id.email}} {% endif %}</p>
+                              <p style="margin:1px"><b>MO</b> {% if order.contact_no %}{{order.contact_no}} {% endif %}</p>
+                              <p style="margin:1px"><b>Email</b> {% if order.email %}{{order.email}} {% endif %}</p>
                               <p style="margin:1px"><b>GSTIN/UIN:</b> {% if order.customer_id.gst_no %}{{order.customer_id.gst_no}} {% endif %}</p>
                            </div>
                         </td>

@@ -51,6 +51,10 @@ class Products(models.Model):
         
 class Order(models.Model):
     customer_id = models.ForeignKey(User,blank=True,null=True,on_delete=models.SET_NULL)
+    name = models.CharField(default='',max_length=255,null=True)
+    email = models.EmailField(unique=True,max_length=255,null=True)
+    contact_no = models.CharField(max_length=255,null=True)
+    address = models.CharField(max_length=255,blank=True,null=True)
     round_off = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     round_type = models.CharField(default="less",max_length=255)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)

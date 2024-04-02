@@ -52,10 +52,13 @@
         <div class="form-row">
             <div class="col-md-6 mb-3">
                 <h2>
-                    <img class="navbar-brand" src="{% static 'assets\images\Index-Icons\pro.png' %}" width="50" style="border-radius: 100px;"/>
+                    <img class="navbar-brand" src="{% static 'assets\images\Index-Icons\order.jpg' %}" width="50" style="border-radius: 100px;"/>
                     Orders Data
                     <small class="text-muted">Welcome to Vardhaman Gruh Udhyog</small>
                 </h2>
+            </div>
+            <div class="col-md-6 mb-3 text-right">
+                <a  href="{% url 'billingPage' %}"  class="btn btn-primary" style="background:#243ec6;">Create Bill</a>
             </div>
         </div>
     </div>
@@ -81,7 +84,7 @@
                         {% for i in orders %}
                             <tr>
                                 <td><span class="list-name">{{i.id}}</span></td>
-                                <td>{{i.customer_id.name}}</td>
+                                <td>{{i.name}}</td>
                                 <td>₹ {{i.taxable_amount}}</td>
                                 <td>₹ {{i.total_tax_amount}}</td>
                                 <td>₹ {{i.grand_total_amount}}</td>
