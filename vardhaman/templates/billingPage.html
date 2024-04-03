@@ -26,7 +26,21 @@
         height: 5rem;
         width: 6rem;
     }
+    .image-container {
+        position: relative;
+        display: inline-block; /* Ensures the container wraps around the image */
+    }
+    .image {
+        width: 100px; /* Set the width of the image */
+        height: 100px; /* Automatically adjust the height to maintain aspect ratio */
+        border: 2px solid black; /* Add a border around the image */
+        border-radius: 8px; /* Add rounded corners to the border */
+        margin: 10px; /* Add margin around the image */
+        padding: 5px; /* Add padding inside the border */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a box shadow for a subtle effect */
+    }
 </style>
+
 
 <body class="theme-purple">
     <!-- Page Loader -->
