@@ -56,7 +56,7 @@
                 <div class="tab-pane table-responsive active" id="All">
                     <div class="container">
                         <div class="form-container">
-                            <form id="productForm" autocomplete='off' class="needs-validation" novalidate enctype="multipart/form-data" action="{% url 'productAddUpdateFunctionality' %}" method="POST"> {% csrf_token %}
+                            <form id="productForm" autocomplete='off' class="needs-validation" novalidate enctype="multipart/form-data" action="{% url 'createOrderFromAdmin' %}" method="POST"> {% csrf_token %}
                                 <div class="form-row">
                                     <div class="col-md-6 mb-3">
                                         <label for="customerName">Customer's Name:</label>
@@ -84,18 +84,29 @@
                                     <div class="col-md-6 mb-3">
                                         <label for="customerAddress">Customer's Address:</label>
                                         <input type="text" class="form-control" id="customerAddress" Placeholder="Please Enter Customer's Address" name="customerAddress"  required>
+                                        <input type="hidden" class="form-control" id="cartItem" name="productCartItem">
                                         <div class="invalid-feedback">
                                             Please enter a Customer's Address.
                                         </div>
                                     </div>
                                 </div>
                                 <hr/>
+                                <div style="display:flex; justify-contain:space-between">
+                                    <div>
+                                        <table class="table">
+                                            <thead>
+                                                <tr colspan='6'>Product Listing</tr>
+                                            </thead>
+                                            <tbody id="ProductCart">
+                                            </tbody>      
+                                        </table>
+                                    </div>
+                                </div>
                                 <div class="form-row">
                                     <div class="col-md-12 mb-3">
                                         <label for="ProductSearch">Search Product:</label>
                                         <input type="text" class="form-control searchProduct" id="searchProduct" Placeholder="Search Product Name" name="searchProduct">
                                         <div class="productList" id="productList" hidden>
-                                            
                                         </div>
                                     </div>
                                 </div>
@@ -124,27 +135,166 @@
         function validateNumeric(input) {
             // Remove non-numeric characters and allow for decimal points
             input.value = input.value.replace(/[^0-9.]/g, '');
-        
+            
             // Remove extra decimal points
             input.value = input.value.replace(/\.{2,}/g, '.');
         
             // Remove leading decimal point
             input.value = input.value.replace(/^\./g, '');
-        
+            
             // Remove non-leading minus signs
             input.value = input.value.replace(/-+/g, m => (m.length > 1 ? '' : m));
         
             // Remove leading zeros, except for the case where it's the only character
             input.value = input.value.replace(/^0+(?=[^.])/, '');
+        }        
+
+        // DIsplay the data into cart
+        function displayCart(){
+            let productCart = JSON.parse(sessionStorage.getItem('productCart')) || [];
+            let productList = sessionStorage.getItem('productList');
+            
+            jQuery('#searchProduct').val('');
+            jQuery("#productList").html("")
+            jQuery("#cartItem").val(productList);
+            jQuery("#ProductCart").html('');
+            let addition = 0.00
+
+            $.each(productCart, function(i, item){
+                addition = (parseFloat(addition) + (parseFloat(item.product_price)*parseFloat(item.quantity)))
+                jQuery("#ProductCart").append(`
+                <tr style="font-size: 14px;font-family: monospace;">
+                    <td>
+                        <div class="image-container">
+                            <img src="${item.product_image}" class="image" alt='product_${item.id}'>
+                        </div>
+                    </td>
+                    <td>
+                        ${item.product_name_eng} (${item.product_qty})
+                    </td>
+                    <td>
+                        ₹ ${item.product_price}
+                    </td>
+                    <td>
+                        <div style="display:flex; justify-content: space-between;flex-wrap: nowrap;">
+                            <div style="margin-right:1rem; cursor: pointer;"  class='remQTY' dataId=${JSON.stringify(item.id)}> - </div>
+                            <input style="width:2.5rem" type='text' value="${item.quantity}" readonly/>
+                            <div style="margin-left:1rem; cursor: pointer;"  class='addQTY' dataId=${JSON.stringify(item.id)}> +</div>
+                        </div>
+                    </td>
+                    <td>
+                        ₹ ${parseFloat(item.product_price)*parseFloat(item.quantity)}
+                    </td>
+                    <td>
+                        <i class="zmdi zmdi-delete deletme" dataId=${JSON.stringify(item.id)}></i>
+                    </td>
+                </tr>`)
+            })
+
+            if(productCart.length !== 0){
+                jQuery("#ProductCart").append(`
+                    <tr style="font-size: 14px;font-family: monospace;">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td> <b>Total</b></td>
+                        <td>
+                            ₹ ${addition}
+                        </td>
+                    </tr>`)
+            }
         }
 
+        function removeItemFromCart (){
+            const productId = JSON.parse(jQuery(event.target).attr('dataId'));
+
+            let productCart = JSON.parse(sessionStorage.getItem('productCart')) || [];
+            let productObject = JSON.parse(sessionStorage.getItem('productList')) || [];
+
+            productCart = productCart.filter(item => item.id !== productId);
+            productObject = productObject.filter(item => item.product !== productId);
+
+            sessionStorage.setItem('productCart', JSON.stringify(productCart));
+            sessionStorage.setItem('productList', JSON.stringify(productObject));
+            displayCart()
+        }
+
+        // Cart Update function
+        function updateCart (filterValue, productId, type){
+            // Retrieve the existing productCart array from session storage
+            let productCart = JSON.parse(sessionStorage.getItem('productCart')) || [];
+            let productObject = JSON.parse(sessionStorage.getItem('productList')) || [];
+
+            // Check if the filterValue exists in the productCart array
+            const existingProductIndex = productCart.findIndex(item => item.id === productId);
+            const ProductIndex = productObject.findIndex(item => item.product === productId);
+
+            // If the product already exists in the productCart array, update its quantity
+            if (existingProductIndex !== -1) {
+                if(productCart[existingProductIndex].quantity < 0){
+                    return
+                }
+                if(type === 'increment'){
+                    productCart[existingProductIndex].quantity++; // Update quantity or any other property as needed
+                }else{                    
+                    productCart[existingProductIndex].quantity--; // Update quantity or any other property as needed
+                }
+            }if (ProductIndex !== -1) {
+                if(productObject[ProductIndex].qty < 0){
+                    return
+                }
+                if(type === 'increment'){
+                    productObject[ProductIndex].qty++; // Update quantity or any other property as needed
+                }else{                    
+                    productObject[ProductIndex].qty--; // Update quantity or any other property as needed
+                }
+            } else {
+                // If the product doesn't exist in the productCart array, add it
+                if (filterValue) {
+                    productObject.push({product:filterValue.id,qty: 1}); // Add quantity or any other property as needed
+                    productCart.push({...filterValue, quantity: 1}); // Add quantity or any other property as needed
+                }
+            }
+
+            // Update the productCart array in session storage
+            sessionStorage.setItem('productCart', JSON.stringify(productCart));
+            sessionStorage.setItem('productList', JSON.stringify(productObject));
+            displayCart()
+        }
+
+        // Decrease value
+        function removeOne (event){
+            const productId = JSON.parse(jQuery(event.target).attr('dataId'));
+            let productCart = JSON.parse(sessionStorage.getItem('productCart')) || [];
+            const filterValue = productCart.find((item) => item.id ===productId )
+            updateCart(filterValue,productId, 'abatement')
+        }
+
+        // increment value
+        function incrementqty (event){
+            const productId = JSON.parse(jQuery(event.target).attr('dataId'));
+            let productCart = JSON.parse(sessionStorage.getItem('productCart')) || [];
+            const filterValue = productCart.find((item) => item.id ===productId )
+            updateCart(filterValue,productId, 'increment')
+        }
+
+        // Corrected function definition
+        function handleclick (event) {
+            // Retrieve item data from the clicked element's data attribute
+            const productId = JSON.parse(jQuery(event.target).data('product'));
+            const productList = JSON.parse(sessionStorage.getItem('searchProductList'))
+            const filterValue = productList.find((item) => item.id ===productId )
+            updateCart(filterValue,productId, 'increment')
+        }
+        
         jQuery(document).ready(function(){
-            // Count the GST price
+            sessionStorage.setItem('productCart',JSON.stringify([]));
+            sessionStorage.setItem('productList',JSON.stringify([]));
             jQuery('.searchProduct').on('input', function() {
                 const searchValue = jQuery('#searchProduct').val();
                 mydata = {name:searchValue, 'csrfmiddlewaretoken': '{{ csrf_token }}'}
                 jQuery("#productList").attr("hidden",true)
-                if(searchValue.length > 3){
+                if(searchValue.length >= 3){
                     jQuery("#productList").html("")
                     $.ajax({
                         url : "{% url 'productSearchByName' %}",
@@ -158,16 +308,14 @@
                                 jQuery("#productList").removeAttr("hidden")
                                 const dataResponse = response.data
                                 if(dataResponse.length !== 0){
+                                    sessionStorage.setItem('searchProductList', JSON.stringify(dataResponse));
                                     $.each(dataResponse, function(i, item){
-                                        console.log("Line no 127",item)
-                                        jQuery("#productList").append(`<p> ${item.product_name_eng} </p>`);
+                                        jQuery("#productList").append(`<p class="productItem" style="cursor: pointer;" data-product='${JSON.stringify(item.id)}'> ${item.product_name_eng} (${item.product_qty}) ₹${item.product_price}</p>`);
                                     })
                                 }else{
                                     jQuery("#productList").append(`<p>No Product Available</p>`);
-
                                 }
                             }
-                        
                             console.log(response.status);
                         },
                         error: function(xhr, status, error) {
@@ -177,6 +325,11 @@
                     });
                 }
             });
+
+            jQuery(document).on('click', '.productItem', handleclick); // Add to Cart
+            jQuery(document).on('click', '.remQTY', removeOne); // Qty -1
+            jQuery(document).on('click', '.addQTY', incrementqty); // Qty +1
+            jQuery(document).on('click', '.deletme', removeItemFromCart); // Remove from cart
         });
     </script>
     <script>

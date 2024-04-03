@@ -68,3 +68,11 @@ def savePdf(param: dict):
         # If any exception occurs, print the error and return False
         print(e)
         return '', False
+    
+    
+# check the num indicator
+def sign_indicator(amount):
+    if amount - int(amount) < 0.5:
+        return True
+    else:
+        return False

@@ -8,7 +8,7 @@ from num2words import num2words
 
 from rest_framework_simplejwt.tokens import RefreshToken  # use to generate Token
 from .isAuthanticated import tokenVerified # Custome Class to check Token
-from .helpers import sendNotification, savePdf # Function to send notification
+from .helpers import sendNotification, savePdf, sign_indicator # Function to send notification
 
 import json
 import logging
@@ -34,12 +34,6 @@ def calculate_sgst(total_amount, sgst_rate):
     sgst_amount = (total_amount * sgst_rate) / 100
     return sgst_amount
 
-# check the num indicator
-def sign_indicator(amount):
-    if amount - int(amount) < 0.5:
-        return True
-    else:
-        return False
 # funtion return the Product Data 
 def getProductData(product):
     productObject = {

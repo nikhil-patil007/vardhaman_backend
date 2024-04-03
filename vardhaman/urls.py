@@ -34,4 +34,5 @@ urlpatterns = [
     path('productSearching', templateviews.productSearchByName, name='productSearchByName'),
     path('orders/invoice', templateviews.invoicePage, name='invoicepage'),
     path('orders/billing', templateviews.billingPage, name='billingPage'),
+    path('orders/billing/generate', templateviews.createOrderFromAdmin, name='createOrderFromAdmin'),
 ]
