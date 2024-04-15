@@ -6,6 +6,7 @@ urlpatterns = [
     # Mobile APIs
     path('api/user_register', views.userRegister),
     path('api/user_login', views.userLogin),
+    path('api/user_logout', views.userLogout),
     path('api/fetch_user_data_list/<str:userId>', views.getUserDataList),
     path('api/user_approval_by_admin', views.userApproval),
     path('api/get_all_product_list', views.getAllProductsList),

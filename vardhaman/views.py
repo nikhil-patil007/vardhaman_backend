@@ -6,7 +6,7 @@ from django.utils import timezone
 from datetime import timedelta
 from num2words import num2words
 
-from rest_framework_simplejwt.tokens import RefreshToken  # use to generate Token
+from rest_framework_simplejwt.tokens import AccessToken, RefreshToken  # use to generate Token
 from .isAuthanticated import tokenVerified # Custome Class to check Token
 from .helpers import sendNotification, savePdf, sign_indicator # Function to send notification
 
@@ -91,7 +91,19 @@ def manageNotifications(tokenFor, expoToken ,title, message):
         for admin in allUser:
             if admin.expo_go_token:
                 sendNotification(admin.expo_go_token,title, message)
-            
+
+# Get UserID based on the Token
+def getUserIdBasedOnToken(refresh_token):
+    try:
+        token = refresh_token.split(' ')[1]
+        authorization_header = AccessToken(token)
+        user_id = authorization_header.payload['user_id']
+        return user_id
+    except Exception as e:
+        # Handle exceptions like TokenError or KeyError
+        return None
+    
+
 # User Register API
 @api_view(["POST"])
 def userRegister(request):
@@ -172,6 +184,26 @@ def userLogin(request):
         logger.error(f"User Login Exception: {str(e)}")
         return Response({'message': "Internal server error."}, status=500)
 
+# User Logout API
+@api_view(['POST'])
+@tokenVerified
+def userLogout(request):
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+        userId = data.get('userId')
+        if userId is None:
+            return Response({'message': "Please provide valid userId."}, status=400)
+        user_instance = get_object_or_404(User, id=userId)
+        user_instance.expo_go_token = ''
+        user_instance.save()
+        return Response({'message': f"User Logout successfully"}, status=200)
+    except json.JSONDecodeError:
+        return Response({'message': "Invalid JSON data in the request body."}, status=400)
+    except User.DoesNotExist:
+        return Response({'message': "User not found."}, status=404)
+    except Exception as e:
+        return Response({'message': str(e)}, status=500)
+
 # All Users API
 @api_view(['GET'])
 @tokenVerified
@@ -225,8 +257,6 @@ def userUpdate(request):
         logger.error(f"User Register Exception : {str(e)}")
         return Response({'message': str(e)}, status=500)
         
-
-
 # User Approval API
 @api_view(['POST'])
 @tokenVerified
