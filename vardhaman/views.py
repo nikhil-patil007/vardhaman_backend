@@ -115,8 +115,8 @@ def userRegister(request):
         password = data.get('password')
         address = data.get('address')
         firebase_token = data.get('firebase_token')
-        if not data:
-            return Response({'message':"Please provide valid name, email, contact_no, and password."},status=400)
+        if not name and not contact_no and not password and not firebase_token:
+            return Response({'message':"Please provide valid name, contact_no, and password."},status=400)
         
         emailValidate = User.objects.filter(email=email)
         contactValidate = User.objects.filter(contact_no=contact_no)

@@ -7,7 +7,7 @@ class User(models.Model):
     role = models.CharField(max_length=15,default='0',choices=[("0","Customer"),("1","Admin")])
     name = models.CharField(default='',max_length=255,null=True)
     shopname = models.CharField(default='',max_length=255,null=True)
-    email = models.EmailField(unique=True,max_length=255,null=True)
+    email = models.CharField(default='',max_length=255,null=True)
     contact_no = models.CharField(max_length=255,null=True)
     password = models.CharField(max_length=255)
     is_approved = models.CharField(max_length=10,default='0',choices=[("0","Pending"),("1","Approved"),("2","Rejected")])
