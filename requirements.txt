@@ -27,6 +27,7 @@ pyHanko==0.21.0
 pyhanko-certvalidator==0.26.3
 PyJWT==2.8.0
 pypdf==4.0.1
+PyPDF2==3.0.1
 pypng==0.20220715.0
 python-bidi==0.4.2
 python-decouple==3.8
@@ -45,3 +46,4 @@ tzlocal==5.2
 uritools==4.0.2
 urllib3==2.2.0
 webencodings==0.5.1
+xhtml2pdf==0.2.15
