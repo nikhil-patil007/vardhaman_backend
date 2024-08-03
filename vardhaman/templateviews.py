@@ -32,7 +32,7 @@ def calculate_sgst(totalAmount, gstRate):
 def index(request):
     if 'userId' in request.session:
         try:
-            user_count = User.objects.filter(role='0').count()
+            user_count = User.objects.filter(role='0',register_by='self').count()
             product_count = Products.objects.filter(is_delete='0').count()
             order_count = Order.objects.filter(status='1').count()
 
