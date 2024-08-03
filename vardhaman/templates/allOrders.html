@@ -96,6 +96,9 @@
                                             <i class="zmdi zmdi-eye"></i>
                                         </button>
                                     </form>
+                                    <button href="#" class="btn btn-danger btn-round" onclick="showSweetAlert('{% url 'orderDelete' id=i.id %}')">
+                                        <i class="zmdi zmdi-delete"></i>
+                                    </button>
                                 </td>
                             </tr>
                             {% endfor %}

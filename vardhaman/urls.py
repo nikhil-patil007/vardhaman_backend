@@ -32,9 +32,10 @@ urlpatterns = [
     path('products/<str:productId>/edit', templateviews.editProductPage, name='editProductPage'),
     path('products/<str:productId>/delete', templateviews.productDeleteFunctionality, name='deleteProductPage'),
     path('orders/all', templateviews.ordersPage, name='ordersPage'),
-    path('productsearching', templateviews.productSearchByName, name='productSearchByName'),
-    path('customersearching', templateviews.customerSearchByName, name='customerSearchByName'),
     path('orders/invoice', templateviews.invoicePage, name='invoicepage'),
     path('orders/billing', templateviews.billingPage, name='billingPage'),
     path('orders/billing/generate', templateviews.createOrderFromAdmin, name='createOrderFromAdmin'),
+    path('orders/<str:id>/delete', templateviews.orderDelete, name='orderDelete'),
+    path('productsearching', templateviews.productSearchByName, name='productSearchByName'),
+    path('customersearching', templateviews.customerSearchByName, name='customerSearchByName'),
 ]

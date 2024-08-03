@@ -419,7 +419,14 @@ def createOrderFromAdmin(request):
     except:
         return redirect('ordersPage')
         
-
+def orderDelete(request,id):
+    if 'userId' in request.session:
+        orderData = Order.objects.get(id=id)
+        orderData.delete()
+        return redirect("ordersPage")
+    return redirect("login")    
+  
+    
 # Logout path
 def logout(request):
     try:
