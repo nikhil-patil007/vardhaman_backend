@@ -60,7 +60,7 @@ def login(request):
 # All User Page Path
 def userPage(request):
     if 'userId' in request.session:
-        users = User.objects.filter(role='0')
+        users = User.objects.filter(role='0',register_by='self')
         data = {
             'users':users,
             'currentPage':'user',
@@ -331,6 +331,19 @@ def createOrderFromAdmin(request):
             
             listOfProduct = ast.literal_eval(productList)
             
+            userData = User.objects.filter(
+                name=name,
+                contact_no=mobile
+            )
+            if not len(userData) > 0:
+                getUser = User.objects.create(
+                    name=name,
+                    email=email,
+                    contact_no=mobile,
+                    address=address,
+                    register_by="admin",
+                )
+
             try:
                 userdata = get_object_or_404(User, id=request.session['userId'])
             except:
