@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers  import make_password,check_password
 from .models import *
 from num2words import num2words
-from .views import getProductData
+from .views import getProductData, getUsersData
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 import json
@@ -438,5 +438,29 @@ def productSearchByName(request):
             return JsonResponse({"message": "Method not allowed",'status':405} )    
     except Exception as e:
         logger.error(f"Product Searching : {str(e)}")
+        return JsonResponse({'message': str(e),"status":405})
+
+@csrf_exempt  
+def customerSearchByName(request):
+    try:
+        if request.method == 'POST':
+            data = json.loads(request.body.decode('utf-8'))
+            name = data.get('name')
+            customerList = []
+            
+            if not name:
+                return JsonResponse({"data": productList,"status":200})
+                
+            customerData = User.objects.filter(Q(name__icontains=name),role='0').exclude(is_approved='2')
+            
+            for usr in customerData:
+                userValue = getUsersData(usr)
+                customerList.append(userValue)
+            
+            return JsonResponse({'data': customerList,"status":200})
+        else:
+            return JsonResponse({"message": "Method not allowed",'status':405} )    
+    except Exception as e:
+        logger.error(f"Customer Searching : {str(e)}")
         return JsonResponse({'message': str(e),"status":405})
         

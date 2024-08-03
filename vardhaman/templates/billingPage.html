@@ -74,9 +74,11 @@
                                 <div class="form-row">
                                     <div class="col-md-6 mb-3">
                                         <label for="customerName">Customer's Name:</label>
-                                        <input type="text" class="form-control" id="customerName" Placeholder='Please Enter Name of Customer' name="customerName" required>
+                                        <input type="text" class="form-control customerName" id="customerName" Placeholder='Please Enter Name of Customer' name="customerName" required autocomplete="off">
                                         <div class="invalid-feedback">
                                             Please enter a Customer's name.
+                                        </div>
+                                        <div class="customerList" id="customerList" hidden>
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-3">
@@ -179,11 +181,6 @@
                 jQuery("#ProductCart").append(`
                 <tr style="font-size: 14px;font-family: monospace;">
                     <td>
-                        <div class="image-container">
-                            <img src="${item.product_image}" class="image" alt='product_${item.id}'>
-                        </div>
-                    </td>
-                    <td>
                         ${item.product_name_eng} (${item.product_qty})
                     </td>
                     <td>
@@ -192,7 +189,7 @@
                     <td>
                         <div style="display:flex; justify-content: space-between;flex-wrap: nowrap;">
                             <div style="margin-right:1rem; cursor: pointer;"  class='remQTY' dataId=${JSON.stringify(item.id)}> - </div>
-                            <input style="width:2.5rem" type='text' value="${item.quantity}" readonly/>
+                            <input style="width:2.5rem" class='qtyInput' dataId=${JSON.stringify(item.id)} type='text' value="${item.quantity}"/>
                             <div style="margin-left:1rem; cursor: pointer;"  class='addQTY' dataId=${JSON.stringify(item.id)}> +</div>
                         </div>
                     </td>
@@ -234,7 +231,7 @@
         }
 
         // Cart Update function
-        function updateCart (filterValue, productId, type){
+        function updateCart (filterValue, productId, type,currentQty = 0){
             // Retrieve the existing productCart array from session storage
             let productCart = JSON.parse(sessionStorage.getItem('productCart')) || [];
             let productObject = JSON.parse(sessionStorage.getItem('productList')) || [];
@@ -250,6 +247,8 @@
                 }
                 if(type === 'increment'){
                     productCart[existingProductIndex].quantity++; // Update quantity or any other property as needed
+                }else if(type === 'setes'){
+                    productCart[existingProductIndex].quantity = currentQty; // Update quantity or any other property as needed
                 }else{                    
                     productCart[existingProductIndex].quantity--; // Update quantity or any other property as needed
                 }
@@ -259,6 +258,8 @@
                 }
                 if(type === 'increment'){
                     productObject[ProductIndex].qty++; // Update quantity or any other property as needed
+                }else if(type === 'setes'){
+                    productObject[ProductIndex].qty = currentQty; // Update quantity or any other property as needed
                 }else{                    
                     productObject[ProductIndex].qty--; // Update quantity or any other property as needed
                 }
@@ -269,7 +270,6 @@
                     productCart.push({...filterValue, quantity: 1}); // Add quantity or any other property as needed
                 }
             }
-
             // Update the productCart array in session storage
             sessionStorage.setItem('productCart', JSON.stringify(productCart));
             sessionStorage.setItem('productList', JSON.stringify(productObject));
@@ -299,6 +299,24 @@
             const productList = JSON.parse(sessionStorage.getItem('searchProductList'))
             const filterValue = productList.find((item) => item.id ===productId )
             updateCart(filterValue,productId, 'increment')
+        }
+        
+        function handleCustomer(event){
+            const customerData = JSON.parse(jQuery(event.target).attr('data-value'));
+            jQuery("#customerName").val(customerData.name)
+            jQuery("#customerNo").val(parseInt(customerData.contact_no))
+            jQuery("#customerEmail").val(customerData.email)
+            jQuery("#customerAddress").val(customerData.address)
+            jQuery("#customerList").html("")
+            jQuery("#customerList").attr("hidden",true)
+        }
+        
+        function handleChanageQty(event){
+            const qtyValue = JSON.parse(jQuery(event.target).val());
+            const productId = JSON.parse(jQuery(event.target).attr('dataId'));
+            let productCart = JSON.parse(sessionStorage.getItem('productCart')) || [];
+            const filterValue = productCart.find((item) => item.id ===productId )
+            updateCart(filterValue,productId, 'setes',qtyValue)   
         }
         
         jQuery(document).ready(function(){
@@ -340,6 +358,49 @@
                 }
             });
 
+            jQuery('.customerName').on('input', function() {
+                console.log("Line no 344",)
+                const userName = jQuery('#customerName').val();
+                mydata = {name:userName, 'csrfmiddlewaretoken': '{{ csrf_token }}'}
+                jQuery("#customerList").attr("hidden",true)
+                if(userName.length >= 3){
+                    jQuery("#customerList").html("")
+                    $.ajax({
+                        url : "{% url 'customerSearchByName' %}",
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(mydata),
+                        success: function(response) {
+                            jQuery("#customerList").html("")
+                            // Handle successful response
+                            if(response.status === 200){
+                                jQuery("#customerList").removeAttr("hidden")
+                                const dataResponse = response.data
+                                if(dataResponse.length !== 0){
+                                    $.each(dataResponse, function(i, item){
+                                        jQuery("#customerList").append(`<p class="customerValue" style="cursor: pointer;" data-value='${JSON.stringify(item)}'> ${item.name} (${item.contact_no})</p>`);
+                                    })
+                                }else{
+                                    jQuery("#customerList").append(`<p>No Record</p>`);
+                                    setTimeout(function(){
+                                        jQuery("#customerList").html("");
+                                        jQuery("#customerList").attr("hidden",true)
+                                    },2000)
+                                }
+                            }
+                            console.log(response.status);
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle error
+                            console.error(xhr.responseText);
+                        }
+                    });
+                }
+            });
+
+            
+            jQuery(document).on('click', '.customerValue', handleCustomer); // Handle Customer
+            jQuery(document).on('input', '.qtyInput', handleChanageQty); // Chanage the values in Cart
             jQuery(document).on('click', '.productItem', handleclick); // Add to Cart
             jQuery(document).on('click', '.remQTY', removeOne); // Qty -1
             jQuery(document).on('click', '.addQTY', incrementqty); // Qty +1
