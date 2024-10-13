@@ -326,6 +326,7 @@ def createOrderFromAdmin(request):
             name = request.POST.get('customerName', '')
             mobile = request.POST.get('customerNo', '')
             email = request.POST.get('customerEmail', '').casefold()
+            gstNo = request.POST.get('customerGST', '')
             address = request.POST.get('customerAddress', '')
             productList = request.POST.get('productCartItem', '')
             
@@ -339,6 +340,7 @@ def createOrderFromAdmin(request):
                 getUser = User.objects.create(
                     name=name,
                     email=email,
+                    gst_no=gstNo,
                     contact_no=mobile,
                     address=address,
                     register_by="admin",
@@ -353,6 +355,7 @@ def createOrderFromAdmin(request):
                 customer_id = userdata,
                 name = name,
                 email = email,
+                gst_no = gstNo,
                 contact_no = mobile,
                 address = address,
                 round_off = 0.00,

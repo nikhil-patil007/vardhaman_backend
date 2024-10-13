@@ -139,7 +139,7 @@
                               </p>
                               <p style="margin:1px"><b>MO</b> {% if order.contact_no %}{{order.contact_no}} {% endif %}</p>
                               <p style="margin:1px"><b>Email</b> {% if order.email %}{{order.email}} {% endif %}</p>
-                              <p style="margin:1px"><b>GSTIN/UIN:</b> {% if order.customer_id.role != '1' and order.customer_id.gst_no %}{{order.customer_id.gst_no}} {% endif %}</p>
+                              <p style="margin:1px"><b>GSTIN/UIN:</b> {% if order.gst_no %}{{order.gst_no}} {% else %}{{order.customer_id.gst_no}} {% endif %}</p>
                            </div>
                         </td>
                         <td style="width:10%">

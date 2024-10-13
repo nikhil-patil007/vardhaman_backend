@@ -72,34 +72,39 @@
                         <div class="form-container">
                             <form id="productForm" autocomplete='off' class="needs-validation" novalidate enctype="multipart/form-data" action="{% url 'createOrderFromAdmin' %}" method="POST"> {% csrf_token %}
                                 <div class="form-row">
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <label for="customerName">Customer's Name:</label>
-                                        <input type="text" class="form-control customerName" id="customerName" Placeholder='Please Enter Name of Customer' name="customerName" required autocomplete="off">
+                                        <input type="text" class="form-control customerName" id="customerName" Placeholder='Please Enter Name of Customer' name="customerName" autocomplete="off" required>
                                         <div class="invalid-feedback">
                                             Please enter a Customer's name.
                                         </div>
                                         <div class="customerList" id="customerList" hidden>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="customerNumber">Customer's Contact No:</label>
-                                        <input type="text" class="form-control" id="customerNo" maxlength="10" oninput="validateNumeric(this)" Placeholder="Please Enter Customer's Contact Number" name="customerNo"  required>
-                                        <div class="invalid-feedback">
-                                            Please enter a Customer's Contact Number.
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <label for="customerEmail">Customer's Email:</label>
-                                        <input type="text" class="form-control" id="customerEmail" Placeholder="Please Enter Customer's Email" name="customerEmail">
+                                        <input type="text" class="form-control" id="customerEmail" Placeholder="Please Enter Customer's Email" name="customerEmail" autocomplete="off">
                                         <div class="invalid-feedback">
                                             Please enter a Customer's Email.
                                         </div>
                                     </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="customerEmail">GST No:</label>
+                                        <input type="text" class="form-control" id="customerGST" Placeholder="Please Enter GST no" name="customerGST" autocomplete="off">
+                                        
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="customerNumber">Customer's Contact No:</label>
+                                        <input type="text" class="form-control" id="customerNo" maxlength="10" oninput="validateNumeric(this)" Placeholder="Please Enter Customer's Contact Number" name="customerNo" autocomplete="off"  required>
+                                        <div class="invalid-feedback">
+                                            Please enter a Customer's Contact Number.
+                                        </div>
+                                    </div>
                                     <div class="col-md-6 mb-3">
                                         <label for="customerAddress">Customer's Address:</label>
-                                        <input type="text" class="form-control" id="customerAddress" Placeholder="Please Enter Customer's Address" name="customerAddress"  required>
+                                        <textarea class="form-control" id="customerAddress" Placeholder="Please Enter Customer's Address" name="customerAddress" autocomplete="off" required></textarea>
                                         <input type="hidden" class="form-control" id="cartItem" name="productCartItem">
                                         <div class="invalid-feedback">
                                             Please enter a Customer's Address.
@@ -121,7 +126,7 @@
                                 <div class="form-row">
                                     <div class="col-md-12 mb-3">
                                         <label for="ProductSearch">Search Product:</label>
-                                        <input type="text" class="form-control searchProduct" id="searchProduct" Placeholder="Search Product Name" name="searchProduct">
+                                        <input type="text" class="form-control searchProduct" id="searchProduct" Placeholder="Search Product Name" name="searchProduct" autocomplete="off">
                                         <div class="productList" id="productList" hidden>
                                         </div>
                                     </div>
@@ -307,6 +312,7 @@
             jQuery("#customerNo").val(parseInt(customerData.contact_no))
             jQuery("#customerEmail").val(customerData.email)
             jQuery("#customerAddress").val(customerData.address)
+            jQuery("#customerGST").val(customerData.gst_no)
             jQuery("#customerList").html("")
             jQuery("#customerList").attr("hidden",true)
         }

@@ -55,6 +55,7 @@ class Order(models.Model):
     name = models.CharField(default='',max_length=255,null=True)
     email = models.CharField(default='',max_length=255,null=True)
     contact_no = models.CharField(max_length=255,null=True)
+    gst_no = models.CharField(max_length=255,blank=True,null=True)
     address = models.CharField(max_length=255,blank=True,null=True)
     round_off = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     round_type = models.CharField(default="less",max_length=255)
