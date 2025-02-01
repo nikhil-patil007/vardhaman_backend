@@ -51,6 +51,7 @@ class Products(models.Model):
         db_table = "Products"
         
 class Order(models.Model):
+    order_id = models.IntegerField(default=0)
     customer_id = models.ForeignKey(User,blank=True,null=True,on_delete=models.SET_NULL)
     name = models.CharField(default='',max_length=255,null=True)
     email = models.CharField(default='',max_length=255,null=True)

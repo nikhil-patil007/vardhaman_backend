@@ -323,6 +323,7 @@ def process_tax_data(orderId,data):
 def createOrderFromAdmin(request):
     try:
         if 'userId' in request.session:
+            newOrderID = request.POST.get('orderid', '')
             name = request.POST.get('customerName', '')
             mobile = request.POST.get('customerNo', '')
             email = request.POST.get('customerEmail', '').casefold()
@@ -352,6 +353,7 @@ def createOrderFromAdmin(request):
                 return redirect('billingPage')
             
             orderId = Order.objects.create(
+                order_id = newOrderID,
                 customer_id = userdata,
                 name = name,
                 email = email,
