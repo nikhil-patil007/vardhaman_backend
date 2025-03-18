@@ -38,4 +38,5 @@ urlpatterns = [
     path('orders/<str:id>/delete', templateviews.orderDelete, name='orderDelete'),
     path('productsearching', templateviews.productSearchByName, name='productSearchByName'),
     path('customersearching', templateviews.customerSearchByName, name='customerSearchByName'),
+    path('delete-all-orders', templateviews.deleteAllOrder, name='deleteAllOrder'),
 ]

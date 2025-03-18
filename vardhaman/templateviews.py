@@ -488,4 +488,11 @@ def customerSearchByName(request):
     except Exception as e:
         logger.error(f"Customer Searching : {str(e)}")
         return JsonResponse({'message': str(e),"status":405})
-        
+
+@csrf_exempt
+def deleteAllOrder(request):
+    order_taxes.objects.all().delete()
+    Order_data.objects.all().delete()
+    Order.objects.all().delete()
+    print("deleted")
+    return redirect('ordersPage')
