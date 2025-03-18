@@ -72,13 +72,21 @@
                         <div class="form-container">
                             <form id="productForm" autocomplete='off' class="needs-validation" novalidate enctype="multipart/form-data" action="{% url 'createOrderFromAdmin' %}" method="POST"> {% csrf_token %}
                                 <div class="form-row">
-                                    <div class="col-md-2 mb-3">
+                                    <div class="col-md-2 mb-2">
                                         <label for="orderID">Order Id:</label>
                                         <input type="text" class="form-control" id="orderID" Placeholder="Please Enter Order Id" name="orderid" autocomplete="off">
                                         <div class="invalid-feedback">
                                             Please enter a Order ID.
                                         </div>
                                     </div>
+                                    <div class="col-md-8 mb-3">
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <label for="customerName">Invoice Date:</label>
+                                        <input type="date" class="form-control customerName" id="billingdate" name="billingdate">
+                                    </div>
+                                </div>
+                                <div class="form-row">
                                     <div class="col-md-4 mb-3">
                                         <label for="customerName">Customer's Name:</label>
                                         <input type="text" class="form-control customerName" id="customerName" Placeholder='Please Enter Name of Customer' name="customerName" autocomplete="off" required>
@@ -88,14 +96,14 @@
                                         <div class="customerList" id="customerList" hidden>
                                         </div>
                                     </div>
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <label for="customerEmail">Customer's Email:</label>
                                         <input type="text" class="form-control" id="customerEmail" Placeholder="Please Enter Customer's Email" name="customerEmail" autocomplete="off">
                                         <div class="invalid-feedback">
                                             Please enter a Customer's Email.
                                         </div>
                                     </div>
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <label for="customerEmail">GST No:</label>
                                         <input type="text" class="form-control" id="customerGST" Placeholder="Please Enter GST no" name="customerGST" autocomplete="off">
                                         
@@ -159,6 +167,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{% static 'assets\bundles\vendorscripts.bundle.js' %}"></script>
     <script>
+        document.getElementById('billingdate').value = new Date().toISOString().split('T')[0];
+
         // return the integer value
         function validateNumeric(input) {
             // Remove non-numeric characters and allow for decimal points

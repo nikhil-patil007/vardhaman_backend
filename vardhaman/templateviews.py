@@ -324,6 +324,7 @@ def createOrderFromAdmin(request):
     try:
         if 'userId' in request.session:
             newOrderID = request.POST.get('orderid', '')
+            billingdate = request.POST.get('billingdate', '')
             name = request.POST.get('customerName', '')
             mobile = request.POST.get('customerNo', '')
             email = request.POST.get('customerEmail', '').casefold()
@@ -364,6 +365,7 @@ def createOrderFromAdmin(request):
                 total_amount = 0.00,
                 grand_total_amount = 0.00,
                 status = '1',
+                invoice_date = billingdate,
             )
             
             price = 0.00

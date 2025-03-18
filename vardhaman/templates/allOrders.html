@@ -77,7 +77,7 @@
                                 <th>Taxable Amonut</th>
                                 <th>Tax Amonut</th>
                                 <th>Grand Amonut</th>
-                                <th>Create</th>
+                                <th>Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -89,7 +89,7 @@
                                 <td>₹ {{i.taxable_amount}}</td>
                                 <td>₹ {{i.total_tax_amount}}</td>
                                 <td>₹ {{i.grand_total_amount}}</td>
-                                <td>{{i.created_at}}</td>
+                                <td>{{i.invoice_date | date:"d-m-Y"}}</td>
                                 <td>
                                     <form action="{% url 'invoicepage' %}" class="form needs-validation" novalidate method="POST">{% csrf_token %}
                                         <input type="hidden" name="orderId" value="{{i.id}}">

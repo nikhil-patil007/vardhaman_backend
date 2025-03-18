@@ -67,6 +67,7 @@ class Order(models.Model):
     sgst_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     total_tax_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     status = models.CharField(max_length=10,default='0',choices=[("0","Pending"),("1","Approved")])
+    invoice_date = models.DateField(blank=True,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     
     class Meta:
