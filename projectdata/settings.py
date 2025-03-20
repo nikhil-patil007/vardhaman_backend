@@ -95,17 +95,26 @@ WSGI_APPLICATION = 'projectdata.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 # MySql
+# DATABASES = {
+#     'default': {
+#         'ENGINE': config('DATABASE_ENGINE'),
+#         'NAME': config('DATABASE_NAME'),
+#         'USER': config('DATABASE_USER'),
+#         'PASSWORD': config('DATABASE_PASSWORD'),
+#         'HOST': config('DATABASE_HOST'),
+#         'PORT': config('DATABASE_PORT'),
+#     }
+# } 
+
 DATABASES = {
     'default': {
-        'ENGINE': config('DATABASE_ENGINE'),
+        'ENGINE': 'djongo',
         'NAME': config('DATABASE_NAME'),
-        'USER': config('DATABASE_USER'),
-        'PASSWORD': config('DATABASE_PASSWORD'),
-        'HOST': config('DATABASE_HOST'),
-        'PORT': config('DATABASE_PORT'),
+        'CLIENT': {
+            'host': config('DATABASE_URI'),
+        }
     }
-} 
-
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
