@@ -245,7 +245,7 @@ def loginFunction(request):
     try:
         username = request.POST.get('username', '')
         password = request.POST.get('password', '')
-        # username = username.casefold()
+        username = username.casefold()
 
         email_validation = User.objects.filter(email=username, role='1')
         number_validation = User.objects.filter(contact_no=username, role='1')
