@@ -153,11 +153,26 @@ USE_TZ = True
 
 
 # Image Or Path Url
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')
+# STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')
 
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, "static_media")
+
+import os
+
+# Static files (CSS, JavaScript, images)
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')  # Directory to store collected static files
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),  # This is the directory where your static files are located
+]
+
+
+# Media files (uploads)
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, "static_media")
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static_media')  # where uploaded media files will be stored
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
