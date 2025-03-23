@@ -110,10 +110,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'djongo',
         'NAME': config('DATABASE_NAME'),
-        'ENABLED': True,
         'CLIENT': {
             'host': config('DATABASE_URI'),
-            'ssl': True
         }
     }
 }
