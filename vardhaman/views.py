@@ -35,25 +35,54 @@ def calculate_sgst(total_amount, sgst_rate):
     return sgst_amount
 
 # funtion return the Product Data 
+from bson import Decimal128
+
+def convert_decimal(value):
+    """Convert Decimal128 to float, else return 0.00"""
+    if isinstance(value, Decimal128):
+        return float(str(value))  # Convert Decimal128 → string → float
+    return float(value) if value else 0.00  # Ensure safe float conversion
+
 def getProductData(product):
     productObject = {
-        "id": product.id,
+        "id": str(product.id),  # Convert ID to string if needed
         "product_image": product.product_image.url if product.product_image else "",
-        "product_name_eng": product.product_name_eng if product.product_name_eng else "" ,
-        "product_name_guj": product.product_name_guj if product.product_name_guj else "",
-        "product_name_hin": product.product_name_hin if product.product_name_hin else "",
-        "product_qty": product.product_qty if product.product_qty else "",
-        "product_unit": product.product_unit if product.product_unit else "",
-        "product_price_not_tax": product.product_price if f"₹ {product.product_price}" else "₹ 0.00",
-        "product_price": product.product_tax_price if f"₹ {product.product_tax_price}" else "₹ 0.00",
-        "product_gst_rate": product.product_gst_rate if f"{product.product_gst_rate}%" else "",
-        "product_discount_rate": product.product_discount_rate if f"{product.product_discount_rate}%" else "",
-        "product_hsn_code": product.product_hsn_code,
+        "product_name_eng": product.product_name_eng or "" ,
+        "product_name_guj": product.product_name_guj or "",
+        "product_name_hin": product.product_name_hin or "",
+        "product_qty": product.product_qty or "",
+        "product_unit": product.product_unit or "",
+        "product_price_not_tax": convert_decimal(product.product_price),
+        "product_price": convert_decimal(product.product_tax_price),
+        "product_gst_rate": convert_decimal(product.product_gst_rate),
+        "product_discount_rate":  convert_decimal(product.product_discount_rate),
+        "product_hsn_code": product.product_hsn_code or "",
         "is_delete": product.is_delete,
-        "created_at": product.created_at,
-        "updated_at": product.updated_at,
+        "created_at": product.created_at.isoformat() if product.created_at else None,  # Convert datetime to string
+        "updated_at": product.updated_at.isoformat() if product.updated_at else None,
     }
     return productObject
+
+
+# def getProductData(product):
+#     productObject = {
+#         "id": product.id,
+#         "product_image": product.product_image.url if product.product_image else "",
+#         "product_name_eng": product.product_name_eng if product.product_name_eng else "" ,
+#         "product_name_guj": product.product_name_guj if product.product_name_guj else "",
+#         "product_name_hin": product.product_name_hin if product.product_name_hin else "",
+#         "product_qty": product.product_qty if product.product_qty else "",
+#         "product_unit": product.product_unit if product.product_unit else "",
+#         "product_price_not_tax": product.product_price if f"₹ {product.product_price}" else "₹ 0.00",
+#         "product_price": product.product_tax_price if f"₹ {product.product_tax_price}" else "₹ 0.00",
+#         "product_gst_rate": product.product_gst_rate if f"{product.product_gst_rate}%" else "",
+#         "product_discount_rate": product.product_discount_rate if f"{product.product_discount_rate}%" else "",
+#         "product_hsn_code": product.product_hsn_code,
+#         "is_delete": product.is_delete,
+#         "created_at": product.created_at,
+#         "updated_at": product.updated_at,
+#     }
+#     return productObject
 
 # function return the User Data
 def getUsersData(user):

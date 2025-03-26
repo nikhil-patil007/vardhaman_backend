@@ -259,17 +259,17 @@
             let productObject = JSON.parse(sessionStorage.getItem('productList')) || [];
 
             // Check if the filterValue exists in the productCart array
-            const existingProductIndex = productCart.findIndex(item => item.id === productId);
-            const ProductIndex = productObject.findIndex(item => item.product === productId);
+            const existingProductIndex = productCart.findIndex(item => item.id == productId);
+            const ProductIndex = productObject.findIndex(item => item.product == productId);
 
             // If the product already exists in the productCart array, update its quantity
             if (existingProductIndex !== -1) {
                 if(productCart[existingProductIndex].quantity < 0){
                     return
                 }
-                if(type === 'increment'){
+                if(type == 'increment'){
                     productCart[existingProductIndex].quantity++; // Update quantity or any other property as needed
-                }else if(type === 'setes'){
+                }else if(type == 'setes'){
                     productCart[existingProductIndex].quantity = currentQty; // Update quantity or any other property as needed
                 }else{                    
                     productCart[existingProductIndex].quantity--; // Update quantity or any other property as needed
@@ -278,9 +278,9 @@
                 if(productObject[ProductIndex].qty < 0){
                     return
                 }
-                if(type === 'increment'){
+                if(type == 'increment'){
                     productObject[ProductIndex].qty++; // Update quantity or any other property as needed
-                }else if(type === 'setes'){
+                }else if(type == 'setes'){
                     productObject[ProductIndex].qty = currentQty; // Update quantity or any other property as needed
                 }else{                    
                     productObject[ProductIndex].qty--; // Update quantity or any other property as needed
@@ -302,7 +302,7 @@
         function removeOne (event){
             const productId = JSON.parse(jQuery(event.target).attr('dataId'));
             let productCart = JSON.parse(sessionStorage.getItem('productCart')) || [];
-            const filterValue = productCart.find((item) => item.id ===productId )
+            const filterValue = productCart.find((item) => item.id ==productId )
             updateCart(filterValue,productId, 'abatement')
         }
 
@@ -310,7 +310,7 @@
         function incrementqty (event){
             const productId = JSON.parse(jQuery(event.target).attr('dataId'));
             let productCart = JSON.parse(sessionStorage.getItem('productCart')) || [];
-            const filterValue = productCart.find((item) => item.id ===productId )
+            const filterValue = productCart.find((item) => item.id ==productId )
             updateCart(filterValue,productId, 'increment')
         }
 
@@ -319,7 +319,7 @@
             // Retrieve item data from the clicked element's data attribute
             const productId = JSON.parse(jQuery(event.target).data('product'));
             const productList = JSON.parse(sessionStorage.getItem('searchProductList'))
-            const filterValue = productList.find((item) => item.id ===productId )
+            const filterValue = productList.find((item) => item.id ==productId )
             updateCart(filterValue,productId, 'increment')
         }
         
@@ -338,7 +338,7 @@
             const qtyValue = JSON.parse(jQuery(event.target).val());
             const productId = JSON.parse(jQuery(event.target).attr('dataId'));
             let productCart = JSON.parse(sessionStorage.getItem('productCart')) || [];
-            const filterValue = productCart.find((item) => item.id ===productId )
+            const filterValue = productCart.find((item) => item.id ==productId )
             updateCart(filterValue,productId, 'setes',qtyValue)   
         }
         
@@ -359,7 +359,7 @@
                         success: function(response) {
                             jQuery("#productList").html("")
                             // Handle successful response
-                            if(response.status === 200){
+                            if(response.status == 200){
                                 jQuery("#productList").removeAttr("hidden")
                                 const dataResponse = response.data
                                 if(dataResponse.length !== 0){
@@ -396,7 +396,7 @@
                         success: function(response) {
                             jQuery("#customerList").html("")
                             // Handle successful response
-                            if(response.status === 200){
+                            if(response.status == 200){
                                 jQuery("#customerList").removeAttr("hidden")
                                 const dataResponse = response.data
                                 if(dataResponse.length !== 0){
