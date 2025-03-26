@@ -123,23 +123,23 @@ def billingPage(request):
 # Invoice Page Path
 def invoicePage(request):
     if 'userId' in request.session:
-        # try:
-        orderId = request.POST.get('orderId','')
-        orders = Order.objects.get(id=orderId)
-        ordersList = Order_data.objects.filter(order_id=orderId, status='1')
-        taxes_order = order_taxes.objects.filter(order_id=orderId)
-            
-        data = {
-            'currentPage': 'orders',
-            'order': orders,
-            'orderList': ordersList,
-            'totalAmountWords': getInwordsUsingNumber(to_float(orders.total_amount)),
-            'seller': User.objects.filter(role='1').first(),
-            'taxes_order': taxes_order,
-        }
-        return render(request, 'invoice.html', data)
-        # except:
-        #     return redirect('ordersPage')
+        try:
+            orderId = request.POST.get('orderId','')
+            orders = Order.objects.get(id=orderId)
+            ordersList = Order_data.objects.filter(order_id=orderId, status='1')
+            taxes_order = order_taxes.objects.filter(order_id=orderId)
+                
+            data = {
+                'currentPage': 'orders',
+                'order': orders,
+                'orderList': ordersList,
+                'totalAmountWords': getInwordsUsingNumber(to_float(orders.total_amount)),
+                'seller': User.objects.filter(role='1').first(),
+                'taxes_order': taxes_order,
+            }
+            return render(request, 'invoice.html', data)
+        except:
+            return redirect('ordersPage')
             
     return redirect('login')
     
@@ -340,7 +340,7 @@ def createOrderFromAdmin(request):
             productList = request.POST.get('productCartItem', '')
 
             listOfProduct = ast.literal_eval(productList)
-            print("listOfProduct",listOfProduct)
+            
             userData = User.objects.filter(
                 name=name,
                 contact_no=mobile
@@ -380,35 +380,34 @@ def createOrderFromAdmin(request):
             taxList = []
             
             for i in listOfProduct:
-                # try:
-                taxObj = {}
-                productdata = get_object_or_404(Products, id=i['product'])
-                print(productdata)
-                amount = to_float(productdata.product_price) * int(i['qty']) # count the total amount of product
-                product_tax = (to_float(productdata.product_gst_rate) / 2) # count the tax for cgst and sgst
-                gst_cal_amount = (to_float(productdata.product_gst) /2 ) * int(i['qty'])  # calculate_sgst(amount, product_tax) # count price with only cgst and sgst
-                tax_amount= (to_float(gst_cal_amount)*2) + float(amount)
-                price = to_float(price) + tax_amount
-                
-                taxObj['tax_rate'] = productdata.product_gst_rate
-                taxObj['taxable_amount'] = to_float(productdata.product_price) * int(i['qty'])
-                taxObj['tax_amount'] = to_float(productdata.product_gst) * int(i['qty'])
-                taxList.append(taxObj)
-                
-                listing_order = Order_data.objects.create(
-                    order_id = orderId,
-                    product_id = productdata,
-                    qty = i['qty'],
-                    cgst_rate = product_tax,
-                    sgst_rate = product_tax,
-                    cgst_amount = gst_cal_amount,
-                    sgst_amount = gst_cal_amount,
-                    amount =amount,
-                    tax_amount= tax_amount,
-                    status = '1',
-                )
-                # except:
-                #     pass
+                try:
+                    taxObj = {}
+                    productdata = get_object_or_404(Products, id=i['product'])
+                    amount = to_float(productdata.product_price) * int(i['qty']) # count the total amount of product
+                    product_tax = (to_float(productdata.product_gst_rate) / 2) # count the tax for cgst and sgst
+                    gst_cal_amount = (to_float(productdata.product_gst) /2 ) * int(i['qty'])  # calculate_sgst(amount, product_tax) # count price with only cgst and sgst
+                    tax_amount= (to_float(gst_cal_amount)*2) + float(amount)
+                    price = to_float(price) + tax_amount
+                    
+                    taxObj['tax_rate'] = productdata.product_gst_rate
+                    taxObj['taxable_amount'] = to_float(productdata.product_price) * int(i['qty'])
+                    taxObj['tax_amount'] = to_float(productdata.product_gst) * int(i['qty'])
+                    taxList.append(taxObj)
+                    
+                    listing_order = Order_data.objects.create(
+                        order_id = orderId,
+                        product_id = productdata,
+                        qty = i['qty'],
+                        cgst_rate = product_tax,
+                        sgst_rate = product_tax,
+                        cgst_amount = gst_cal_amount,
+                        sgst_amount = gst_cal_amount,
+                        amount =amount,
+                        tax_amount= tax_amount,
+                        status = '1',
+                    )
+                except:
+                    pass
                 
             taxProcessed = process_tax_data(orderId.id,taxList)
             
