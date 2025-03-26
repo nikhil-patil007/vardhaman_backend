@@ -35,38 +35,38 @@ def calculate_sgst(total_amount, sgst_rate):
     return sgst_amount
 
 # funtion return the Product Data 
-from bson import Decimal128
+from bson.decimal128 import Decimal128
 
 def to_float(value):
+    """Safely convert Decimal128 to float, handle None values."""
+    if value is None:
+        return 0.00
     if isinstance(value, Decimal128):
-        return float(str(value))  # Convert Decimal128 to float
-    return float(value) if value else 0.00
-
-def convert_decimal(value):
-    """Convert Decimal128 to float, else return 0.00"""
-    if isinstance(value, Decimal128):
-        return float(str(value))  # Convert Decimal128 → string → float
-    return float(value) if value else 0.00  # Ensure safe float conversion
+        return float(value.to_decimal())  # More accurate conversion
+    try:
+        return float(value)
+    except ValueError:
+        return 0.00  # Fallback if conversion fails
 
 def getProductData(product):
-    productObject = {
-        "id": str(product.id),  # Convert ID to string if needed
+    """Extracts product details and converts Decimal128 fields properly."""
+    return {
+        "id": str(product.id),  # Convert ID to string
         "product_image": product.product_image.url if product.product_image else "",
-        "product_name_eng": product.product_name_eng or "" ,
+        "product_name_eng": product.product_name_eng or "",
         "product_name_guj": product.product_name_guj or "",
         "product_name_hin": product.product_name_hin or "",
         "product_qty": product.product_qty or "",
         "product_unit": product.product_unit or "",
-        "product_price_not_tax": convert_decimal(product.product_price),
-        "product_price": convert_decimal(product.product_tax_price),
-        "product_gst_rate": convert_decimal(product.product_gst_rate),
-        "product_discount_rate":  convert_decimal(product.product_discount_rate),
+        "product_price_not_tax": to_float(product.product_price),
+        "product_price": to_float(product.product_tax_price),
+        "product_gst_rate": to_float(product.product_gst_rate),
+        "product_discount_rate": to_float(product.product_discount_rate),
         "product_hsn_code": product.product_hsn_code or "",
         "is_delete": product.is_delete,
         "created_at": product.created_at.isoformat() if product.created_at else None,  # Convert datetime to string
         "updated_at": product.updated_at.isoformat() if product.updated_at else None,
     }
-    return productObject
 
 
 # def getProductData(product):
