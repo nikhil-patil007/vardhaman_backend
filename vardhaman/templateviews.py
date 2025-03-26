@@ -462,7 +462,7 @@ def productSearchByName(request):
                 product_data = getProductData(product)
                 productList.append(product_data)
             
-            return JsonResponse({'data': productList,"status":200})
+            return JsonResponse({'data': productList,"status":200},safe=False)
         else:
             return JsonResponse({"message": "Method not allowed",'status':405} )    
     except Exception as e:
