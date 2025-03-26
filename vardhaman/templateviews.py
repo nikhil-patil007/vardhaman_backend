@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers  import make_password,check_password
 from .models import *
 from num2words import num2words
-from .views import getProductData, getUsersData
+from .views import getProductData, getUsersData, to_float
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 import json
@@ -12,15 +12,9 @@ import logging
 import ast
 import os
 from .helpers import sign_indicator
-from bson.decimal128 import Decimal128
 
 logger = logging.getLogger(__name__)
 
-
-def to_float(value):
-    if isinstance(value, Decimal128):
-        return float(str(value))  # Convert Decimal128 to float
-    return float(value) if value else 0.00
 
 # this function is returns the amount based on the Number
 def getInwordsUsingNumber(amount):

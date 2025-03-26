@@ -37,6 +37,11 @@ def calculate_sgst(total_amount, sgst_rate):
 # funtion return the Product Data 
 from bson import Decimal128
 
+def to_float(value):
+    if isinstance(value, Decimal128):
+        return float(str(value))  # Convert Decimal128 to float
+    return float(value) if value else 0.00
+
 def convert_decimal(value):
     """Convert Decimal128 to float, else return 0.00"""
     if isinstance(value, Decimal128):
