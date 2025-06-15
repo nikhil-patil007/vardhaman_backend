@@ -10,7 +10,6 @@ from django.shortcuts import get_object_or_404
 import json
 import logging
 import ast
-import os
 from .helpers import sign_indicator
 
 logger = logging.getLogger(__name__)
@@ -231,12 +230,13 @@ def profileUpdate(request):
         return redirect('profilePage')
     return redirect("login")    
 
+
 # Delete Product Path 
 def productDeleteFunctionality(request,productId):
     if 'userId' in request.session:
         product = Products.objects.get(id=productId)
         product.is_delete = '1'
-        product.save()
+        product.save(update_fields=['is_delete'])
         return redirect("productPage")
     
     return redirect("login")    
