@@ -113,6 +113,14 @@ def billingPage(request):
         return render(request, 'billingPage.html', data)
     return redirect('login')
 
+def esstimatePage(request):
+    if 'userId' in request.session:
+        data = {
+            'currentPage': 'esstimates',
+        }
+        return render(request, 'esstimateBill.html', data)
+    return redirect('login')
+
 # Invoice Page Path
 def invoicePage(request):
     if 'userId' in request.session:

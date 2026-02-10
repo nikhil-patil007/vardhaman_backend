@@ -39,6 +39,11 @@
                             <i class="zmdi zmdi-hourglass-alt"></i><span>Orders</span>
                         </a>
                     </li>
+                    <li class="{% if currentPage == 'esstimates' %}active open{% endif %}">
+                        <a href="{% url 'esstimatePage' %}">
+                            <i class="zmdi zmdi-receipt"></i><span>Esstimates</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
