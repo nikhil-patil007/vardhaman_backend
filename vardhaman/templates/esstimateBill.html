@@ -181,7 +181,8 @@
 
             <div class="modal-footer justify-content-between">
                 <button onclick="closeBillModal()" class="btn btn-secondary btn-sm">Close</button>
-                <button class="btn btn-success btn-sm" onclick="printBill()">Print</button>
+                <button onclick="submitData()" class="btn btn-success btn-sm">Submit</button>
+                <!-- <button class="btn btn-success btn-sm" onclick="printBill()">Print</button> -->
             </div>
             </div>
         </div>
@@ -260,10 +261,12 @@
                         <td></td>
                         <td> <b>Total</b></td>
                         <td>
-                            ₹ ${addition}
+                            ₹ <span id='totalbill'>${addition}</span>
                         </td>
                     </tr>`)
             }
+
+            sessionStorage.setItem("totalamount", addition)
         }
         
 
@@ -516,6 +519,38 @@
             window.print();
             document.body.innerHTML = originalContent;
             location.reload();
+        }
+
+
+        function submitData(){
+                    
+            let customer_name = $("#customerName").val();
+            let customer_number = $("#customerNo").val();
+            let invoice_date = $("#billingdate").val();
+            let totalbill = sessionStorage.getItem("totalamount")
+
+            // Get items from sessionStorage
+            let items_list = JSON.parse(sessionStorage.getItem("productCart"));
+
+            $.ajax({
+                url: "{% url 'createEsstimate' %}",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    customer_name: customer_name,
+                    customer_number: customer_number,
+                    invoice_date: invoice_date,
+                    items_list: items_list,
+                    totalbill: totalbill
+                }),
+                success: function (response) {
+                    sessionStorage.removeItem("productCart");
+                    // window.location.href = "{% url 'esstimatePage' %}";
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
         }
 
 

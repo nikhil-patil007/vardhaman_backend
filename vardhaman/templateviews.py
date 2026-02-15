@@ -115,6 +115,17 @@ def billingPage(request):
 
 def esstimatePage(request):
     if 'userId' in request.session:
+        esstimates = Esstimate.objects.all().order_by('-id')
+        
+        listData = {
+            'currentPage': 'esstimates',
+            'esstimates': esstimates
+        }
+        return render(request, 'allEsstimates.html', listData)
+    return redirect('login')
+
+def esstimateForm(request):
+    if 'userId' in request.session:
         data = {
             'currentPage': 'esstimates',
         }
@@ -139,6 +150,22 @@ def invoicePage(request):
                 'taxes_order': taxes_order,
             }
             return render(request, 'invoice.html', data)
+        except:
+            return redirect('ordersPage')
+            
+    return redirect('login')
+
+def invoiceEsstimatePage(request):
+    if 'userId' in request.session:
+        try:
+            orderId = request.POST.get('orderId','')
+            esstimate = Esstimate.objects.get(id=orderId)
+                
+            data = {
+                'currentPage': 'esstimate',
+                'esstimate': esstimate
+            }
+            return render(request, 'invoiceEsstimate.html', data)
         except:
             return redirect('ordersPage')
             
@@ -443,6 +470,34 @@ def orderDelete(request,id):
         return redirect("ordersPage")
     return redirect("login")    
   
+@csrf_exempt
+def createEsstimate(request):
+    if request.method == "POST":
+
+        if 'userId' in request.session:
+
+            data = json.loads(request.body)
+
+            customer_name = data.get('customer_name', '')
+            customer_number = data.get('customer_number', '')
+            invoice_date = data.get('invoice_date', None)
+            items_list = data.get('items_list', '')
+            totalbill = data.get('totalbill', 0.00)
+
+            Esstimate.objects.create(
+                customer_name=customer_name,
+                customer_number=customer_number,
+                invoice_date=invoice_date,
+                items_list=items_list,
+                grand_total_amount=float(totalbill)
+            )
+
+            return JsonResponse({"success": "Esstimate Created"})
+
+        return JsonResponse({"error": "Unauthorized"}, status=401)
+
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
     
 # Logout path
 def logout(request):
@@ -508,3 +563,8 @@ def deleteAllOrder(request):
     Order.objects.all().delete()
     print("deleted")
     return redirect('ordersPage')
+
+@csrf_exempt
+def deleteEsstimate(request):
+    Esstimate.objects.all().delete()
+    return redirect('esstimatePage')

@@ -34,7 +34,12 @@ urlpatterns = [
     path('orders/all', templateviews.ordersPage, name='ordersPage'),
     path('orders/invoice', templateviews.invoicePage, name='invoicepage'),
     path('orders/billing', templateviews.billingPage, name='billingPage'),
-    path('orders/esstimate', templateviews.esstimatePage, name='esstimatePage'),
+    path('esstimate/all', templateviews.esstimatePage, name='esstimatePage'),
+    path('esstimate/delete', templateviews.deleteEsstimate, name='deleteAllEsstimate'),
+    path('esstimate/form', templateviews.esstimateForm, name='esstimateCreatepage'),
+    path('esstimate/create', templateviews.createEsstimate, name='createEsstimate'),
+    path('esstimate/invoice', templateviews.invoiceEsstimatePage, name='invoiceEsstimatePage'),
+
     path('orders/billing/generate', templateviews.createOrderFromAdmin, name='createOrderFromAdmin'),
     path('orders/<str:id>/delete', templateviews.orderDelete, name='orderDelete'),
     path('productsearching', templateviews.productSearchByName, name='productSearchByName'),
