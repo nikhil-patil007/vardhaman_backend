@@ -112,6 +112,7 @@ DATABASES = {
         'NAME': config('DATABASE_NAME'),
         'CLIENT': {
             'host': config('DATABASE_URI'),
+            'tls': True,
         }
     }
 }
