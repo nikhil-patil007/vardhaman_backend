@@ -96,4 +96,11 @@ class order_taxes(models.Model):
     sgst_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     total_tax_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     
+
+class Esstimate(models.Model):
+    customer_name = models.CharField(max_length=255, null=True, blank=True)
+    customer_number = models.CharField(max_length=255, null=True, blank=True)
+    invoice_date = models.DateField(blank=True,null=True)
+    items_list = models.JSONField(blank=True, null=True)
+    grand_total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     
