@@ -116,6 +116,8 @@ DATABASES = {
     }
 }
 
+print("this is db name and url", config('DATABASE_NAME'), config('DATABASE_URI'))
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
